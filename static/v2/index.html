@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>科研文件管理系统</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="/static/v2/style.css">
+  <script src="/static/vendor/katex/katex.min.js" defer></script>
+  <script src="/static/vendor/katex/contrib/auto-render.min.js" defer></script>
+  <script src="/static/v2/markdown.js" defer></script>
+  <script src="/static/v2/api.js" defer></script>
+  <script src="/static/v2/views.js" defer></script>
+  <script src="/static/v2/panels.js" defer></script>
+  <script src="/static/v2/modals.js" defer></script>
+  <script src="/static/v2/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <button type="button" class="tree-toggle" data-action="toggle-tree" aria-expanded="false" aria-controls="tree">目录</button>
+    <div class="brand">
+      <strong id="project-title">科研文件管理系统</strong>
+      <span id="example-badge" class="tag tone-warn" hidden>示例</span>
+      <span id="mock-badge" class="tag tone-info" hidden>演示数据</span>
+    </div>
+    <label class="fw-picker"><span>框架</span><select id="fw-picker" aria-label="选择论文框架"></select></label>
+    <div id="quota-chips" class="chips" aria-label="各家额度"></div>
+    <div id="git-chip" class="chips" aria-label="版本管理"></div>
+    <div class="top-actions">
+      <button type="button" class="side-jump" data-action="scroll" data-key="side">讨论与待办</button>
+      <button type="button" data-action="open-settings">设置</button>
+    </div>
+  </header>
+  <div class="layout">
+    <nav id="tree" class="tree" aria-label="论文目录"><p class="muted pad">正在读取目录…</p></nav>
+    <main id="main" class="main"><p class="muted">正在读取…</p></main>
+    <aside id="side" class="side" aria-label="讨论与待办"></aside>
+  </div>
+  <div class="backdrop" data-action="close-tree" hidden></div>
+  <dialog id="viewer" class="dlg dlg-wide" aria-labelledby="viewer-title"></dialog>
+  <dialog id="settings" class="dlg dlg-wide" aria-labelledby="settings-title"></dialog>
+  <dialog id="history" class="dlg dlg-wide" aria-labelledby="history-title"></dialog>
+  <dialog id="ask" class="dlg" aria-labelledby="ask-title"></dialog>
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+  <noscript><p class="pad">请允许浏览器运行 JavaScript，才能使用这个页面。</p></noscript>
+</body>
+</html>

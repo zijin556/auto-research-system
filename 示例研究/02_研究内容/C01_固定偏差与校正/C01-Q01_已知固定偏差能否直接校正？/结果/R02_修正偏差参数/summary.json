@@ -1,0 +1,7 @@
+{
+  "correction_bias": 2.0,
+  "max_absolute_error": 0.0,
+  "criterion": "max_absolute_error < 1e-8",
+  "meets_criterion": true,
+  "data_kind": "synthetic software acceptance only"
+}

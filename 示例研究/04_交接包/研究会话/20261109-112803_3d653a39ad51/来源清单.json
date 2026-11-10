@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-09T03:28:03+00:00",
+  "root": "<示例研究目录>",
+  "scope": "question",
+  "target": {
+    "id": "C02-Q01",
+    "title": "对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？"
+  },
+  "framework_ids": [
+    "F03"
+  ],
+  "framework_selection": "explicit",
+  "sources": [
+    {
+      "path": "00_项目卡.md",
+      "roles": [
+        "共同背景"
+      ],
+      "record_id": "PROJECT",
+      "snapshot_format": "full_text",
+      "sha256": "c200ff9b828afec8b7ce42a3638f7c5694d1659ef393d67789d24edd20f6b478",
+      "size": 1359,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/研究内容.md",
+      "roles": [
+        "所属章节"
+      ],
+      "record_id": "C02",
+      "snapshot_format": "authored_without_generated_index",
+      "sha256": "6f13d6a4595bc5d8a8117530c6982f6fd95c31fe716ab5be49bd9daf2ec9fcf6",
+      "size": 1881,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/草稿.md",
+      "roles": [
+        "章节草稿"
+      ],
+      "record_id": "C02",
+      "snapshot_format": "full_text",
+      "sha256": "d4f56a921aef8de085a34d66f7f9bb26127359a11a4b2c4f17a637307a1eb76e",
+      "size": 44,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/问题.md",
+      "roles": [
+        "问题定义与判据"
+      ],
+      "record_id": "C02-Q01",
+      "snapshot_format": "full_text",
+      "sha256": "bb0531e4257823bbb26d39a62ea620d4589924e1e857bfd967a0b6041c620bc5",
+      "size": 4113,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/推导笔记.md",
+      "roles": [
+        "问题推导正文"
+      ],
+      "record_id": "C02-Q01",
+      "snapshot_format": "full_text",
+      "sha256": "62bf4b7ba40223a47640efb04ada1754f84c2246cdf9e69483544c488bf9a6d4",
+      "size": 1660,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/对话/D01_2026-11-08_AI（示例）_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？ · 讨论归档.md",
+      "roles": [
+        "原始讨论"
+      ],
+      "record_id": "D01",
+      "snapshot_format": "full_text",
+      "sha256": "ad7771031836a1c90bf327dc0edd08ad1e7a357b3076f375ca13ac4aeb669d5f",
+      "size": 4970,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/对话/D02_2026-11-08_AI（示例分析）_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？ · 讨论归档.md",
+      "roles": [
+        "原始讨论"
+      ],
+      "record_id": "D02",
+      "snapshot_format": "full_text",
+      "sha256": "9ebe4415a66e9bcbd7a596cf7ab0c3cb0c62994249a72e0de0e1e7674878ab7d",
+      "size": 3012,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/对话/D03_2026-11-08_Codex · 内容理解整理_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？ · AI 整理.md",
+      "roles": [
+        "原始讨论"
+      ],
+      "record_id": "D03",
+      "snapshot_format": "full_text",
+      "sha256": "902047ef1a4b77f2a512339c7018fa629af9076cc1ae7264008b9be028c4bcb6",
+      "size": 1753,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结论/J01.md",
+      "roles": [
+        "历次判断"
+      ],
+      "record_id": "J01",
+      "snapshot_format": "full_text",
+      "sha256": "0b725760590bd3fa23343487f5caebc5ff032ade830a4502d2fa2b6530d8bd5f",
+      "size": 2637,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/代码/central_difference.py",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "0bb7b24f39e63a7bfa9f4648d1bedeaca9d474d1f81699f86899f80bb4231ef5",
+      "size": 2305,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/代码/difference_compare.py",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "1e8980c6a1df9bdd457881141f7354affb4c58b689710f384056d3c2a80e7554",
+      "size": 1573,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/central.csv",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "3f9eec072d54502d49e936c631472aa62f7c847d6ee9b9a0e1b7b6237a4ed50a",
+      "size": 396,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/comparison_summary.json",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "5c49fae202ee6b8d4eacd247704900a474fbda32b5fb27d7e6f75aa35a07dacb",
+      "size": 419,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/convergence.csv",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "7053a76fd401cd273702e1d25167428d6b714f1bbfa20e17362ead0c9dc82d39",
+      "size": 357,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/execution_manifest.json",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "0e9d2465c50e44d8f35e5fa7ebb8daf73f57b1cf4fac12c75ed42e62b482d3ef",
+      "size": 1366,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/stdout.log",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "31f7df138b2850ad4d40fefbaf0462bd175c96d86bdd240eddcd9422a33085d6",
+      "size": 335,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/summary.json",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "c2b3684754128c78bbf866448b7c63624f7fa9ea9b74ca055f20064ff2d739ec",
+      "size": 428,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/资料/AI整理来源_9587e5cc-26ff-45bb-ac94-7db177effa2f.md",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "3fbe79ab1f906abeef606d9c8ed8858f7bb58d946c09a1e6ddc3d7f76035997f",
+      "size": 5415,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/资料/讨论原文_13726b7d-8359-42dd-98da-779766356412.md",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "dd915c00bff8370d157b1be9c87150ec3fe155e3fa8fd644fe5f4248a63177c1",
+      "size": 3972,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/资料/讨论原文_d5f7603f-9024-4969-b4f9-a9df120b15f7.md",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C02-Q01",
+      "sha256": "8e347b7e69b889f7c56856f2cf7d3e8df2fead460abdedb9750ba29462b8d9c5",
+      "size": 1847,
+      "embedded": false
+    },
+    {
+      "path": "01_论文框架/F03_数值方法的误差与验证.md",
+      "roles": [
+        "框架主线与章节安排"
+      ],
+      "record_id": "F03",
+      "snapshot_format": "authored_without_generated_index",
+      "sha256": "17ad8d3cef4f7aec32c7d35427bb5bb43063abf825591c1762106e980c485118",
+      "size": 11241,
+      "embedded": true
+    }
+  ],
+  "model_called": false,
+  "research_executed": false
+}

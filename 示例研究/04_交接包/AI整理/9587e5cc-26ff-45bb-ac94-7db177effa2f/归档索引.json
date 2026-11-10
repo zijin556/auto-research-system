@@ -1,0 +1,164 @@
+{
+  "created_at": "2026-11-08T08:17:45.738311+00:00",
+  "file_paths": [
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/讨论原文.md",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/模型整理方案.json",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原文分段.json",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M001/difference_compare.py",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M002/central.csv",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M003/forward.csv",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M004/comparison_summary.json",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M005/legacy_trace.bin",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/本轮整理.md",
+    "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/归档索引.json"
+  ],
+  "materials": [
+    {
+      "id": "M001",
+      "filename": "difference_compare.py",
+      "kind": "code",
+      "path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M001/difference_compare.py",
+      "sha256": "1e8980c6a1df9bdd457881141f7354affb4c58b689710f384056d3c2a80e7554",
+      "source_block_id": "B007",
+      "source": "fence",
+      "attachment_index": null
+    },
+    {
+      "id": "M002",
+      "filename": "central.csv",
+      "kind": "result",
+      "path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M002/central.csv",
+      "sha256": "3f9eec072d54502d49e936c631472aa62f7c847d6ee9b9a0e1b7b6237a4ed50a",
+      "source_block_id": "B011",
+      "source": "fence",
+      "attachment_index": null
+    },
+    {
+      "id": "M003",
+      "filename": "forward.csv",
+      "kind": "result",
+      "path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M003/forward.csv",
+      "sha256": "25b08fe393232321d2e651713f30c6b3cd93bd821f12f99688913e50cb42ea89",
+      "source_block_id": "B014",
+      "source": "fence",
+      "attachment_index": null
+    },
+    {
+      "id": "M004",
+      "filename": "comparison_summary.json",
+      "kind": "result",
+      "path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M004/comparison_summary.json",
+      "sha256": "5c49fae202ee6b8d4eacd247704900a474fbda32b5fb27d7e6f75aa35a07dacb",
+      "source_block_id": "",
+      "source": "attachment",
+      "attachment_index": 0
+    },
+    {
+      "id": "M005",
+      "filename": "legacy_trace.bin",
+      "kind": "attachment",
+      "path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M005/legacy_trace.bin",
+      "sha256": "ee63d95d71c3ae448a46d7e2ad95d15fca92bbecec385bbf5a50d10c9e0621fa",
+      "source_block_id": "",
+      "source": "attachment",
+      "attachment_index": 1
+    }
+  ],
+  "questions": [
+    {
+      "id": "C02-Q01",
+      "title": "对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？",
+      "framework_id": "F03",
+      "content_id": "C02",
+      "discussion_id": "D03",
+      "source_path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/资料/AI整理来源_9587e5cc-26ff-45bb-ac94-7db177effa2f.md",
+      "files": [
+        {
+          "name": "difference_compare.py",
+          "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/代码/difference_compare.py",
+          "kind": "code",
+          "purpose": "针对“对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？”；AI 整理摘要来源：D03；共同原件：04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M001/difference_compare.py",
+          "size": 1573,
+          "sha256": "1e8980c6a1df9bdd457881141f7354affb4c58b689710f384056d3c2a80e7554",
+          "material_id": "M001",
+          "origin_path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M001/difference_compare.py",
+          "origin_sha256": "1e8980c6a1df9bdd457881141f7354affb4c58b689710f384056d3c2a80e7554"
+        },
+        {
+          "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/central.csv",
+          "name": "central.csv",
+          "kind": "result",
+          "size": 396,
+          "sha256": "3f9eec072d54502d49e936c631472aa62f7c847d6ee9b9a0e1b7b6237a4ed50a",
+          "run_id": "",
+          "material_id": "M002",
+          "origin_path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M002/central.csv",
+          "origin_sha256": "3f9eec072d54502d49e936c631472aa62f7c847d6ee9b9a0e1b7b6237a4ed50a"
+        },
+        {
+          "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/结果/待关联/comparison_summary.json",
+          "name": "comparison_summary.json",
+          "kind": "result",
+          "size": 419,
+          "sha256": "5c49fae202ee6b8d4eacd247704900a474fbda32b5fb27d7e6f75aa35a07dacb",
+          "run_id": "",
+          "material_id": "M004",
+          "origin_path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M004/comparison_summary.json",
+          "origin_sha256": "5c49fae202ee6b8d4eacd247704900a474fbda32b5fb27d7e6f75aa35a07dacb"
+        }
+      ]
+    },
+    {
+      "id": "C02-Q02",
+      "title": "对 sin(x) 在 x=1 处，只能向右取样时向前差分是否呈一阶收敛？",
+      "framework_id": "F03",
+      "content_id": "C02",
+      "discussion_id": "D01",
+      "source_path": "02_研究内容/C02_导数近似与收敛阶/C02-Q02_对 sin(x) 在 x=1 处，只能向右取样时向前差分是否呈一阶收敛？/资料/AI整理来源_9587e5cc-26ff-45bb-ac94-7db177effa2f.md",
+      "files": [
+        {
+          "name": "difference_compare.py",
+          "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q02_对 sin(x) 在 x=1 处，只能向右取样时向前差分是否呈一阶收敛？/代码/difference_compare.py",
+          "kind": "code",
+          "purpose": "针对“对 sin(x) 在 x=1 处，只能向右取样时向前差分是否呈一阶收敛？”；AI 整理摘要来源：D01；共同原件：04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M001/difference_compare.py",
+          "size": 1573,
+          "sha256": "1e8980c6a1df9bdd457881141f7354affb4c58b689710f384056d3c2a80e7554",
+          "material_id": "M001",
+          "origin_path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M001/difference_compare.py",
+          "origin_sha256": "1e8980c6a1df9bdd457881141f7354affb4c58b689710f384056d3c2a80e7554"
+        },
+        {
+          "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q02_对 sin(x) 在 x=1 处，只能向右取样时向前差分是否呈一阶收敛？/结果/待关联/forward.csv",
+          "name": "forward.csv",
+          "kind": "result",
+          "size": 390,
+          "sha256": "25b08fe393232321d2e651713f30c6b3cd93bd821f12f99688913e50cb42ea89",
+          "run_id": "",
+          "material_id": "M003",
+          "origin_path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M003/forward.csv",
+          "origin_sha256": "25b08fe393232321d2e651713f30c6b3cd93bd821f12f99688913e50cb42ea89"
+        },
+        {
+          "path": "02_研究内容/C02_导数近似与收敛阶/C02-Q02_对 sin(x) 在 x=1 处，只能向右取样时向前差分是否呈一阶收敛？/结果/待关联/comparison_summary.json",
+          "name": "comparison_summary.json",
+          "kind": "result",
+          "size": 419,
+          "sha256": "5c49fae202ee6b8d4eacd247704900a474fbda32b5fb27d7e6f75aa35a07dacb",
+          "run_id": "",
+          "material_id": "M004",
+          "origin_path": "04_交接包/AI整理/9587e5cc-26ff-45bb-ac94-7db177effa2f/原始材料/M004/comparison_summary.json",
+          "origin_sha256": "5c49fae202ee6b8d4eacd247704900a474fbda32b5fb27d7e6f75aa35a07dacb"
+        }
+      ]
+    }
+  ],
+  "unassigned_source_ids": [
+    "B008",
+    "B012",
+    "B015",
+    "B018"
+  ],
+  "unassigned_material_ids": [
+    "M005"
+  ]
+}

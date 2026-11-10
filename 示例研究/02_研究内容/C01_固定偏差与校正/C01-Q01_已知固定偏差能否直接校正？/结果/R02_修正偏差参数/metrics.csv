@@ -1,0 +1,4 @@
+truth,measured,corrected,absolute_error
+0.0,2.0,0.0,0.0
+10.0,12.0,10.0,0.0
+20.0,22.0,20.0,0.0

@@ -1,0 +1,20 @@
+{
+  "created_at": "2026-11-08T07:54:30.572880+00:00",
+  "python": "3.12.2",
+  "command": [
+    "python",
+    "<示例研究目录>\\02_研究内容\\C02_导数近似与收敛阶\\C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？\\代码\\central_difference.py",
+    "--output-dir",
+    "<项目目录>\\.runtime\\capture-demo-live"
+  ],
+  "exit_code": 0,
+  "code_sha256": "0bb7b24f39e63a7bfa9f4648d1bedeaca9d474d1f81699f86899f80bb4231ef5",
+  "question_title": "对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？",
+  "code_path": "02_研究内容/C02_导数近似与收敛阶/C02-Q01_对 sin(x) 在 x=1 处，三点中心差分估计 cos(x) 是否呈二阶收敛？/代码/central_difference.py",
+  "files": {
+    "convergence.csv": "7f9058e1d85b551dd69f1e4023c43ef8ca1fe14e514e7794e631a64b3b2bb5c7",
+    "summary.json": "c2b3684754128c78bbf866448b7c63624f7fa9ea9b74ca055f20064ff2d739ec",
+    "stdout.log": "31f7df138b2850ad4d40fefbaf0462bd175c96d86bdd240eddcd9422a33085d6"
+  },
+  "provenance": "Executed the archived demonstration code after browser capture. Synthetic function only."
+}

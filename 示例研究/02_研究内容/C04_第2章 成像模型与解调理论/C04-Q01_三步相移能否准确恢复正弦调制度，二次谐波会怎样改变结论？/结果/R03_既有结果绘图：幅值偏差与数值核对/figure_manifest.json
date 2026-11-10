@@ -1,0 +1,30 @@
+{
+  "purpose": "Visualization of existing synthetic results; not a new measurement or proof.",
+  "matplotlib_version": "3.10.3",
+  "font": "Microsoft YaHei",
+  "inputs": {
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\ideal_samples.csv": "ef67d39c4aca0b45870833fceeb527f2e7bc3617eaf3f68db79f9bb7046dec94",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\harmonic_samples.csv": "8ea0960687e5fdac1ae1f47cc5004fabc0a346ce4b2047f00fc52568fb24c47b",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\ideal_summary.json": "558420d477e01e97db2a2c6dc7038bca9112e7e0ee5b85ae878f4ccdb69882ac",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\harmonic_summary.json": "7f4e6302290a9db2b5db81fa7e7b73748dd04fdb4f867b88c96e4f9701211a33"
+  },
+  "phase_samples_per_case": 720,
+  "phase_interval": "[0, 2*pi), endpoint excluded",
+  "marker_stride_figure1a_harmonic": 20,
+  "statistics_use_all_rows": true,
+  "analytic_overlay": "sqrt(b*b+c*c+2*b*c*cos(3*phi)), using recorded b and c",
+  "error_definition": "100*(recovered-target)/target; signed percentage",
+  "ideal_max_abs_error": 3.042011087472929e-14,
+  "harmonic_amplitude_range": [
+    1.7999999999999818,
+    2.200000000000018
+  ],
+  "harmonic_max_abs_relative_error_percent": 10.000000000000908,
+  "no_error_bars": "Deterministic phase sweep; no stochastic repeats or estimated confidence intervals.",
+  "figures": {
+    "amplitude_and_bias.png": "3f1c811ac1a99c38b8cb6b0ddf64a4ad3595d84b061f6a9acab3094f829aac2a",
+    "amplitude_and_bias.pdf": "143b7f847a27aca3db9214975edae665fcf7ec1d99022e266b8e9940c966d66b",
+    "numerical_consistency.png": "1c74a31c8dda814e19de5b83cadebc646eb94d02642fc9ac4cdcd2bfa6e6e164",
+    "numerical_consistency.pdf": "bad6e5a309f1bd227d75e2bcb75e227654fc0cd0ff0d6af5a1e55982afa4be4b"
+  }
+}

@@ -1,0 +1,24 @@
+.runtime/
+__pycache__/
+*.pyc
+*.mat
+*.bmp
+*.tif
+*.tiff
+*.pt
+*.pth
+*.zip
+*.tgz
+# git replaces the store's own .bak history; temp files from atomic writes
+.history/
+.tmp-*
+# local tool settings & environment secrets
+.claude/
+.env
+.env.*
+*.key
+*.pem
+.DS_Store
+Thumbs.db
+
+验收截图/*.tmp

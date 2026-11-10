@@ -1,0 +1,164 @@
+{
+  "type": "object",
+  "properties": {
+    "frameworks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "existing_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "existing_id",
+          "title",
+          "summary",
+          "source_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "contents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "existing_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "framework_keys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "existing_id",
+          "title",
+          "summary",
+          "source_ids",
+          "framework_keys"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "existing_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "content_key": {
+            "type": "string"
+          },
+          "criterion": {
+            "type": "string"
+          },
+          "candidate_conclusion": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "material_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "key",
+          "existing_id",
+          "title",
+          "summary",
+          "source_ids",
+          "content_key",
+          "criterion",
+          "candidate_conclusion",
+          "scope",
+          "material_ids"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unassigned_source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unassigned_material_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "frameworks",
+    "contents",
+    "questions",
+    "unassigned_source_ids",
+    "unassigned_material_ids",
+    "notes"
+  ],
+  "additionalProperties": false
+}

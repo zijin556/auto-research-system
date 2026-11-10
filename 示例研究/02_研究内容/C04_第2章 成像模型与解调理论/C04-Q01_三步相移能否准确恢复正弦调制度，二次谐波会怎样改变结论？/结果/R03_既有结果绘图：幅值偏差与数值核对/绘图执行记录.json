@@ -1,0 +1,45 @@
+{
+  "command": [
+    "python",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\代码快照\\33777f71bd116bfe_plot_three_step_results.py",
+    "--ideal-csv",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\ideal_samples.csv",
+    "--harmonic-csv",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\harmonic_samples.csv",
+    "--ideal-summary",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\ideal_summary.json",
+    "--harmonic-summary",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对\\harmonic_summary.json",
+    "--output-dir",
+    "<示例研究目录>\\02_研究内容\\C04_第2章 成像模型与解调理论\\C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？\\结果\\R03_既有结果绘图：幅值偏差与数值核对"
+  ],
+  "exit_code": 0,
+  "python": "3.12.2 (tags/v3.12.2:6abddd9, Feb  6 2024, 21:26:36) [MSC v.1937 64 bit (AMD64)]",
+  "code_sha256": "33777f71bd116bfee17f6f341af7183db2287871abfbbacf3214cc417f54d7f0",
+  "source_runs": [
+    "R01",
+    "R02"
+  ],
+  "input_sources": {
+    "ideal_samples.csv": {
+      "source": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/samples.csv",
+      "sha256": "ef67d39c4aca0b45870833fceeb527f2e7bc3617eaf3f68db79f9bb7046dec94",
+      "snapshot": "ideal_samples.csv"
+    },
+    "ideal_summary.json": {
+      "source": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/summary.json",
+      "sha256": "558420d477e01e97db2a2c6dc7038bca9112e7e0ee5b85ae878f4ccdb69882ac",
+      "snapshot": "ideal_summary.json"
+    },
+    "harmonic_samples.csv": {
+      "source": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/samples.csv",
+      "sha256": "8ea0960687e5fdac1ae1f47cc5004fabc0a346ce4b2047f00fc52568fb24c47b",
+      "snapshot": "harmonic_samples.csv"
+    },
+    "harmonic_summary.json": {
+      "source": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/summary.json",
+      "sha256": "7f4e6302290a9db2b5db81fa7e7b73748dd04fdb4f867b88c96e4f9701211a33",
+      "snapshot": "harmonic_summary.json"
+    }
+  }
+}

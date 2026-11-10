@@ -1,0 +1,16 @@
+{
+  "case": "harmonic",
+  "a": 100.0,
+  "b": 2.0,
+  "c": 0.2,
+  "phase_samples": 720,
+  "tolerance": 1e-10,
+  "amplitude_min": 1.7999999999999818,
+  "amplitude_max": 2.200000000000018,
+  "max_abs_amplitude_error": 0.20000000000001816,
+  "max_relative_amplitude_error": 0.10000000000000908,
+  "max_complex_analytic_residual": 3.7393425631464784e-14,
+  "max_independent_amplitude_difference": 2.7533531010703882e-14,
+  "criterion_met": true,
+  "scope": "Synthetic exact three-sample model; no noise, phase error or instrument data."
+}

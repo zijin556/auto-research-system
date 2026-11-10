@@ -1,0 +1,16 @@
+{
+  "case": "ideal",
+  "a": 100.0,
+  "b": 2.0,
+  "c": 0.0,
+  "phase_samples": 720,
+  "tolerance": 1e-10,
+  "amplitude_min": 1.9999999999999696,
+  "amplitude_max": 2.0000000000000298,
+  "max_abs_amplitude_error": 3.042011087472929e-14,
+  "max_relative_amplitude_error": 1.5210055437364645e-14,
+  "max_complex_analytic_residual": 3.2421945939166946e-14,
+  "max_independent_amplitude_difference": 2.6645352591003757e-14,
+  "criterion_met": true,
+  "scope": "Synthetic exact three-sample model; no noise, phase error or instrument data."
+}

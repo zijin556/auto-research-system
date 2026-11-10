@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-11-09T03:29:23+00:00",
+  "root": "<示例研究目录>",
+  "scope": "question",
+  "target": {
+    "id": "C04-Q01",
+    "title": "三步相移能否准确恢复正弦调制幅值，二次谐波会怎样改变结论？"
+  },
+  "framework_ids": [
+    "F04"
+  ],
+  "framework_selection": "explicit",
+  "sources": [
+    {
+      "path": "00_项目卡.md",
+      "roles": [
+        "共同背景"
+      ],
+      "record_id": "PROJECT",
+      "snapshot_format": "full_text",
+      "sha256": "c200ff9b828afec8b7ce42a3638f7c5694d1659ef393d67789d24edd20f6b478",
+      "size": 1359,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/研究内容.md",
+      "roles": [
+        "所属章节"
+      ],
+      "record_id": "C04",
+      "snapshot_format": "authored_without_generated_index",
+      "sha256": "d3e8646560f454e628266e4a81725ac4f3177026b2bde4cb96df38157672c099",
+      "size": 1401,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/草稿.md",
+      "roles": [
+        "章节草稿"
+      ],
+      "record_id": "C04",
+      "snapshot_format": "full_text",
+      "sha256": "8d2faa5c69d2422f6807bcd416c6cb7c422d2eeed8e771a5403ae4300040076d",
+      "size": 797,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/问题.md",
+      "roles": [
+        "问题定义与判据"
+      ],
+      "record_id": "C04-Q01",
+      "snapshot_format": "full_text",
+      "sha256": "60635ee82efbc0b91b8bd95e30036a3cbb411599037abc63a5f5eccdab75aa96",
+      "size": 3503,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/推导笔记.md",
+      "roles": [
+        "问题推导正文"
+      ],
+      "record_id": "C04-Q01",
+      "snapshot_format": "full_text",
+      "sha256": "7d91f2b86d3127723be9f03ba0f98adc96e176662ab74be37e11953d2d0887ad",
+      "size": 8402,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/对话/D01_2026-11-09_Codex（本次示例推导）_本次推导说明：条件命题与谐波反例.md",
+      "roles": [
+        "原始讨论"
+      ],
+      "record_id": "D01",
+      "snapshot_format": "full_text",
+      "sha256": "520a8d5c27b958042454f28fb0ab4550630c4957ca03e412faa845e665571645",
+      "size": 2773,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/对话/D02_2026-11-09_Codex（本次示例校核）_术语校正：调制幅值与归一化调制度.md",
+      "roles": [
+        "原始讨论"
+      ],
+      "record_id": "D02",
+      "snapshot_format": "full_text",
+      "sha256": "cfa46c04c610d71bfecdc46fefc628a2e127a930aba407fc70018fc1d485807c",
+      "size": 1111,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/验证计划/P01_三步相移条件命题：预先冻结的数值核对.md",
+      "roles": [
+        "冻结验证计划"
+      ],
+      "record_id": "P01",
+      "snapshot_format": "full_text",
+      "sha256": "681712c064c7bfad760dfbff65574cb46779e3be3f62d740863274a0b28c7f95",
+      "size": 1081,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/运行记录.md",
+      "roles": [
+        "运行记录",
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "R01",
+      "snapshot_format": "full_text",
+      "sha256": "777d4550dbce22ee2aeba12e5bec19070e0cb3a04ed5863d6d1fba68fc5bffc7",
+      "size": 5026,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/运行记录.md",
+      "roles": [
+        "运行记录",
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "R02",
+      "snapshot_format": "full_text",
+      "sha256": "194b216d979542185c8e9cfa1a5737cd5449dd32493336e899dbad5c9e49a6a2",
+      "size": 5188,
+      "embedded": true
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/代码/three_step_demodulation.py",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "e1f152457bf3661ee600fa4461facc235ca2fca429ec7f749de9119114fa1275",
+      "size": 3948,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/samples.csv",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "ef67d39c4aca0b45870833fceeb527f2e7bc3617eaf3f68db79f9bb7046dec94",
+      "size": 120621,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/stderr.log",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/stdout.log",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "558420d477e01e97db2a2c6dc7038bca9112e7e0ee5b85ae878f4ccdb69882ac",
+      "size": 552,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/summary.json",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "558420d477e01e97db2a2c6dc7038bca9112e7e0ee5b85ae878f4ccdb69882ac",
+      "size": 552,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/代码快照/e1f152457bf3661e_three_step_demodulation.py",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "e1f152457bf3661ee600fa4461facc235ca2fca429ec7f749de9119114fa1275",
+      "size": 3948,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/执行清单.json",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "96d29736486d4d558a2b6357c86d4da9e163f44f3eff389621bcec1103d31587",
+      "size": 2372,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R01_纯基频模型：恢复恒定幅值/计划快照.md",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "681712c064c7bfad760dfbff65574cb46779e3be3f62d740863274a0b28c7f95",
+      "size": 1081,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/samples.csv",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "8ea0960687e5fdac1ae1f47cc5004fabc0a346ce4b2047f00fc52568fb24c47b",
+      "size": 118785,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/stderr.log",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/stdout.log",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "7f4e6302290a9db2b5db81fa7e7b73748dd04fdb4f867b88c96e4f9701211a33",
+      "size": 549,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/summary.json",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "7f4e6302290a9db2b5db81fa7e7b73748dd04fdb4f867b88c96e4f9701211a33",
+      "size": 549,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/代码快照/e1f152457bf3661e_three_step_demodulation.py",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "e1f152457bf3661ee600fa4461facc235ca2fca429ec7f749de9119114fa1275",
+      "size": 3948,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/执行清单.json",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "bb7ffa33af3ef9c98bb96bc8a455d4406066ff03d0cbd956025a6b22efeb5361",
+      "size": 2411,
+      "embedded": false
+    },
+    {
+      "path": "02_研究内容/C04_第2章 成像模型与解调理论/C04-Q01_三步相移能否准确恢复正弦调制度，二次谐波会怎样改变结论？/结果/R02_二次谐波反例：幅值出现周期偏差/计划快照.md",
+      "roles": [
+        "代码或结果材料（仅索引，不加载二进制内容）"
+      ],
+      "record_id": "C04-Q01",
+      "sha256": "681712c064c7bfad760dfbff65574cb46779e3be3f62d740863274a0b28c7f95",
+      "size": 1081,
+      "embedded": false
+    },
+    {
+      "path": "01_论文框架/F04_从理论边界到方法验证（六章示例）.md",
+      "roles": [
+        "框架主线与章节安排"
+      ],
+      "record_id": "F04",
+      "snapshot_format": "authored_without_generated_index",
+      "sha256": "599af9f42d47399a74176a3d9317f198664a59fc62f25f9115c90581d8a7abe1",
+      "size": 12994,
+      "embedded": true
+    }
+  ],
+  "model_called": false,
+  "research_executed": false
+}

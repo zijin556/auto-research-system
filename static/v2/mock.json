@@ -1,0 +1,1927 @@
+{
+ "_note": "演示数据：?mock=1 时页面从这里读取；提交操作只显示提示，不会写入任何文件。",
+ "tree": {
+  "project": {
+   "title": "结构光测量的误差建模与验证（演示）",
+   "is_example": false
+  },
+  "framework_layer": {
+   "anchor_status": "confirmed",
+   "pending": 1
+  },
+  "frameworks": [
+   {
+    "id": "F01",
+    "title": "模型驱动的三维重建",
+    "status": "active",
+    "chapters": [
+     {
+      "id": "C03",
+      "no": 1,
+      "title": "绪论",
+      "role": "intro",
+      "role_label": "绪论",
+      "anchor_status": "draft",
+      "pending": 0,
+      "questions": []
+     },
+     {
+      "id": "C04",
+      "no": 2,
+      "title": "理论基础",
+      "role": "theory",
+      "role_label": "理论",
+      "anchor_status": "confirmed",
+      "pending": 1,
+      "questions": [
+       {
+        "id": "C04-Q01",
+        "title": "三步相移能否恢复幅值",
+        "status": "discussing",
+        "status_label": "讨论中",
+        "anchor_status": "confirmed",
+        "ledger": {
+         "待定": 3,
+         "确定": 2,
+         "否定": 1
+        },
+        "pending": 3
+       },
+       {
+        "id": "C04-Q02",
+        "title": "相移误差对幅值的影响有多大",
+        "status": "supported",
+        "status_label": "验证支持",
+        "anchor_status": "confirmed",
+        "ledger": {
+         "待定": 0,
+         "确定": 4,
+         "否定": 0
+        },
+        "pending": 0
+       },
+       {
+        "id": "C04-Q03",
+        "title": "加性噪声下的幅值估计偏差",
+        "status": "review",
+        "status_label": "需复查",
+        "anchor_status": "confirmed",
+        "ledger": {
+         "待定": 2,
+         "确定": 1,
+         "否定": 0
+        },
+        "pending": 0
+       }
+      ]
+     },
+     {
+      "id": "C05",
+      "no": 3,
+      "title": "非理想照明下的解调方法",
+      "role": "research",
+      "role_label": "研究问题",
+      "anchor_status": "confirmed",
+      "pending": 2,
+      "questions": []
+     },
+     {
+      "id": "C06",
+      "no": 4,
+      "title": "采样效率与重建稳定性",
+      "role": "research",
+      "role_label": "研究问题",
+      "anchor_status": "draft",
+      "pending": 0,
+      "questions": []
+     },
+     {
+      "id": "C07",
+      "no": 5,
+      "title": "研究问题三（待定）",
+      "role": "research",
+      "role_label": "研究问题",
+      "anchor_status": "none",
+      "pending": 0,
+      "questions": []
+     },
+     {
+      "id": "C08",
+      "no": 6,
+      "title": "系统集成与综合验证",
+      "role": "framework",
+      "role_label": "随框架而定",
+      "anchor_status": "none",
+      "pending": 0,
+      "questions": []
+     },
+     {
+      "id": "C09",
+      "no": 7,
+      "title": "总结与展望",
+      "role": "conclusion",
+      "role_label": "总结与展望",
+      "anchor_status": "none",
+      "pending": 0,
+      "questions": []
+     }
+    ]
+   },
+   {
+    "id": "F02",
+    "title": "数据驱动的误差补偿",
+    "status": "candidate",
+    "chapters": [
+     {
+      "id": "C11",
+      "no": 1,
+      "title": "绪论",
+      "role": "intro",
+      "role_label": "绪论",
+      "anchor_status": "none",
+      "pending": 0,
+      "questions": []
+     },
+     {
+      "id": "C12",
+      "no": 2,
+      "title": "误差来源与建模",
+      "role": "theory",
+      "role_label": "理论",
+      "anchor_status": "none",
+      "pending": 0,
+      "questions": []
+     }
+    ]
+   }
+  ],
+  "unplaced": [
+   {
+    "id": "C10",
+    "no": null,
+    "title": "早期笔记：标定方法比较",
+    "role": "other",
+    "role_label": "其他",
+    "anchor_status": "none",
+    "pending": 0,
+    "questions": [
+     {
+      "id": "C10-Q01",
+      "title": "张氏标定在大视场下是否足够",
+      "status": "inconclusive",
+      "status_label": "证据不足",
+      "anchor_status": "confirmed",
+      "ledger": {
+       "待定": 1,
+       "确定": 0,
+       "否定": 0
+      },
+      "pending": 0
+     }
+    ]
+   }
+  ],
+  "session": {
+   "id": "s-0a1b2c3d4e5f",
+   "ref": "C04-Q01",
+   "fw": "F01",
+   "recipe": "advance",
+   "recipe_label": "推进一轮",
+   "mode": "learn",
+   "status": "paused",
+   "rounds_planned": 2,
+   "round_index": 1,
+   "round": {
+    "id": "第03轮_20261110-153000",
+    "no": 3,
+    "dir": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000"
+   },
+   "steps": [
+    {
+     "key": "draft",
+     "label": "作者推进",
+     "role": "author",
+     "model_label": "GPT（gpt-6.1-sol）",
+     "status": "done",
+     "started_at": "2026-11-10T07:30:05+00:00",
+     "duration_s": 41.2,
+     "output_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md",
+     "error": ""
+    },
+    {
+     "key": "attack",
+     "label": "审查找问题",
+     "role": "reviewer",
+     "model_label": "Gemini（gemini-4-argon-high）",
+     "status": "done",
+     "started_at": "2026-11-10T07:30:47+00:00",
+     "duration_s": 63.8,
+     "output_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md",
+     "error": ""
+    }
+   ],
+   "learn": {
+    "staged": [
+     {
+      "section": "2.2 二次谐波构成的反例",
+      "mode": "替换",
+      "status": "已应用",
+      "old": "现在只改变“纯基频”这一条假设，加入二次谐波。",
+      "new": "加入 $c\\cos(2\\phi+2\\theta_k)$ 后，正频部分含 $\\sum e^{i\\theta_k}=0$，负频部分含 $\\sum e^{-3i\\theta_k}=3$，因此\n\n$$\nZ=b e^{i\\phi}+c e^{-2i\\phi},\\qquad |Z|^2=b^2+c^2+2bc\\cos(3\\phi).\n$$"
+     }
+    ],
+    "attack": "1. **L03：有条件成立。** 式(3)要求相移严格为 $2\\pi k/3$（H1）；相移误差 $\\delta$ 会再引入 $O(\\delta)$ 的项。\n2. **隐含假设：** 推导默认探测器响应线性，锚点里没有登记。\n\n```台账变更\n+ [新1] 待验证 | 相移误差 $\\delta=0.01$ 时式(3)的偏差 | H1\n```",
+    "explain": ""
+   },
+   "stop_reason": "",
+   "message": "学习模式：请看这一步和审查意见，再选继续、追问或打回",
+   "created_at": "2026-11-10T07:30:00+00:00",
+   "ended_at": "",
+   "roles": {
+    "author": {
+     "label": "GPT（gpt-6.1-sol）",
+     "family": "openai"
+    },
+    "reviewer": {
+     "label": "Gemini（gemini-4-argon-high）",
+     "family": "google"
+    }
+   }
+  },
+  "pending_total": 7,
+  "git": {
+   "available": true,
+   "is_repo": true,
+   "branch": "main",
+   "dirty": false,
+   "ahead": 2,
+   "remote": "origin",
+   "remote_url": "git@github.com:example/thesis.git",
+   "last_commit": {
+    "short": "a1b2c3d",
+    "message": "C04-Q01 第2轮：推进一轮（作者GPT、审查Gemini）"
+   },
+   "last_push": {
+    "ok": true,
+    "at": "2026-11-10T07:20:00+00:00",
+    "message": ""
+   }
+  }
+ },
+ "session": {
+  "id": "s-0a1b2c3d4e5f",
+  "ref": "C04-Q01",
+  "fw": "F01",
+  "recipe": "advance",
+  "recipe_label": "推进一轮",
+  "mode": "learn",
+  "status": "paused",
+  "rounds_planned": 2,
+  "round_index": 1,
+  "round": {
+   "id": "第03轮_20261110-153000",
+   "no": 3,
+   "dir": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000"
+  },
+  "steps": [
+   {
+    "key": "draft",
+    "label": "作者推进",
+    "role": "author",
+    "model_label": "GPT（gpt-6.1-sol）",
+    "status": "done",
+    "started_at": "2026-11-10T07:30:05+00:00",
+    "duration_s": 41.2,
+    "output_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md",
+    "error": ""
+   },
+   {
+    "key": "attack",
+    "label": "审查找问题",
+    "role": "reviewer",
+    "model_label": "Gemini（gemini-4-argon-high）",
+    "status": "done",
+    "started_at": "2026-11-10T07:30:47+00:00",
+    "duration_s": 63.8,
+    "output_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md",
+    "error": ""
+   }
+  ],
+  "learn": {
+   "staged": [
+    {
+     "section": "2.2 二次谐波构成的反例",
+     "mode": "替换",
+     "status": "已应用",
+     "old": "现在只改变“纯基频”这一条假设，加入二次谐波。",
+     "new": "加入 $c\\cos(2\\phi+2\\theta_k)$ 后，正频部分含 $\\sum e^{i\\theta_k}=0$，负频部分含 $\\sum e^{-3i\\theta_k}=3$，因此\n\n$$\nZ=b e^{i\\phi}+c e^{-2i\\phi},\\qquad |Z|^2=b^2+c^2+2bc\\cos(3\\phi).\n$$"
+    }
+   ],
+   "attack": "1. **L03：有条件成立。** 式(3)要求相移严格为 $2\\pi k/3$（H1）；相移误差 $\\delta$ 会再引入 $O(\\delta)$ 的项。\n2. **隐含假设：** 推导默认探测器响应线性，锚点里没有登记。\n\n```台账变更\n+ [新1] 待验证 | 相移误差 $\\delta=0.01$ 时式(3)的偏差 | H1\n```",
+   "explain": ""
+  },
+  "stop_reason": "",
+  "message": "学习模式：请看这一步和审查意见，再选继续、追问或打回",
+  "created_at": "2026-11-10T07:30:00+00:00",
+  "ended_at": "",
+  "roles": {
+   "author": {
+    "label": "GPT（gpt-6.1-sol）",
+    "family": "openai"
+   },
+   "reviewer": {
+    "label": "Gemini（gemini-4-argon-high）",
+    "family": "google"
+   }
+  }
+ },
+ "items": {
+  "FW": {
+   "fw": "",
+   "chapter": null,
+   "doc": null,
+   "materials": null,
+   "upstream": [],
+   "children": [],
+   "frameworks": [
+    {
+     "id": "F01",
+     "title": "模型驱动的三维重建",
+     "status": "active",
+     "path": "01_论文框架/F01_模型驱动的三维重建.md",
+     "revision": "rev-f01",
+     "mainline": "先把成像与解调的误差写成可辨识的模型（第 2 章），再分别处理非理想照明、采样效率和系统集成三个问题，最后在实测平板上统一评测。",
+     "chapters_text": "1. 绪论\n2. 理论基础\n3. 非理想照明下的解调方法\n4. 采样效率与重建稳定性\n5. 研究问题三（待定）\n6. 系统集成与综合验证\n7. 总结与展望",
+     "risks": "- 优点：每章都能从第 2 章的命题出发，结论可核对。\n- 风险：第 5 章的问题还没定；实测数据需要提前排期。",
+     "chapters": [
+      {
+       "id": "C03",
+       "no": 1,
+       "title": "绪论",
+       "role": "intro",
+       "role_label": "绪论"
+      },
+      {
+       "id": "C04",
+       "no": 2,
+       "title": "理论基础",
+       "role": "theory",
+       "role_label": "理论"
+      },
+      {
+       "id": "C05",
+       "no": 3,
+       "title": "非理想照明下的解调方法",
+       "role": "research",
+       "role_label": "研究问题"
+      },
+      {
+       "id": "C06",
+       "no": 4,
+       "title": "采样效率与重建稳定性",
+       "role": "research",
+       "role_label": "研究问题"
+      },
+      {
+       "id": "C07",
+       "no": 5,
+       "title": "研究问题三（待定）",
+       "role": "research",
+       "role_label": "研究问题"
+      },
+      {
+       "id": "C08",
+       "no": 6,
+       "title": "系统集成与综合验证",
+       "role": "framework",
+       "role_label": "随框架而定"
+      },
+      {
+       "id": "C09",
+       "no": 7,
+       "title": "总结与展望",
+       "role": "conclusion",
+       "role_label": "总结与展望"
+      }
+     ]
+    },
+    {
+     "id": "F02",
+     "title": "数据驱动的误差补偿",
+     "status": "candidate",
+     "path": "01_论文框架/F02_数据驱动的误差补偿.md",
+     "revision": "rev-f02",
+     "mainline": "用标定数据学习误差场，再把补偿结果和物理模型对照。",
+     "chapters_text": "",
+     "risks": "依赖大量标定数据。",
+     "chapters": [
+      {
+       "id": "C11",
+       "no": 1,
+       "title": "绪论",
+       "role": "intro",
+       "role_label": "绪论"
+      },
+      {
+       "id": "C12",
+       "no": 2,
+       "title": "误差来源与建模",
+       "role": "theory",
+       "role_label": "理论"
+      }
+     ]
+    }
+   ],
+   "stage": null,
+   "proposed_questions": [],
+   "candidates": [
+    {
+     "index": 0,
+     "title": "框架甲：模型驱动的重建（修订）",
+     "markdown": "# 框架甲：模型驱动的重建（修订）\n\n一句话主张：把误差写成可辨识的模型，再逐项校正。\n风险：第 5 章与已有工作可能撞车，需要查新。\n\n## 第1章 绪论 | intro\n## 第2章 理论基础 | theory\n### 成像模型的可辨识条件\n问题能否唯一确定参数？\n## 第3章 非理想照明下的解调 | research\n## 第4章 采样效率与重建稳定性 | research\n## 第5章 多反射抑制 | research\n## 第6章 系统验证 | framework\n## 第7章 总结与展望 | conclusion\n"
+    },
+    {
+     "index": 1,
+     "title": "框架乙：数据驱动的误差补偿",
+     "markdown": "# 框架乙：数据驱动的误差补偿\n\n一句话主张：用标定数据学习误差场。\n\n## 第1章 绪论 | intro\n## 第2章 误差来源与建模 | theory\n",
+     "created": "F02"
+    }
+   ],
+   "status": "",
+   "status_label": "",
+   "judgment": null,
+   "can_adopt": false,
+   "staged_conclusions": [],
+   "session": null,
+   "rounds": [
+    {
+     "id": "第01轮_20261107-090000",
+     "no": 1,
+     "ref": "FW",
+     "title": "第1轮 · 提出候选框架",
+     "status": "stopped",
+     "started_at": "2026-11-07T01:00:00+00:00",
+     "stop_reason": "候选框架已整理好，等你选择",
+     "brief_path": "01_论文框架/讨论/第01轮_20261107-090000/简报.md",
+     "dir": "01_论文框架/讨论/第01轮_20261107-090000",
+     "files": [
+      {
+       "name": "01_独立提出框架（作者）_GPT.md",
+       "path": "01_论文框架/讨论/第01轮_20261107-090000/01_独立提出框架（作者）_GPT.md"
+      },
+      {
+       "name": "02_独立提出框架（写作）_Gemini.md",
+       "path": "01_论文框架/讨论/第01轮_20261107-090000/02_独立提出框架（写作）_Gemini.md"
+      },
+      {
+       "name": "05_整理候选框架_Claude.md",
+       "path": "01_论文框架/讨论/第01轮_20261107-090000/05_整理候选框架_Claude.md"
+      },
+      {
+       "name": "简报.md",
+       "path": "01_论文框架/讨论/第01轮_20261107-090000/简报.md"
+      }
+     ]
+    }
+   ],
+   "latest_brief": "# 第1轮 · 提出候选框架\n\n两个候选框架已整理好：甲偏模型驱动，乙偏数据驱动。请在左侧选择要建立的框架。\n",
+   "pending": [
+    {
+     "kind": "candidates",
+     "id": "",
+     "text": "有 2 个候选框架，选择要建立的"
+    }
+   ],
+   "ref": "FW",
+   "level": "framework_layer",
+   "title": "论文框架",
+   "breadcrumb": [
+    {
+     "ref": "FW",
+     "title": "论文框架"
+    }
+   ],
+   "anchor": {
+    "path": "01_论文框架/锚点.md",
+    "revision": "rev-fw-anchor",
+    "exists": true,
+    "level": "framework_layer",
+    "version": 1,
+    "status": "confirmed",
+    "confirmed_at": "2026-11-07T08:00:00+00:00",
+    "slots": [
+     {
+      "key": "question",
+      "label": "要回答的大问题",
+      "text": "结构光三维测量中，哪些误差可以建模并校正，校正后精度提高多少？"
+     },
+     {
+      "key": "criterion",
+      "label": "论文主张与成功标准",
+      "text": "三项研究各有一个可量化的创新；平板实测误差下降 30% 以上。"
+     },
+     {
+      "key": "scope",
+      "label": "约束（设备、数据、时间、学校要求）",
+      "text": "一台投影仪 + 一台相机；18 个月；学校要求至少 2 篇期刊论文。"
+     },
+     {
+      "key": "nongoals",
+      "label": "不做什么",
+      "text": "不做动态场景，不做多相机拼接。"
+     }
+    ],
+    "assumptions_label": "前提与假设",
+    "assumptions": [
+     {
+      "id": "H1",
+      "text": "实验室设备在 18 个月内可用",
+      "basis": "导师确认",
+      "failure": "设备借出或损坏",
+      "status": "已确认",
+      "source": "你"
+     }
+    ],
+    "requests": []
+   },
+   "ledger": {
+    "path": "01_论文框架/台账.md",
+    "revision": "rev-fw-ledger",
+    "counts": {
+     "待定": 1,
+     "确定": 0,
+     "否定": 0
+    },
+    "entries": [
+     {
+      "id": "L01",
+      "type": "论断",
+      "text": "第 3–5 章的缺口都能在现有设备上量化",
+      "state": "待定",
+      "basis": "H1",
+      "evidence": "",
+      "note": "",
+      "source": "GPT·第1轮",
+      "updated": "第1轮",
+      "superseded_by": ""
+     }
+    ]
+   },
+   "recipes": [
+    {
+     "key": "open",
+     "label": "起草锚点和骨架"
+    },
+    {
+     "key": "propose",
+     "label": "提出候选框架"
+    }
+   ],
+   "default_recipe": "propose"
+  },
+  "F01": {
+   "fw": "",
+   "chapter": null,
+   "doc": {
+    "path": "01_论文框架/F01_模型驱动的三维重建.md",
+    "kind": "framework_fields",
+    "revision": "rev-f01",
+    "text": "",
+    "fields": {
+     "mainline": "先把成像与解调的误差写成可辨识的模型（第 2 章），再分别处理非理想照明、采样效率和系统集成三个问题，最后在实测平板上统一评测。",
+     "chapters": "1. 绪论\n2. 理论基础\n3. 非理想照明下的解调方法\n4. 采样效率与重建稳定性\n5. 研究问题三（待定）\n6. 系统集成与综合验证\n7. 总结与展望",
+     "risks": "- 优点：每章都能从第 2 章的命题出发，结论可核对。\n- 风险：第 5 章的问题还没定；实测数据需要提前排期。"
+    }
+   },
+   "materials": null,
+   "upstream": [],
+   "children": [],
+   "frameworks": [
+    {
+     "id": "F01",
+     "title": "模型驱动的三维重建",
+     "status": "active",
+     "path": "01_论文框架/F01_模型驱动的三维重建.md",
+     "revision": "rev-f01",
+     "mainline": "先把成像与解调的误差写成可辨识的模型（第 2 章），再分别处理非理想照明、采样效率和系统集成三个问题，最后在实测平板上统一评测。",
+     "chapters_text": "1. 绪论\n2. 理论基础\n3. 非理想照明下的解调方法\n4. 采样效率与重建稳定性\n5. 研究问题三（待定）\n6. 系统集成与综合验证\n7. 总结与展望",
+     "risks": "- 优点：每章都能从第 2 章的命题出发，结论可核对。\n- 风险：第 5 章的问题还没定；实测数据需要提前排期。",
+     "chapters": [
+      {
+       "id": "C03",
+       "no": 1,
+       "title": "绪论",
+       "role": "intro",
+       "role_label": "绪论"
+      },
+      {
+       "id": "C04",
+       "no": 2,
+       "title": "理论基础",
+       "role": "theory",
+       "role_label": "理论"
+      },
+      {
+       "id": "C05",
+       "no": 3,
+       "title": "非理想照明下的解调方法",
+       "role": "research",
+       "role_label": "研究问题"
+      },
+      {
+       "id": "C06",
+       "no": 4,
+       "title": "采样效率与重建稳定性",
+       "role": "research",
+       "role_label": "研究问题"
+      },
+      {
+       "id": "C07",
+       "no": 5,
+       "title": "研究问题三（待定）",
+       "role": "research",
+       "role_label": "研究问题"
+      },
+      {
+       "id": "C08",
+       "no": 6,
+       "title": "系统集成与综合验证",
+       "role": "framework",
+       "role_label": "随框架而定"
+      },
+      {
+       "id": "C09",
+       "no": 7,
+       "title": "总结与展望",
+       "role": "conclusion",
+       "role_label": "总结与展望"
+      }
+     ]
+    }
+   ],
+   "stage": null,
+   "proposed_questions": [],
+   "candidates": [],
+   "status": "active",
+   "status_label": "",
+   "judgment": null,
+   "can_adopt": false,
+   "staged_conclusions": [],
+   "session": null,
+   "rounds": [],
+   "latest_brief": "",
+   "pending": [],
+   "ref": "F01",
+   "level": "framework",
+   "title": "模型驱动的三维重建",
+   "breadcrumb": [
+    {
+     "ref": "FW",
+     "title": "论文框架"
+    },
+    {
+     "ref": "F01",
+     "title": "模型驱动的三维重建"
+    }
+   ],
+   "anchor": {
+    "path": "01_论文框架/锚点.md",
+    "revision": "rev-fw-anchor",
+    "exists": true,
+    "level": "framework_layer",
+    "version": 1,
+    "status": "confirmed",
+    "confirmed_at": "2026-11-07T08:00:00+00:00",
+    "slots": [
+     {
+      "key": "question",
+      "label": "要回答的大问题",
+      "text": "结构光三维测量中，哪些误差可以建模并校正，校正后精度提高多少？"
+     },
+     {
+      "key": "criterion",
+      "label": "论文主张与成功标准",
+      "text": "三项研究各有一个可量化的创新；平板实测误差下降 30% 以上。"
+     },
+     {
+      "key": "scope",
+      "label": "约束（设备、数据、时间、学校要求）",
+      "text": "一台投影仪 + 一台相机；18 个月；学校要求至少 2 篇期刊论文。"
+     },
+     {
+      "key": "nongoals",
+      "label": "不做什么",
+      "text": "不做动态场景，不做多相机拼接。"
+     }
+    ],
+    "assumptions_label": "前提与假设",
+    "assumptions": [
+     {
+      "id": "H1",
+      "text": "实验室设备在 18 个月内可用",
+      "basis": "导师确认",
+      "failure": "设备借出或损坏",
+      "status": "已确认",
+      "source": "你"
+     }
+    ],
+    "requests": []
+   },
+   "ledger": {
+    "path": "01_论文框架/台账.md",
+    "revision": "rev-fw-ledger",
+    "counts": {
+     "待定": 1,
+     "确定": 0,
+     "否定": 0
+    },
+    "entries": [
+     {
+      "id": "L01",
+      "type": "论断",
+      "text": "第 3–5 章的缺口都能在现有设备上量化",
+      "state": "待定",
+      "basis": "H1",
+      "evidence": "",
+      "note": "",
+      "source": "GPT·第1轮",
+      "updated": "第1轮",
+      "superseded_by": ""
+     }
+    ]
+   },
+   "recipes": [
+    {
+     "key": "refine",
+     "label": "修改这个框架"
+    }
+   ],
+   "default_recipe": "refine"
+  },
+  "C04": {
+   "fw": "F01",
+   "chapter": {
+    "id": "C04",
+    "no": 2,
+    "title": "理论基础",
+    "role": "theory",
+    "role_label": "理论"
+   },
+   "doc": {
+    "path": "02_研究内容/C04_理论基础/草稿.md",
+    "revision": "rev-ch-1",
+    "kind": "chapter_draft",
+    "text": "# 第2章 理论基础\n\n## 引言\n\n统一符号、前向模型、可辨识条件与适用边界。\n\n## 符号与假设\n\n| 符号 | 含义 |\n|---|---|\n| $a$ | 直流强度 |\n| $b$ | 基频幅值 |\n| $\\phi$ | 初始相位 |\n\n## 主要命题与推导\n\n见 [三步相移能否恢复幅值](C04-Q01_三步相移能否恢复幅值/推导笔记.md)。\n\n## 本章小结\n\n（待组装。）\n"
+   },
+   "materials": null,
+   "upstream": [],
+   "children": [
+    {
+     "ref": "C04-Q01",
+     "title": "三步相移能否恢复幅值",
+     "status": "discussing",
+     "status_label": "讨论中"
+    },
+    {
+     "ref": "C04-Q02",
+     "title": "相移误差对幅值的影响有多大",
+     "status": "supported",
+     "status_label": "验证支持"
+    },
+    {
+     "ref": "C04-Q03",
+     "title": "加性噪声下的幅值估计偏差",
+     "status": "review",
+     "status_label": "需复查"
+    }
+   ],
+   "frameworks": [],
+   "stage": null,
+   "proposed_questions": [
+    {
+     "title": "四步相移是否对二次谐波免疫",
+     "question": "四步相移下二次谐波项是否完全抵消？",
+     "criterion": "解析结果与数值误差 $<10^{-10}$",
+     "depends": "C04-Q01",
+     "load_bearing": true,
+     "method": "仿真"
+    },
+    {
+     "title": "伽马非线性引入的谐波幅度",
+     "question": "伽马 $\\gamma=2.2$ 时二次谐波幅值是多少？",
+     "criterion": "与蒙特卡罗结果相差 < 1%",
+     "depends": "",
+     "load_bearing": false,
+     "method": "理论 + 仿真"
+    }
+   ],
+   "candidates": [],
+   "status": "",
+   "status_label": "",
+   "judgment": null,
+   "can_adopt": false,
+   "staged_conclusions": [],
+   "session": null,
+   "rounds": [],
+   "latest_brief": "",
+   "pending": [
+    {
+     "kind": "questions",
+     "id": "",
+     "text": "AI 提出了 2 个小问题，勾选后建立"
+    }
+   ],
+   "ref": "C04",
+   "level": "chapter",
+   "title": "理论基础",
+   "breadcrumb": [
+    {
+     "ref": "FW",
+     "title": "论文框架"
+    },
+    {
+     "ref": "F01",
+     "title": "模型驱动的三维重建"
+    },
+    {
+     "ref": "C04",
+     "title": "第2章 理论基础"
+    }
+   ],
+   "anchor": {
+    "path": "02_研究内容/C04_理论基础/锚点.md",
+    "revision": "rev-ch-anchor",
+    "exists": true,
+    "level": "chapter",
+    "version": 1,
+    "status": "confirmed",
+    "confirmed_at": "2026-11-08T05:00:00+00:00",
+    "slots": [
+     {
+      "key": "question",
+      "label": "本章回答的问题",
+      "text": "解调量在什么条件下可辨识，偏差有多大？"
+     },
+     {
+      "key": "criterion",
+      "label": "判据与评测协议（数据、指标、基线）",
+      "text": "每个命题给出解析特例和独立数值核对。"
+     },
+     {
+      "key": "scope",
+      "label": "范围",
+      "text": "只讨论相移法。"
+     },
+     {
+      "key": "nongoals",
+      "label": "不做什么",
+      "text": ""
+     }
+    ],
+    "assumptions_label": "依赖与假设",
+    "assumptions": [],
+    "requests": []
+   },
+   "ledger": {
+    "path": "02_研究内容/C04_理论基础/台账.md",
+    "revision": "rev-ch-ledger",
+    "counts": {
+     "待定": 1,
+     "确定": 0,
+     "否定": 0
+    },
+    "entries": [
+     {
+      "id": "L01",
+      "type": "论断",
+      "text": "第 3–6 章共用同一套评测协议（数据、指标、基线）",
+      "state": "待定",
+      "basis": "",
+      "evidence": "",
+      "note": "",
+      "source": "GPT·第1轮",
+      "updated": "第1轮",
+      "superseded_by": ""
+     }
+    ]
+   },
+   "recipes": [
+    {
+     "key": "open",
+     "label": "起草锚点和骨架"
+    },
+    {
+     "key": "outline",
+     "label": "章节提纲与拆题"
+    },
+    {
+     "key": "assemble",
+     "label": "组装本章草稿"
+    },
+    {
+     "key": "referee",
+     "label": "请审稿人独立审一遍"
+    }
+   ],
+   "default_recipe": "outline"
+  },
+  "C05": {
+   "fw": "F01",
+   "chapter": {
+    "id": "C05",
+    "no": 3,
+    "title": "非理想照明下的解调方法",
+    "role": "research",
+    "role_label": "研究问题"
+   },
+   "doc": {
+    "path": "02_研究内容/C05_研究问题一/草稿.md",
+    "revision": "rev-r5",
+    "kind": "chapter_draft",
+    "text": "# 第3章 非理想照明下的解调方法\n\n## 引言（缺口与本章贡献）\n\n非均匀照明下三步法的幅值误差可达 12%（见台账 L01）。\n\n## 方法\n\n（S6 方法化后写入。）\n"
+   },
+   "materials": null,
+   "upstream": [],
+   "children": [],
+   "frameworks": [],
+   "stage": {
+    "current": "S3",
+    "done": "S3",
+    "stages": [
+     {
+      "key": "S1",
+      "label": "量化缺口",
+      "done": true
+     },
+     {
+      "key": "S2",
+      "label": "发散想法",
+      "done": true
+     },
+     {
+      "key": "S3",
+      "label": "可行性筛选",
+      "done": true
+     },
+     {
+      "key": "S4",
+      "label": "查新",
+      "done": false
+     },
+     {
+      "key": "S5",
+      "label": "设计杀测",
+      "done": false
+     },
+     {
+      "key": "S6",
+      "label": "方法化",
+      "done": false
+     }
+    ]
+   },
+   "proposed_questions": [],
+   "candidates": [],
+   "status": "",
+   "status_label": "",
+   "judgment": null,
+   "can_adopt": false,
+   "staged_conclusions": [],
+   "session": null,
+   "rounds": [],
+   "latest_brief": "",
+   "pending": [
+    {
+     "kind": "ideas",
+     "id": "",
+     "text": "请勾选要保留的想法"
+    },
+    {
+     "kind": "stage",
+     "id": "S3",
+     "text": "S3 已完成，确认后进入下一阶段"
+    }
+   ],
+   "ref": "C05",
+   "level": "chapter",
+   "title": "非理想照明下的解调方法",
+   "breadcrumb": [
+    {
+     "ref": "FW",
+     "title": "论文框架"
+    },
+    {
+     "ref": "F01",
+     "title": "模型驱动的三维重建"
+    },
+    {
+     "ref": "C05",
+     "title": "第3章 非理想照明下的解调方法"
+    }
+   ],
+   "anchor": {
+    "path": "02_研究内容/C05_研究问题一/锚点.md",
+    "revision": "rev-r5-anchor",
+    "exists": true,
+    "level": "chapter",
+    "version": 1,
+    "status": "confirmed",
+    "confirmed_at": "2026-11-09T01:00:00+00:00",
+    "slots": [
+     {
+      "key": "question",
+      "label": "本章回答的问题",
+      "text": "非均匀照明下能否把幅值误差降到 1% 以内？"
+     },
+     {
+      "key": "criterion",
+      "label": "判据与评测协议（数据、指标、基线）",
+      "text": "合成数据 + 实测平板；指标为幅值相对误差；基线为三步法。"
+     },
+     {
+      "key": "scope",
+      "label": "范围",
+      "text": "照明变化为空间缓变。"
+     },
+     {
+      "key": "nongoals",
+      "label": "不做什么",
+      "text": "不处理运动物体。"
+     }
+    ],
+    "assumptions_label": "依赖与假设",
+    "assumptions": [],
+    "requests": []
+   },
+   "ledger": {
+    "path": "02_研究内容/C05_研究问题一/台账.md",
+    "revision": "rev-r5-ledger",
+    "counts": {
+     "待定": 5,
+     "确定": 1,
+     "否定": 1
+    },
+    "entries": [
+     {
+      "id": "L01",
+      "type": "论断",
+      "text": "非均匀照明使三步法的幅值误差达到 5%–12%（S1 量化）",
+      "state": "确定",
+      "basis": "",
+      "evidence": "R01",
+      "note": "",
+      "source": "GPT·S1",
+      "updated": "S1",
+      "superseded_by": ""
+     },
+     {
+      "id": "L02",
+      "type": "想法",
+      "text": "用照明场的低秩模型先估计再解调",
+      "state": "待定",
+      "basis": "L01",
+      "evidence": "",
+      "note": "",
+      "source": "Gemini·S2",
+      "updated": "S2",
+      "superseded_by": ""
+     },
+     {
+      "id": "L03",
+      "type": "想法",
+      "text": "多频相移联合估计照明与相位",
+      "state": "待定",
+      "basis": "L01",
+      "evidence": "",
+      "note": "筛选意见：工作量大，但创新点清楚",
+      "source": "Gemini·S2",
+      "updated": "S3",
+      "superseded_by": ""
+     },
+     {
+      "id": "L04",
+      "type": "想法",
+      "text": "学习一个逐像素的增益校正网络",
+      "state": "待定",
+      "basis": "L01",
+      "evidence": "",
+      "note": "筛选意见：缺少可解释性",
+      "source": "Gemini·S2",
+      "updated": "S3",
+      "superseded_by": ""
+     },
+     {
+      "id": "L05",
+      "type": "想法",
+      "text": "直接提高相移步数",
+      "state": "否定",
+      "basis": "",
+      "evidence": "",
+      "note": "你在筛选时没有保留",
+      "source": "Gemini·S2",
+      "updated": "S3",
+      "superseded_by": ""
+     },
+     {
+      "id": "L06",
+      "type": "文献",
+      "text": "10.1364/OE.27.000001 · 非均匀照明下的相移解调 · 只处理一阶变化",
+      "state": "待定",
+      "basis": "L02",
+      "evidence": "",
+      "note": "",
+      "source": "GPT·S4",
+      "updated": "S4",
+      "superseded_by": ""
+     },
+     {
+      "id": "L07",
+      "type": "文献",
+      "text": "arXiv:2403.01234 · 低秩照明估计 · 用于光度立体，不是相移",
+      "state": "待定",
+      "basis": "L02",
+      "evidence": "",
+      "note": "",
+      "source": "GPT·S4",
+      "updated": "S4",
+      "superseded_by": ""
+     }
+    ]
+   },
+   "recipes": [
+    {
+     "key": "open",
+     "label": "起草锚点和骨架"
+    },
+    {
+     "key": "outline",
+     "label": "章节提纲与拆题"
+    },
+    {
+     "key": "innov",
+     "label": "创新流程（当前阶段）"
+    },
+    {
+     "key": "assemble",
+     "label": "组装本章草稿"
+    },
+    {
+     "key": "referee",
+     "label": "请审稿人独立审一遍"
+    }
+   ],
+   "default_recipe": "innov"
+  },
+  "C04-Q01": {
+   "fw": "F01",
+   "chapter": {
+    "id": "C04",
+    "no": 2,
+    "title": "理论基础",
+    "role": "theory",
+    "role_label": "理论"
+   },
+   "doc": {
+    "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/推导笔记.md",
+    "text": "## 摘要\n\n本文检验三步相移能否从纯正弦强度中精确恢复基频幅值，并给出存在二次谐波时的偏差范围。理想模型下恢复是代数恒等式；二次谐波使恢复值随相位周期变化。\n\n## 1 问题与假设\n\n**要回答的问题**：三步相移能否从纯正弦强度中精确恢复基频幅值 $b$？\n\n- H1：相移严格为 $\\theta_k=2\\pi k/3$（失效条件：相移误差超过 0.01 rad）\n- H2：三次采集期间 $a$、$b$、$\\phi$ 不变（失效条件：物体或光源在采集中变化）\n- H3：探测器响应是线性的（待批）\n\n## 2 理论推导\n\n### 2.1 三步解调的条件命题\n\n对同一像素采集三次：\n\n$$\nI_k=a+b\\cos(\\phi+\\theta_k),\\qquad k=0,1,2.\\tag{1}\n$$\n\n令 $Z$ 为复数解调量，由三次单位根求和：\n\n$$\nZ=\\frac{2}{3}\\sum_{k=0}^{2} I_k e^{-i\\theta_k}=b e^{i\\phi},\\qquad \\widehat b=|Z|=b.\\tag{2}\n$$\n\n实现见 [check.py 第 10–20 行](代码/check.py#L10-L20)。\n\n### 2.2 二次谐波构成的反例\n\n加入 $c\\cos(2\\phi+2\\theta_k)$ 后，额外分量没有全部抵消：\n\n$$\n|Z|^2=b^2+c^2+2bc\\cos(3\\phi).\\tag{3}\n$$\n\n当 $b=2$、$c=0.2$ 时，$\\widehat b\\in[1.8,2.2]$。\n\n## 3 验证方法\n\n| 计划 | 针对 | 方法 | 判据 |\n|---|---|---|---|\n| P01 | L01 | 仿真，两条独立计算路径 | 最大相对误差 $<10^{-10}$ |\n| P02 | L03 | 仿真，扫描 $\\phi\\in[0,2\\pi)$ | 范围与式(3)一致，误差 $<10^{-10}$ |\n\n退化自检：$c=0$ 时必须回到式(2)。\n\n## 4 结果与分析\n\n理想模型的最大相对误差为 [3.0e-14](结果/R01_理想模型数值核对/输出/summary.json \"R01.max_err\")，满足判据（见 [对照表](结果/R01_理想模型数值核对/输出/对照表.md)）。二次谐波模型的最小恢复值为 [1.800](结果/R02_二次谐波反例/输出/summary.json \"R02.b_min\")，最大为 [2.200](结果/R02_二次谐波反例/输出/summary.json \"R02.b_max\")。\n\n> 这些数值只说明实现与推导一致，不代表真实仪器的性能。\n\n## 5 结论与适用范围\n\n（等你采纳后写入。）\n",
+    "revision": "rev-doc-1",
+    "kind": "mini_paper"
+   },
+   "materials": {
+    "codes": [
+     {
+      "name": "check.py",
+      "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/代码/check.py",
+      "purpose": "理想模型与谐波模型的数值核对"
+     }
+    ],
+    "runs": [
+     {
+      "id": "R01",
+      "title": "理想模型数值核对",
+      "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/运行记录.md",
+      "outcome": "pass",
+      "outcome_label": "满足判据",
+      "plan_id": "P01",
+      "files": [
+       {
+        "name": "summary.json",
+        "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/输出/summary.json"
+       },
+       {
+        "name": "samples.csv",
+        "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/输出/samples.csv"
+       },
+       {
+        "name": "对照表.md",
+        "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/输出/对照表.md"
+       }
+      ]
+     },
+     {
+      "id": "R02",
+      "title": "二次谐波反例",
+      "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R02_二次谐波反例/运行记录.md",
+      "outcome": "fail",
+      "outcome_label": "未满足判据",
+      "plan_id": "P02",
+      "files": [
+       {
+        "name": "summary.json",
+        "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R02_二次谐波反例/输出/summary.json"
+       }
+      ]
+     }
+    ],
+    "verifications": [
+     {
+      "id": "V01",
+      "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/复推/V01.md",
+      "entry": "L02",
+      "verdict": "一致"
+     }
+    ],
+    "legacy_discussions": [
+     {
+      "id": "D01",
+      "title": "早期讨论：条件命题与谐波反例",
+      "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/对话/D01_早期讨论.md"
+     }
+    ]
+   },
+   "upstream": [
+    {
+     "assumption": "H2",
+     "ref": "C04-Q02",
+     "message": "H2 依据的 C04-Q02 台账在第 4 轮有改动，需复查"
+    }
+   ],
+   "children": [],
+   "frameworks": [],
+   "stage": null,
+   "proposed_questions": [],
+   "candidates": [],
+   "status": "discussing",
+   "status_label": "讨论中",
+   "judgment": null,
+   "can_adopt": false,
+   "staged_conclusions": [
+    {
+     "round": "第02轮_20261109-101500",
+     "section": "5 结论与适用范围",
+     "body": "在 H1、H2 成立时，三步相移可以精确恢复基频幅值；存在幅值为 $c$ 的二次谐波时，恢复值在 $[b-c,b+c]$ 内随相位周期变化。\n\n适用范围与局限：只针对指定的合成模型，不代表真实仪器。"
+    }
+   ],
+   "session": {
+    "id": "s-0a1b2c3d4e5f",
+    "ref": "C04-Q01",
+    "fw": "F01",
+    "recipe": "advance",
+    "recipe_label": "推进一轮",
+    "mode": "learn",
+    "status": "paused",
+    "rounds_planned": 2,
+    "round_index": 1,
+    "round": {
+     "id": "第03轮_20261110-153000",
+     "no": 3,
+     "dir": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000"
+    },
+    "steps": [
+     {
+      "key": "draft",
+      "label": "作者推进",
+      "role": "author",
+      "model_label": "GPT（gpt-6.1-sol）",
+      "status": "done",
+      "started_at": "2026-11-10T07:30:05+00:00",
+      "duration_s": 41.2,
+      "output_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md",
+      "error": ""
+     },
+     {
+      "key": "attack",
+      "label": "审查找问题",
+      "role": "reviewer",
+      "model_label": "Gemini（gemini-4-argon-high）",
+      "status": "done",
+      "started_at": "2026-11-10T07:30:47+00:00",
+      "duration_s": 63.8,
+      "output_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md",
+      "error": ""
+     }
+    ],
+    "learn": {
+     "staged": [
+      {
+       "section": "2.2 二次谐波构成的反例",
+       "mode": "替换",
+       "status": "已应用",
+       "old": "现在只改变“纯基频”这一条假设，加入二次谐波。",
+       "new": "加入 $c\\cos(2\\phi+2\\theta_k)$ 后，正频部分含 $\\sum e^{i\\theta_k}=0$，负频部分含 $\\sum e^{-3i\\theta_k}=3$，因此\n\n$$\nZ=b e^{i\\phi}+c e^{-2i\\phi},\\qquad |Z|^2=b^2+c^2+2bc\\cos(3\\phi).\n$$"
+      }
+     ],
+     "attack": "1. **L03：有条件成立。** 式(3)要求相移严格为 $2\\pi k/3$（H1）；相移误差 $\\delta$ 会再引入 $O(\\delta)$ 的项。\n2. **隐含假设：** 推导默认探测器响应线性，锚点里没有登记。\n\n```台账变更\n+ [新1] 待验证 | 相移误差 $\\delta=0.01$ 时式(3)的偏差 | H1\n```",
+     "explain": ""
+    },
+    "stop_reason": "",
+    "message": "学习模式：请看这一步和审查意见，再选继续、追问或打回",
+    "created_at": "2026-11-10T07:30:00+00:00",
+    "ended_at": "",
+    "roles": {
+     "author": {
+      "label": "GPT（gpt-6.1-sol）",
+      "family": "openai"
+     },
+     "reviewer": {
+      "label": "Gemini（gemini-4-argon-high）",
+      "family": "google"
+     }
+    }
+   },
+   "rounds": [
+    {
+     "id": "第03轮_20261110-153000",
+     "no": 3,
+     "ref": "C04-Q01",
+     "title": "第3轮 · 推进一轮",
+     "status": "running",
+     "started_at": "2026-11-10T07:30:00+00:00",
+     "stop_reason": "",
+     "brief_path": "",
+     "dir": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000",
+     "files": [
+      {
+       "name": "01_作者推进_GPT.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md"
+      },
+      {
+       "name": "round.json",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/round.json"
+      },
+      {
+       "name": "任务.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/任务.md"
+      }
+     ]
+    },
+    {
+     "id": "第02轮_20261109-101500",
+     "no": 2,
+     "ref": "C04-Q01",
+     "title": "第2轮 · 推进一轮",
+     "status": "done",
+     "started_at": "2026-11-09T02:15:00+00:00",
+     "stop_reason": "所有待验证项都有了结果",
+     "brief_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/简报.md",
+     "dir": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500",
+     "files": [
+      {
+       "name": "01_作者推进_GPT.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/01_作者推进_GPT.md"
+      },
+      {
+       "name": "02_审查找问题_Gemini.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/02_审查找问题_Gemini.md"
+      },
+      {
+       "name": "03_作者回应_GPT.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/03_作者回应_GPT.md"
+      },
+      {
+       "name": "04_验证运行_GPT.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/04_验证运行_GPT.md"
+      },
+      {
+       "name": "05_漂移检查_Claude.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/05_漂移检查_Claude.md"
+      },
+      {
+       "name": "round.json",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/round.json"
+      },
+      {
+       "name": "简报.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/简报.md"
+      }
+     ]
+    },
+    {
+     "id": "第01轮_20261108-140000",
+     "no": 1,
+     "ref": "C04-Q01",
+     "title": "第1轮 · 起草锚点和骨架",
+     "status": "done",
+     "started_at": "2026-11-08T06:00:00+00:00",
+     "stop_reason": "起草完成，请修改锚点后确认",
+     "brief_path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第01轮_20261108-140000/简报.md",
+     "dir": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第01轮_20261108-140000",
+     "files": [
+      {
+       "name": "01_起草锚点_GPT.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第01轮_20261108-140000/01_起草锚点_GPT.md"
+      },
+      {
+       "name": "round.json",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第01轮_20261108-140000/round.json"
+      },
+      {
+       "name": "简报.md",
+       "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第01轮_20261108-140000/简报.md"
+      }
+     ]
+    }
+   ],
+   "latest_brief": "# 第2轮 · 推进一轮\n\n- 条目：C04-Q01 三步相移能否恢复幅值\n- 状态：已完成（所有待验证项都有了结果）\n- 角色：作者 GPT（gpt-6.1-sol）、审查 Gemini（gemini-4-argon-high）、工程 GPT、漂移检查 Claude\n\n## 本轮结论\n\n理想模型的幅值误差为 [3.0e-14](../../结果/R01_理想模型数值核对/输出/summary.json \"R01.max_err\")，满足判据。R02 用二次谐波反例否定了“影响可以忽略”的说法。\n\n## 台账变化\n\n| 条目 | 变化 | 依据 |\n|---|---|---|\n| L01 | 待定 → 确定 | R01 |\n| L05 | 待定 → 否定 | R02 |\n| L03 | 新增（待定） | 双方同意，缺证据 |\n\n## 漂移检查\n\n判定：**未漂移**。\n\n## 建议的下一步\n\n1. 请审稿人独立复推 L03。\n2. 处理变更申请 Q1。\n",
+   "pending": [
+    {
+     "kind": "request",
+     "id": "Q1",
+     "text": "申请修改“判据”：把阈值放宽到 $10^{-8}$（理由：双精度多次累加的舍入误差；来源：Gemini·第3轮）"
+    },
+    {
+     "kind": "assumption",
+     "id": "H3",
+     "text": "探测器响应是线性的（来源：Claude·第3轮）"
+    },
+    {
+     "kind": "learn",
+     "id": "s-0a1b2c3d4e5f",
+     "text": "学习模式：这一步等你决定"
+    }
+   ],
+   "ref": "C04-Q01",
+   "level": "question",
+   "title": "三步相移能否恢复幅值",
+   "breadcrumb": [
+    {
+     "ref": "FW",
+     "title": "论文框架"
+    },
+    {
+     "ref": "F01",
+     "title": "模型驱动的三维重建"
+    },
+    {
+     "ref": "C04",
+     "title": "第2章 理论基础"
+    },
+    {
+     "ref": "C04-Q01",
+     "title": "三步相移能否恢复幅值"
+    }
+   ],
+   "anchor": {
+    "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/锚点.md",
+    "revision": "rev-anchor-2",
+    "exists": true,
+    "level": "question",
+    "version": 2,
+    "status": "confirmed",
+    "confirmed_at": "2026-11-10T07:30:00+00:00",
+    "slots": [
+     {
+      "key": "question",
+      "label": "要回答的问题",
+      "text": "三步相移能否从纯正弦强度中精确恢复基频幅值 $b$？"
+     },
+     {
+      "key": "criterion",
+      "label": "判据",
+      "text": "理想模型下幅值相对误差 $<10^{-10}$；二次谐波 $c=0.2$ 时恢复值落在 $[1.8,2.2]$。"
+     },
+     {
+      "key": "scope",
+      "label": "范围",
+      "text": "$b>0$，$a\\ge b$；只验算指定的合成模型。"
+     },
+     {
+      "key": "nongoals",
+      "label": "不做什么",
+      "text": "不讨论噪声、饱和与量化。"
+     }
+    ],
+    "assumptions_label": "假设",
+    "assumptions": [
+     {
+      "id": "H1",
+      "text": "相移严格为 $2\\pi k/3$",
+      "basis": "系统标定",
+      "failure": "相移误差超过 0.01 rad",
+      "status": "已确认",
+      "source": "你"
+     },
+     {
+      "id": "H2",
+      "text": "三次采集期间 $a$、$b$、$\\phi$ 不变",
+      "basis": "C04-Q02",
+      "failure": "物体或光源在采集中变化",
+      "status": "已确认",
+      "source": "GPT·第1轮"
+     },
+     {
+      "id": "H3",
+      "text": "探测器响应是线性的",
+      "basis": "漂移检查发现推导中用到",
+      "failure": "接近饱和",
+      "status": "待批",
+      "source": "Claude·第3轮"
+     },
+     {
+      "id": "H4",
+      "text": "可以忽略相机的伽马校正",
+      "basis": "",
+      "failure": "",
+      "status": "已拒绝",
+      "source": "GPT·第1轮"
+     }
+    ],
+    "requests": [
+     {
+      "id": "Q1",
+      "slot": "判据",
+      "proposal": "把阈值放宽到 $10^{-8}$",
+      "reason": "双精度多次累加的舍入误差",
+      "source": "Gemini·第3轮",
+      "status": "待处理",
+      "note": ""
+     }
+    ]
+   },
+   "ledger": {
+    "path": "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/台账.md",
+    "revision": "rev-ledger-5",
+    "counts": {
+     "待定": 3,
+     "确定": 2,
+     "否定": 1
+    },
+    "entries": [
+     {
+      "id": "L01",
+      "type": "推导步",
+      "text": "由式(1)和三次单位根求和得 $Z=b e^{i\\phi}$",
+      "state": "确定",
+      "basis": "H1,H2",
+      "evidence": "R01",
+      "note": "",
+      "source": "GPT·第1轮",
+      "updated": "第2轮",
+      "superseded_by": ""
+     },
+     {
+      "id": "L02",
+      "type": "论断",
+      "text": "纯基频假设下 $\\widehat b=b$ 是代数恒等式",
+      "state": "确定",
+      "basis": "L01",
+      "evidence": "V01",
+      "note": "",
+      "source": "GPT·第1轮",
+      "updated": "第2轮",
+      "superseded_by": ""
+     },
+     {
+      "id": "L03",
+      "type": "论断",
+      "text": "加入二次谐波后 $|Z|^2=b^2+c^2+2bc\\cos(3\\phi)$",
+      "state": "待定",
+      "basis": "H1",
+      "evidence": "",
+      "note": "已获 GPT、Gemini 同意，缺证据",
+      "source": "GPT·第2轮",
+      "updated": "第3轮",
+      "superseded_by": ""
+     },
+     {
+      "id": "L04",
+      "type": "待验证",
+      "text": "数值核对 $c=0.2$ 时幅值落在 $[1.8,2.2]$",
+      "state": "待定",
+      "basis": "L03",
+      "evidence": "",
+      "note": "",
+      "source": "GPT·第3轮",
+      "updated": "第3轮",
+      "superseded_by": ""
+     },
+     {
+      "id": "L05",
+      "type": "论断",
+      "text": "二次谐波的影响可以忽略",
+      "state": "否定",
+      "basis": "",
+      "evidence": "R02",
+      "note": "R02 反例：偏差达 10%",
+      "source": "Gemini·第2轮",
+      "updated": "第2轮",
+      "superseded_by": ""
+     },
+     {
+      "id": "L06",
+      "type": "待验证",
+      "text": "检查 $\\phi$ 接近 0 时的数值稳定性",
+      "state": "待定",
+      "basis": "H1",
+      "evidence": "",
+      "note": "",
+      "source": "Gemini·第3轮",
+      "updated": "第3轮",
+      "superseded_by": ""
+     }
+    ]
+   },
+   "recipes": [
+    {
+     "key": "open",
+     "label": "起草锚点和骨架"
+    },
+    {
+     "key": "advance",
+     "label": "推进一轮"
+    },
+    {
+     "key": "referee",
+     "label": "请审稿人独立审一遍"
+    }
+   ],
+   "default_recipe": "advance"
+  }
+ },
+ "settings": {
+  "settings": {
+   "schema": 1,
+   "roles": {
+    "author": [
+     {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+     },
+     {
+      "provider": "agy",
+      "model": "claude-opus-5-5-high"
+     },
+     {
+      "provider": "agy",
+      "model": "gemini-4-argon-high"
+     }
+    ],
+    "reviewer": [
+     {
+      "provider": "agy",
+      "model": "gemini-4-argon-high"
+     },
+     {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+     },
+     {
+      "provider": "agy",
+      "model": "claude-opus-5-5-high"
+     }
+    ],
+    "engineer": [
+     {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+     }
+    ],
+    "writer": [
+     {
+      "provider": "agy",
+      "model": "gemini-4-argon-high"
+     },
+     {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+     }
+    ],
+    "drift": [
+     {
+      "provider": "agy",
+      "model": "claude-sonnet-5-5-low"
+     },
+     {
+      "provider": "agy",
+      "model": "gemini-3.8-flash-medium"
+     },
+     {
+      "provider": "claude",
+      "model": "claude-haiku-5-5"
+     }
+    ],
+    "referee": [
+     {
+      "provider": "agy",
+      "model": "claude-opus-5-5-high"
+     },
+     {
+      "provider": "claude",
+      "model": "claude-opus-5-5"
+     },
+     {
+      "provider": "agy",
+      "model": "gemini-4-argon-high"
+     },
+     {
+      "provider": "codex",
+      "model": "gpt-6.1-sol",
+      "effort": "high"
+     }
+    ]
+   },
+   "limits": {
+    "codex_stop_percent": 90,
+    "claude_per_call_usd": 0.5,
+    "claude_month_usd": 10,
+    "agy_cooldown_hours": 5,
+    "rounds_default": 2,
+    "max_runs_per_round": 2,
+    "call_timeout_minutes": 25
+   },
+   "git": {
+    "auto_commit": true,
+    "auto_push": true,
+    "remote": "origin",
+    "branch": "main"
+   }
+  },
+  "revision": "rev-settings-1",
+  "providers": {
+   "codex": {
+    "installed": true,
+    "path": "codex.exe",
+    "version": "0.166.0",
+    "logged_in": true
+   },
+   "agy": {
+    "installed": true,
+    "path": "agy.exe",
+    "version": "1.5.2",
+    "logged_in": null
+   },
+   "claude": {
+    "installed": true,
+    "path": "claude.exe",
+    "version": "2.1.140",
+    "logged_in": null
+   }
+  },
+  "quota": {
+   "codex": {
+    "available": true,
+    "level": "warn",
+    "text": "周额度已用 83%（11-14 06:43 重置）",
+    "detail": {}
+   },
+   "agy:gemini": {
+    "available": true,
+    "level": "ok",
+    "text": "本周 12 次，额度未公开",
+    "detail": {}
+   },
+   "agy:other": {
+    "available": false,
+    "level": "blocked",
+    "text": "额度用尽，约 3 小时后恢复",
+    "detail": {}
+   },
+   "claude": {
+    "available": true,
+    "level": "ok",
+    "text": "本月 $0.84 / $10",
+    "detail": {}
+   }
+  },
+  "prices": {
+   "claude-fable-5-1": {
+    "input": 10,
+    "output": 50
+   },
+   "claude-opus-5-5": {
+    "input": 4,
+    "output": 20
+   },
+   "claude-sonnet-5-5": {
+    "input": 2,
+    "output": 10
+   },
+   "claude-haiku-5-5": {
+    "input": 0.1,
+    "output": 0.5
+   }
+  },
+  "role_labels": {
+   "author": "作者",
+   "reviewer": "审查",
+   "engineer": "工程",
+   "writer": "写作",
+   "drift": "漂移检查",
+   "referee": "审稿"
+  }
+ },
+ "usage": {
+  "quota": {
+   "codex": {
+    "available": true,
+    "level": "warn",
+    "text": "周额度已用 83%（11-14 06:43 重置）",
+    "detail": {}
+   },
+   "agy:gemini": {
+    "available": true,
+    "level": "ok",
+    "text": "本周 12 次，额度未公开",
+    "detail": {}
+   },
+   "agy:other": {
+    "available": false,
+    "level": "blocked",
+    "text": "额度用尽，约 3 小时后恢复",
+    "detail": {}
+   },
+   "claude": {
+    "available": true,
+    "level": "ok",
+    "text": "本月 $0.84 / $10",
+    "detail": {}
+   }
+  },
+  "summary": {
+   "codex": {
+    "calls_today": 3,
+    "calls_week": 21,
+    "tokens_week": 412000,
+    "last_error_class": "",
+    "last_quota_error_at": ""
+   },
+   "agy:gemini": {
+    "calls_today": 2,
+    "calls_week": 12,
+    "tokens_week": 236000,
+    "last_error_class": ""
+   },
+   "agy:other": {
+    "calls_today": 1,
+    "calls_week": 9,
+    "tokens_week": 98000,
+    "last_error_class": "quota",
+    "last_quota_error_at": "2026-11-10T05:10:00+00:00"
+   },
+   "claude": {
+    "calls_today": 1,
+    "calls_week": 4,
+    "tokens_week": 52000,
+    "cost_month_usd": 0.84,
+    "last_error_class": ""
+   }
+  }
+ },
+ "history": {
+  "commits": [
+   {
+    "sha": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+    "short": "a1b2c3d",
+    "date": "2026-11-10T07:20:00+00:00",
+    "message": "C04-Q01 第2轮：推进一轮（作者GPT、审查Gemini）"
+   },
+   {
+    "sha": "b2c3d4e5f60718293a4b5c6d7e8f901234567890",
+    "short": "b2c3d4e",
+    "date": "2026-11-09T02:40:00+00:00",
+    "message": "C04-Q01 手动：保存正文"
+   },
+   {
+    "sha": "c3d4e5f60718293a4b5c6d7e8f90123456789012",
+    "short": "c3d4e5f",
+    "date": "2026-11-08T06:10:00+00:00",
+    "message": "C04-Q01 第1轮：起草锚点和骨架（作者GPT）"
+   }
+  ]
+ },
+ "versions": {
+  "b2c3d4e5f60718293a4b5c6d7e8f901234567890": "## 摘要\n\n本文检验三步相移能否从纯正弦强度中精确恢复基频幅值，并给出存在二次谐波时的偏差范围。理想模型下恢复是代数恒等式；二次谐波的影响还没有核对。\n\n## 1 问题与假设\n\n**要回答的问题**：三步相移能否从纯正弦强度中精确恢复基频幅值 $b$？\n\n- H1：相移严格为 $\\theta_k=2\\pi k/3$（失效条件：相移误差超过 0.01 rad）\n- H2：三次采集期间 $a$、$b$、$\\phi$ 不变（失效条件：物体或光源在采集中变化）\n- H3：探测器响应是线性的（待批）\n\n## 2 理论推导\n\n### 2.1 三步解调的条件命题\n\n对同一像素采集三次：\n\n$$\nI_k=a+b\\cos(\\phi+\\theta_k),\\qquad k=0,1,2.\\tag{1}\n$$\n\n令 $Z$ 为复数解调量，由三次单位根求和：\n\n$$\nZ=\\frac{2}{3}\\sum_{k=0}^{2} I_k e^{-i\\theta_k}=b e^{i\\phi},\\qquad \\widehat b=|Z|=b.\\tag{2}\n$$\n\n实现见 [check.py 第 10–20 行](代码/check.py#L10-L20)。\n\n### 2.2 二次谐波构成的反例\n\n加入 $c\\cos(2\\phi+2\\theta_k)$ 后，额外分量没有全部抵消：\n\n$$\n|Z|^2=b^2+c^2+2bc\\cos(3\\phi).\\tag{3}\n$$\n\n当 $b=2$、$c=0.2$ 时，$\\widehat b\\in[1.8,2.2]$。\n\n## 3 验证方法\n\n| 计划 | 针对 | 方法 | 判据 |\n|---|---|---|---|\n| P01 | L01 | 仿真，两条独立计算路径 | 最大相对误差 $<10^{-10}$ |\n| P02 | L03 | 仿真，扫描 $\\phi\\in[0,2\\pi)$ | 范围与式(3)一致，误差 $<10^{-10}$ |\n\n退化自检：$c=0$ 时必须回到式(2)。\n\n## 4 结果与分析\n\n理想模型的最大相对误差为 [3.0e-14](结果/R01_理想模型数值核对/输出/summary.json \"R01.max_err\")，满足判据（见 [对照表](结果/R01_理想模型数值核对/输出/对照表.md)）。二次谐波模型的最小恢复值为 [1.800](结果/R02_二次谐波反例/输出/summary.json \"R02.b_min\")，最大为 [2.200](结果/R02_二次谐波反例/输出/summary.json \"R02.b_max\")。\n\n> 这些数值只说明实现与推导一致，不代表真实仪器的性能。\n\n## 5 结论与适用范围\n\n（等你采纳后写入。）\n",
+  "c3d4e5f60718293a4b5c6d7e8f90123456789012": "## 摘要\n\n（起草中）\n\n## 1 问题与假设\n\n## 2 理论推导\n\n## 3 验证方法\n\n## 4 结果与分析\n\n## 5 结论与适用范围\n",
+  "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678": "## 摘要\n\n本文检验三步相移能否从纯正弦强度中精确恢复基频幅值，并给出存在二次谐波时的偏差范围。理想模型下恢复是代数恒等式；二次谐波使恢复值随相位周期变化。\n\n## 1 问题与假设\n\n**要回答的问题**：三步相移能否从纯正弦强度中精确恢复基频幅值 $b$？\n\n- H1：相移严格为 $\\theta_k=2\\pi k/3$（失效条件：相移误差超过 0.01 rad）\n- H2：三次采集期间 $a$、$b$、$\\phi$ 不变（失效条件：物体或光源在采集中变化）\n- H3：探测器响应是线性的（待批）\n\n## 2 理论推导\n\n### 2.1 三步解调的条件命题\n\n对同一像素采集三次：\n\n$$\nI_k=a+b\\cos(\\phi+\\theta_k),\\qquad k=0,1,2.\\tag{1}\n$$\n\n令 $Z$ 为复数解调量，由三次单位根求和：\n\n$$\nZ=\\frac{2}{3}\\sum_{k=0}^{2} I_k e^{-i\\theta_k}=b e^{i\\phi},\\qquad \\widehat b=|Z|=b.\\tag{2}\n$$\n\n实现见 [check.py 第 10–20 行](代码/check.py#L10-L20)。\n\n### 2.2 二次谐波构成的反例\n\n加入 $c\\cos(2\\phi+2\\theta_k)$ 后，额外分量没有全部抵消：\n\n$$\n|Z|^2=b^2+c^2+2bc\\cos(3\\phi).\\tag{3}\n$$\n\n当 $b=2$、$c=0.2$ 时，$\\widehat b\\in[1.8,2.2]$。\n\n## 3 验证方法\n\n| 计划 | 针对 | 方法 | 判据 |\n|---|---|---|---|\n| P01 | L01 | 仿真，两条独立计算路径 | 最大相对误差 $<10^{-10}$ |\n| P02 | L03 | 仿真，扫描 $\\phi\\in[0,2\\pi)$ | 范围与式(3)一致，误差 $<10^{-10}$ |\n\n退化自检：$c=0$ 时必须回到式(2)。\n\n## 4 结果与分析\n\n理想模型的最大相对误差为 [3.0e-14](结果/R01_理想模型数值核对/输出/summary.json \"R01.max_err\")，满足判据（见 [对照表](结果/R01_理想模型数值核对/输出/对照表.md)）。二次谐波模型的最小恢复值为 [1.800](结果/R02_二次谐波反例/输出/summary.json \"R02.b_min\")，最大为 [2.200](结果/R02_二次谐波反例/输出/summary.json \"R02.b_max\")。\n\n> 这些数值只说明实现与推导一致，不代表真实仪器的性能。\n\n## 5 结论与适用范围\n\n（等你采纳后写入。）\n"
+ },
+ "files": {
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/代码/check.py": "# C04-Q01 P01 式(1)-(3)：三步相移的幅值恢复与二次谐波反例\nimport json\nfrom pathlib import Path\n\nimport numpy as np\n\nOUT = Path(\"输出\")\n\n\ndef demodulate(intensity, theta):\n    \"\"\"式(2)：Z = 2/3 * sum(I_k * exp(-i theta_k))\"\"\"\n    return 2.0 / 3.0 * np.sum(intensity * np.exp(-1j * theta), axis=-1)\n\n\ndef ideal(a, b, phi, theta):\n    \"\"\"式(1)：纯基频模型\"\"\"\n    return a + b * np.cos(phi[:, None] + theta[None, :])\n\n\ndef independent(a, b, phi, theta):\n    \"\"\"第二条计算路径：实数形式的最小二乘\"\"\"\n    i = ideal(a, b, phi, theta)\n    s = np.sum(i * np.sin(theta), axis=-1)\n    c = np.sum(i * np.cos(theta), axis=-1)\n    return 2.0 / 3.0 * np.hypot(s, c)\n\n\ndef main():\n    theta = 2 * np.pi * np.arange(3) / 3\n    phi = np.linspace(0, 2 * np.pi, 721)\n    z = demodulate(ideal(100.0, 2.0, phi, theta), theta)\n    err = np.max(np.abs(np.abs(z) - 2.0) / 2.0)\n    diff = np.max(np.abs(np.abs(z) - independent(100.0, 2.0, phi, theta)))\n    OUT.mkdir(exist_ok=True)\n    summary = {\"selfcheck_passed\": bool(diff < 1e-12), \"max_err\": float(err), \"independent_diff\": float(diff)}\n    (OUT / \"summary.json\").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding=\"utf-8\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/输出/summary.json": "{\n  \"selfcheck_passed\": true,\n  \"criteria\": [\n    {\n      \"name\": \"最大相对误差\",\n      \"predicted\": 0,\n      \"observed\": 3e-14,\n      \"threshold\": 1e-10,\n      \"comparator\": \"<\",\n      \"passed\": true\n    }\n  ],\n  \"independent_check\": {\n    \"max_diff\": 1.1e-15\n  },\n  \"parameters\": {\n    \"a\": 100,\n    \"b\": 2\n  },\n  \"max_err\": 3e-14\n}\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/输出/samples.csv": "phi,b_ideal,b_harmonic\n0.0000,2.000000,2.200000\n0.1571,2.000000,2.180093\n0.3142,2.000000,2.123730\n0.4712,2.000000,2.040869\n0.6283,2.000000,1.947508\n0.7854,2.000000,1.863951\n0.9425,2.000000,1.810844\n1.0996,2.000000,1.802734\n1.2566,2.000000,1.841952\n1.4137,2.000000,1.917500\n1.5708,2.000000,2.009975\n1.7279,2.000000,2.098379\n1.8850,2.000000,2.164997\n2.0420,2.000000,2.197760\n2.1991,2.000000,2.191083\n2.3562,2.000000,2.146086\n2.5133,2.000000,2.070559\n2.6704,2.000000,1.978599\n2.8274,2.000000,1.889384\n2.9845,2.000000,1.824060\n3.1416,2.000000,1.800000\n3.2987,2.000000,1.824060\n3.4558,2.000000,1.889384\n3.6128,2.000000,1.978599\n3.7699,2.000000,2.070559\n3.9270,2.000000,2.146086\n4.0841,2.000000,2.191083\n4.2412,2.000000,2.197760\n4.3982,2.000000,2.164997\n4.5553,2.000000,2.098379\n4.7124,2.000000,2.009975\n4.8695,2.000000,1.917500\n5.0265,2.000000,1.841952\n5.1836,2.000000,1.802734\n5.3407,2.000000,1.810844\n5.4978,2.000000,1.863951\n5.6549,2.000000,1.947508\n5.8119,2.000000,2.040869\n5.9690,2.000000,2.123730\n6.1261,2.000000,2.180093\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/输出/对照表.md": "| 式号 | 文件:行号 | 说明 |\n|---|---|---|\n| (1) | [check.py:19](../../../代码/check.py#L19-L21) | 纯基频模型 |\n| (2) | [check.py:14](../../../代码/check.py#L14-L16) | 复数解调 |\n| 独立路径 | [check.py:24](../../../代码/check.py#L24-L29) | 实数最小二乘 |\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R01_理想模型数值核对/运行记录.md": "# R01 理想模型数值核对\n\n- 计划：P01（针对 L01）\n- 结果：**满足判据**\n- 命令：`py -3.12 check.py`\n\n最大相对误差 [3.0e-14](输出/summary.json \"R01.max_err\")，判据为小于 $10^{-10}$。\n\n![误差图](输出/fig_error.png)\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R02_二次谐波反例/运行记录.md": "# R02 二次谐波反例\n\n- 计划：P02（针对 L05，方向：否定）\n- 结果：**未满足判据**（L05 的说法不成立）\n\n恢复值在 [1.800](输出/summary.json \"R02.b_min\") 到 [2.200](输出/summary.json \"R02.b_max\") 之间变化。\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/结果/R02_二次谐波反例/输出/summary.json": "{\n  \"selfcheck_passed\": true,\n  \"b_min\": 1.8,\n  \"b_max\": 2.2\n}\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/复推/V01.md": "# V01 独立复推 L02\n\n<!-- verification {\"id\":\"V01\",\"entry\":\"L02\",\"verdict\":\"一致\",\"family\":\"anthropic\"} -->\n\n- 复推者：Claude（claude-opus-5-5-high）\n- 结论：**一致**\n\n由式(1)代入，三次单位根之和为 0，得到 $widehat b=b$。\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/对话/D01_早期讨论.md": "# 早期讨论：条件命题与谐波反例\n\n这是经典版收录的一段讨论记录。\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/台账.md": "# 台账\n\n<!-- ledger {\"schema\":1,\"next\":7} -->\n\n| 编号 | 类型 | 内容 | 状态 | 依据 | 证据 | 备注 | 来源 | 更新 |\n|---|---|---|---|---|---|---|---|---|\n| L01 | 推导步 | 由式(1)和三次单位根求和得 $Z=b e^{iphi}$ | 确定 | H1,H2 | R01 | | GPT·第1轮 | 第2轮 |\n| L03 | 论断 | $|Z|^2=b^2+c^2+2bccos(3phi)$ | 待定 | H1 | | 已获 GPT、Gemini 同意，缺证据 | GPT·第2轮 | 第3轮 |\n| L05 | 论断 | 二次谐波的影响可以忽略 | 只看均值 | 否定 | | R02 | 第一行<br>第二行 | Gemini·第2轮 | 第2轮 |\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第02轮_20261109-101500/简报.md": "# 第2轮 · 推进一轮\n\n- 条目：C04-Q01 三步相移能否恢复幅值\n- 状态：已完成（所有待验证项都有了结果）\n- 角色：作者 GPT（gpt-6.1-sol）、审查 Gemini（gemini-4-argon-high）、工程 GPT、漂移检查 Claude\n\n## 本轮结论\n\n理想模型的幅值误差为 [3.0e-14](../../结果/R01_理想模型数值核对/输出/summary.json \"R01.max_err\")，满足判据。R02 用二次谐波反例否定了“影响可以忽略”的说法。\n\n## 台账变化\n\n| 条目 | 变化 | 依据 |\n|---|---|---|\n| L01 | 待定 → 确定 | R01 |\n| L05 | 待定 → 否定 | R02 |\n| L03 | 新增（待定） | 双方同意，缺证据 |\n\n## 漂移检查\n\n判定：**未漂移**。\n\n## 建议的下一步\n\n1. 请审稿人独立复推 L03。\n2. 处理变更申请 Q1。\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第01轮_20261108-140000/简报.md": "# 第1轮 · 起草锚点和骨架\n\n- 状态：已停止（起草完成，请修改锚点后确认）\n\n锚点草稿和小论文骨架已经写好。请在页面上修改锚点，然后点“确认锚点”。\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/01_作者推进_GPT.md": "<!-- 角色：作者；模型：GPT（gpt-6.1-sol）；时间：2026-11-10T07:31:00+00:00；用时：41 秒；用量：输入 18210 / 输出 2304 token -->\n\nC1 二次谐波项进入同一解调量，见下面的修订。\n\n````正文修订\n节：2.2 二次谐波构成的反例\n方式：替换\n加入 $c\\cos(2\\phi+2\\theta_k)$ 后：\n\n```python\nZ = b*np.exp(1j*phi) + c*np.exp(-2j*phi)\n```\n````\n\n```台账变更\n+ [新1] 论断 | 加入二次谐波后 $|Z|^2=b^2+c^2+2bc\\cos(3\\phi)$ | H1\n```\n\n结论摘要：给出二次谐波下的偏差公式\n主要分歧：无\n建议的下一步：数值核对式(3)\n",
+  "02_研究内容/C04_理论基础/C04-Q01_三步相移能否恢复幅值/讨论/第03轮_20261110-153000/任务.md": "# 第3轮 · 推进一轮\n\n- 条目：C04-Q01 三步相移能否恢复幅值\n- 模式：学习模式（本次共 2 轮中的第 1 轮）\n\n## 本轮重点\n\n先把 2.2 节的推导补完整。\n"
+ }
+}

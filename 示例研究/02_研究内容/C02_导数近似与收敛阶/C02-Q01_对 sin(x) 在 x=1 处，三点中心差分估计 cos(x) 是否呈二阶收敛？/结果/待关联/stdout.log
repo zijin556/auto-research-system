@@ -1,0 +1,7 @@
+Central difference of sin(x), x=1.0
+Reference derivative: 0.540302305868140
+h=0.200  abs_error=0.00359481819888  observed_order=--
+h=0.100  abs_error=0.00090005369838  observed_order=1.997836
+h=0.050  abs_error=0.000225097821708  observed_order=1.999459
+h=0.025  abs_error=5.6279731425e-05  observed_order=1.999865
+Criterion met: True

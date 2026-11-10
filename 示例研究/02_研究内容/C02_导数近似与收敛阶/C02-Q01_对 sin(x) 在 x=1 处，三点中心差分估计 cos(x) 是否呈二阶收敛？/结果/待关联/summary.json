@@ -1,0 +1,19 @@
+{
+  "function": "sin(x)",
+  "x": 1.0,
+  "exact_derivative": 0.5403023058681398,
+  "h_values": [
+    0.2,
+    0.1,
+    0.05,
+    0.025
+  ],
+  "criterion": "all three observed orders are in [1.98, 2.02]",
+  "observed_orders": [
+    1.9978358287474012,
+    1.9994589813151908,
+    1.9998647468123867
+  ],
+  "criterion_met": true,
+  "scope": "One synthetic function and point, with these four step sizes only."
+}
