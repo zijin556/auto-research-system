@@ -788,8 +788,8 @@
           1,
           '提出问题：界定问题、量化判据与前提假设',
           '先明确本小问题到底回答什么、达到什么量化指标算解决、依赖哪些前提假设（锚定问题边界）',
-          aStatus === 'confirmed' ? html`<span class="tag tone-good">已锚定 第${a.version}版</span>` : html`<span class="tag tone-warn">待确认锚点</span>`,
-          html`<button type="button" class="btn-small" data-action="quick-open-anchor">① AI 起草/收敛锚点</button><button type="button" class="btn-small quiet" data-action="edit-anchor">手动编辑</button>`,
+          html`${aStatus === 'confirmed' ? html`<span class="tag tone-good">已锚定 第${a.version}版</span>` : html`<span class="tag tone-warn">待确认锚点</span>`}${aStatus === 'confirmed' && a.confirmed_at ? html`<span class="hint">${NB.fmtTime(a.confirmed_at)} 锚定</span>` : ''}`,
+          html`<button type="button" class="btn-small" data-action="quick-open-anchor">① AI 起草/收敛锚点</button><button type="button" class="btn-small" data-action="edit-anchor">手动编辑锚点</button>${a.exists ? html`<button type="button" class="btn-small quiet" data-action="history" data-path="${a.path}" data-revision="${a.revision}">历史版本</button>` : ''}${a.exists && aStatus !== 'confirmed' ? html`<button type="button" class="btn-small primary" data-action="confirm-anchor">确认锚定</button>` : ''}`,
           html`${(it.upstream || []).length ? V.upstream(it) : ''}${V.anchorCard(it)}`
         ),
         V.stepConnector('问题与判据明确后，进入第 2 步：多模型剖析问题与推导论断'),
@@ -834,8 +834,8 @@
           1,
           '提出本章问题：明确章节定位、核心问题与评测协议',
           '界定本章在整篇论文中的承重问题、统一评测协议（数据集、指标、基线）与边界范围',
-          aStatus === 'confirmed' ? html`<span class="tag tone-good">本章已锚定</span>` : html`<span class="tag tone-info">探索发散中</span>`,
-          html`<button type="button" class="btn-small" data-action="quick-open-anchor">① AI 收敛本章锚点</button><button type="button" class="btn-small quiet" data-action="edit-anchor">手动编辑</button>`,
+          html`${aStatus === 'confirmed' ? html`<span class="tag tone-good">已锚定 第${a.version}版</span>` : html`<span class="tag tone-info">探索发散中</span>`}${aStatus === 'confirmed' && a.confirmed_at ? html`<span class="hint">${NB.fmtTime(a.confirmed_at)} 锚定</span>` : ''}`,
+          html`<button type="button" class="btn-small" data-action="quick-open-anchor">① AI 收敛本章锚点</button><button type="button" class="btn-small" data-action="edit-anchor">手动编辑锚点</button>${a.exists ? html`<button type="button" class="btn-small quiet" data-action="history" data-path="${a.path}" data-revision="${a.revision}">历史版本</button>` : ''}${a.exists && aStatus !== 'confirmed' ? html`<button type="button" class="btn-small primary" data-action="confirm-anchor">确认锚定</button>` : ''}`,
           html`${(it.upstream || []).length ? V.upstream(it) : ''}${V.anchorCard(it)}`
         ),
         V.stepConnector('明确本章研究方向后，进入第 2 步：分析现有缺口与开展创新验证'),
@@ -943,15 +943,16 @@
       : it.level === 'chapter'
         ? '当前处于【研究内容探索阶段】：你可以先在右侧自由讨论本章内容、跑创新验证或拆解小问题；等本章思路聚焦且小问题确定后，点“AI 收敛起草锚点”并确认锚定。'
         : '当前处于【框架探索阶段】：你可以先拟定或导入框架、深入讨论各章研究内容；等各章研究内容与小问题聚焦后，再收敛并确认全篇锚定。';
+    const inStepWrap = it.level === 'question' || it.level === 'chapter';
     return html`<section class="card anchor ${status === 'confirmed' ? '' : 'is-draft'}" id="sec-anchor" aria-labelledby="anchor-h">
-      <div class="card-head"><h2 id="anchor-h">${anchorTitle}</h2>${badge}
+      ${!inStepWrap ? html`<div class="card-head"><h2 id="anchor-h">${anchorTitle}</h2>${badge}
         ${status === 'confirmed' && a.confirmed_at ? html`<span class="hint">${NB.fmtTime(a.confirmed_at)} 锚定</span>` : ''}
         ${it.level === 'framework' ? html`<span class="hint">与“论文框架”共用</span>` : ''}
         <div class="actions">
           ${it.level !== 'framework' ? html`<button type="button" data-action="quick-open-anchor">AI 收敛起草锚点</button>` : ''}
           <button type="button" data-action="edit-anchor">手动编辑锚点</button>
           ${a.exists ? html`<button type="button" class="quiet" data-action="history" data-path="${a.path}" data-revision="${a.revision}">历史版本</button>` : ''}
-          ${a.exists && status !== 'confirmed' ? html`<button type="button" class="primary" data-action="confirm-anchor">确认锚定</button>` : ''}</div></div>
+          ${a.exists && status !== 'confirmed' ? html`<button type="button" class="primary" data-action="confirm-anchor">确认锚定</button>` : ''}</div></div>` : html`<h2 id="anchor-h" class="sr">${anchorTitle}</h2>`}
       ${a.exists && status !== 'confirmed' && a.ever_confirmed ? html`<p class="hint warn">锚点有改动，检查后点“确认锚定”。确认前不能继续讨论。</p>` : ''}
       ${!a.exists ? html`<p class="muted">${guide}</p>` : ''}
       ${a.exists && slots.length ? html`<dl class="slots">${slots.map(s => html`<div class="slot"><dt>${s.label}</dt><dd>${(s.text || '').trim() ? NB.md(s.text, base) : html`<span class="muted">未填写</span>`}</dd></div>`)}</dl>` : ''}
