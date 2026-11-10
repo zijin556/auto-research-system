@@ -262,11 +262,11 @@
     const fws = t.frameworks || [];
     const chapters = (fw && fw.chapters) || [];
     const collapseQ = !!S.mmCollapseQ;
-    const X0 = 36, W0 = 216, H0 = 78;
-    const X1 = 324, W1 = 224, H1 = 74;
-    const X2 = 620, W2 = 258, H2 = 58;
-    const X3 = 950, W3 = 276, H3 = 46;
-    const chGap = 14, qGap = 10, fwGap = 16;
+    const X0 = 36, W0 = 220, H0 = 76;
+    const X1 = 326, W1 = 226, H1 = 72;
+    const X2 = 624, W2 = 264, H2 = 52;
+    const X3 = 958, W3 = 276, H3 = 44;
+    const chGap = 12, qGap = 10, fwGap = 16;
 
     const chNodes = [];
     const qNodes = [];
@@ -361,16 +361,23 @@
     const autoStage = !done1 ? 1 : !done2 ? 2 : !done3 ? 3 : !done4 ? 4 : 0;
     const activeStage = S.mmFocusStage || autoStage;
     const stClass = (no, done) => `${done ? 'is-done' : ''} ${activeStage === no ? 'is-current' : ''}`.trim();
+    const stTag = (no, done) => activeStage === no ? '进行中' : done ? '✓ 已完成' : '待进行';
+    const stageNames = {
+      1: '① 导边界与需求（待填写项目边界与研究方向）',
+      2: '② 拟定/导入框架（待生成或导入论文章节结构）',
+      3: '③ 深入讨论验证（各章发散探索、跑最小实验并拆解小问题）',
+      4: '④ 逐级锚定成文（小问题 → 章节 → 论文总框架三级聚焦锚定）',
+      0: '✓ 全部四个阶段均已完成锚定',
+    };
 
     const anchorBadge = st => st === 'confirmed'
       ? html`<span class="tag tone-good">已锚定</span>`
-      : st === 'draft' ? html`<span class="tag tone-warn">锚点草稿</span>` : html`<span class="tag tone-info">探索中</span>`;
+      : st === 'draft' ? html`<span class="tag tone-warn">草稿</span>` : html`<span class="tag tone-info">探索中</span>`;
 
     const layout = V.buildMindmapTree(t, fw, cur, hasBoundary, fwAnchor);
     const zoom = S.mmZoom || 1;
     const panX = S.mmPanX || 0;
     const panY = S.mmPanY || 0;
-    const focusCol = S.mmFocusStage || 0;
 
     const bezier = l => {
       const dx = Math.max(28, (l.x2 - l.x1) * 0.5);
@@ -378,60 +385,91 @@
     };
 
     return html`<section class="card mindmap ${inModal ? 'in-modal' : ''}" id="sec-mindmap" aria-labelledby="mm-h">
-      <div class="card-head">
-        <h2 id="mm-h">论文框架思维导图（从发散到聚焦路线图）</h2>
-        <span class="hint">滚轮缩放 · 拖拽平移画布 · 点击节点进入详情 · 点击 ①→④ 定位本页模块</span>
-        <div class="actions">
+      ${!inModal ? html`<div class="card-head mm-head">
+        <div class="mm-head-left">
+          <h2 id="mm-h">论文框架思维导图</h2>
+          <span class="hint">滚轮缩放 · 拖拽平移 · 点击节点进入详情</span>
+        </div>
+        <div class="actions mm-head-actions">
           <button type="button" class="btn-small" data-action="mm-export-mm" title="导出标准 .mm 思维导图文件，可用 XMind / MindMaster / FreeMind 直接打开">导出 XMind (.mm)</button>
           <button type="button" class="btn-small quiet" data-action="mm-export-md" title="导出 Markdown 思维导图大纲，可用 Markmap / Obsidian 打开">导出 Markdown</button>
-          ${!inModal ? html`<button type="button" class="btn-small quiet" data-action="open-mindmap">全屏画布</button>` : ''}
+          <button type="button" class="btn-small quiet" data-action="open-mindmap">全屏画布</button>
+        </div>
+      </div>` : ''}
+
+      <!-- 当前状态总览栏 -->
+      <div class="mm-status-bar" role="status" aria-label="当前科研状态总览">
+        <div class="mm-stat-item mm-stat-main">
+          <span class="mm-stat-label">当前状态</span>
+          <strong class="mm-stat-val tone-accent">${stageNames[autoStage]}</strong>
+        </div>
+        <div class="mm-stat-sep" aria-hidden="true"></div>
+        <div class="mm-stat-item">
+          <span class="mm-stat-label">项目边界</span>
+          <span class="mm-stat-val ${hasBoundary ? 'text-good' : 'text-warn'}">${hasBoundary ? '已配置' : '待填写'}</span>
+        </div>
+        <div class="mm-stat-sep" aria-hidden="true"></div>
+        <div class="mm-stat-item">
+          <span class="mm-stat-label">当前框架</span>
+          <span class="mm-stat-val">${fw ? `${fw.title}（${chapters.length}章 · 共${fws.length}套）` : '尚未建立'}</span>
+        </div>
+        <div class="mm-stat-sep" aria-hidden="true"></div>
+        <div class="mm-stat-item">
+          <span class="mm-stat-label">深入讨论与验证</span>
+          <span class="mm-stat-val">已拆 <b>${allQ.length}</b> 题 · 验证支持 <b>${supportedQ}</b> 题</span>
+        </div>
+        <div class="mm-stat-sep" aria-hidden="true"></div>
+        <div class="mm-stat-item">
+          <span class="mm-stat-label">三级锚定进度</span>
+          <span class="mm-stat-val">小问题 <b>${confirmedQ}/${allQ.length}</b> · 章节 <b>${confirmedCh}/${chapters.length}</b> · 总框架 <b>${fwAnchor === 'confirmed' ? '已锚定' : '待锚定'}</b></span>
         </div>
       </div>
 
+      <!-- 四阶段顺序流程条 -->
       <div class="mm-stepper" role="navigation" aria-label="从发散到聚焦四阶段顺序流程">
         <button type="button" class="mm-step ${stClass(1, done1)}" data-action="mm-stage" data-stage="1" data-target="sec-project">
           <div class="mm-st-top">
             <span class="mm-st-no">① 导边界与需求</span>
-            <span class="mm-st-badge">${done1 ? '✓ 已填' : '当前步骤'}</span>
+            <span class="mm-st-badge">${stTag(1, done1)}</span>
           </div>
-          <span class="mm-st-desc">${done1 ? '已配置研究方向与边界' : '填写方向、背景痛点与配置'}</span>
+          <span class="mm-st-desc">填写研究方向、背景与配置</span>
         </button>
         <span class="mm-step-arrow" aria-hidden="true">→</span>
         <button type="button" class="mm-step ${stClass(2, done2)}" data-action="mm-stage" data-stage="2" data-target="sec-frameworks">
           <div class="mm-st-top">
             <span class="mm-st-no">② 拟定/导入框架</span>
-            <span class="mm-st-badge">${done2 ? `✓ ${fws.length}套/${chapters.length}章` : '待拟定'}</span>
+            <span class="mm-st-badge">${stTag(2, done2)}</span>
           </div>
-          <span class="mm-st-desc">${done2 ? `当前 ${fw.title}（共 ${chapters.length} 章）` : 'AI 拟定或导入讨论稿自动分章'}</span>
+          <span class="mm-st-desc">AI 拟定或导入大纲自动分章</span>
         </button>
         <span class="mm-step-arrow" aria-hidden="true">→</span>
         <button type="button" class="mm-step ${stClass(3, done3)}" data-action="mm-stage" data-stage="3" data-target="sec-chapters-overview">
           <div class="mm-st-top">
             <span class="mm-st-no">③ 深入讨论验证</span>
-            <span class="mm-st-badge">${done3 ? `✓ ${allQ.length}题` : '探索拆题'}</span>
+            <span class="mm-st-badge">${stTag(3, done3)}</span>
           </div>
-          <span class="mm-st-desc">${done3 ? `已拆 ${allQ.length} 个小问题 · 验证支持 ${supportedQ}` : '查看各章探索进度并拆解小问题'}</span>
+          <span class="mm-st-desc">各章探索验证并拆解小问题</span>
         </button>
         <span class="mm-step-arrow" aria-hidden="true">→</span>
         <button type="button" class="mm-step ${stClass(4, done4)}" data-action="mm-stage" data-stage="4" data-target="sec-anchor">
           <div class="mm-st-top">
             <span class="mm-st-no">④ 逐级锚定成文</span>
-            <span class="mm-st-badge">${done4 ? '✓ 已全部锚定' : '三级聚焦'}</span>
+            <span class="mm-st-badge">${stTag(4, done4)}</span>
           </div>
-          <span class="mm-st-desc">小问题 ${confirmedQ}/${allQ.length} → 章 ${confirmedCh}/${chapters.length} → 框架${fwAnchor === 'confirmed' ? '已锚定' : '待锚定'}</span>
+          <span class="mm-st-desc">小问题 → 章节 → 总框架锚定</span>
         </button>
       </div>
 
-      <div class="mm-viewport" data-mm-viewport="1" style="height: ${inModal ? 'calc(84vh - 155px)' : Math.min(560, Math.max(320, layout.totalH + 24)) + 'px'}">
+      <div class="mm-viewport" data-mm-viewport="1" style="height: ${inModal ? 'calc(85vh - 185px)' : Math.min(540, Math.max(320, layout.totalH + 24)) + 'px'}">
         <div class="mm-toolbar" role="toolbar" aria-label="思维导图画布控制">
           <button type="button" data-action="mm-zoom" data-dir="-1" title="缩小画布">－</button>
-          <button type="button" class="mm-zoom-label" data-action="mm-zoom-reset" title="重置为 100%">${Math.round(zoom * 100)}%</button>
+          <button type="button" class="mm-zoom-label" data-action="mm-zoom-reset" title="点击重置为 100% 清晰比例">${Math.round(zoom * 100)}%</button>
           <button type="button" data-action="mm-zoom" data-dir="1" title="放大画布">＋</button>
-          <button type="button" data-action="mm-fit" title="自动缩放并居中适应画布">⊡ 适应画布</button>
+          <button type="button" data-action="mm-fit" title="自动居中适应画布">⊡ 适应画布</button>
           ${allQ.length ? html`<button type="button" data-action="mm-toggle-q" title="展开或折叠第4级小问题节点">${S.mmCollapseQ ? '展开小问题 (' + allQ.length + ')' : '收起小问题'}</button>` : ''}
         </div>
 
-        <div class="mm-stage-inner" style="width:${layout.totalW}px; height:${layout.totalH}px; transform: translate(${panX}px, ${panY}px) scale(${zoom});">
+        <div class="mm-stage-inner" style="width:${layout.totalW}px; height:${layout.totalH}px; transform: translate(${Math.round(panX)}px, ${Math.round(panY)}px)${zoom !== 1 ? ` scale(${zoom})` : ''};">
           <svg class="mm-svg" width="${layout.totalW}" height="${layout.totalH}" viewBox="0 0 ${layout.totalW} ${layout.totalH}" aria-hidden="true">
             ${layout.links.map(l => html`<path d="${bezier(l)}" stroke="${l.color}" stroke-width="${l.w}" fill="none" stroke-linecap="round" ${l.dashed ? raw('stroke-dasharray="5,4" opacity="0.65"') : raw('opacity="0.88"')} />
               <circle cx="${l.x1}" cy="${l.y1}" r="3" fill="${l.color}" />
@@ -439,7 +477,7 @@
           </svg>
 
           <!-- Level 0: Root (Project Overview & Boundary) -->
-          <a class="mm-item mm-lv0 ${cur === 'FW' ? 'is-current' : ''} ${focusCol === 1 ? 'is-stage-focus' : ''}"
+          <a class="mm-item mm-lv0 ${cur === 'FW' ? 'is-current' : ''}"
              href="#/FW" data-mm-nav="1"
              style="left:${layout.rootNode.x}px; top:${layout.rootNode.y}px; width:${layout.rootNode.w}px; height:${layout.rootNode.h}px;">
             <div class="mm-lv-badge">L0 · 论文总览与边界</div>
@@ -451,7 +489,7 @@
           </a>
 
           <!-- Level 1: Frameworks (Children of Root) -->
-          ${layout.fwNodes.map(fn => html`<div class="mm-item mm-lv1 ${cur === fn.id ? 'is-current' : ''} ${fn.isSelected ? 'is-selected-fw' : 'is-collapsed-fw'} ${focusCol === 2 ? 'is-stage-focus' : ''}"
+          ${layout.fwNodes.map(fn => html`<div class="mm-item mm-lv1 ${cur === fn.id ? 'is-current' : ''} ${fn.isSelected ? 'is-selected-fw' : 'is-collapsed-fw'}"
              style="left:${fn.x}px; top:${fn.y}px; width:${fn.w}px; height:${fn.h}px;">
             <a class="mm-item-main" href="#/${fn.id}" data-mm-nav="1">
               <div class="mm-lv-badge">L1 · 论文框架 (${fn.id})</div>
@@ -465,18 +503,17 @@
           </div>`)}
 
           <!-- Level 2: Chapters (Children of Selected Framework) -->
-          ${layout.chNodes.map(cn => html`<div class="mm-item mm-lv2 ${cur === cn.id ? 'is-current' : ''} ${focusCol === 3 ? 'is-stage-focus' : ''}"
+          ${layout.chNodes.map(cn => html`<div class="mm-item mm-lv2 ${cur === cn.id ? 'is-current' : ''}"
              style="left:${cn.x}px; top:${cn.y}px; width:${cn.w}px; height:${cn.h}px; border-left: 4px solid ${cn.color};">
-            <a class="mm-item-main" href="${NB.refHash(cn.id, fw.id)}" data-mm-nav="1">
+            <a class="mm-item-main mm-ch-link" href="${NB.refHash(cn.id, fw.id)}" data-mm-nav="1">
               <div class="mm-ch-row">
                 <span class="mm-ch-num" style="color:${cn.color}">第${cn.data.no}章</span>
-                <strong class="mm-ch-name">${cn.data.title}</strong>
+                <strong class="mm-ch-name" title="${cn.data.title}">${cn.data.title}</strong>
               </div>
               <div class="mm-item-meta">
-                ${V.roleTag(cn.data)}
                 ${anchorBadge(cn.data.anchor_status)}
                 ${cn.data.stage ? html`<span class="tag">创新 ${cn.data.stage}</span>` : ''}
-                ${cn.totalQ ? html`<span class="muted small">${cn.totalQ} 题</span>` : ''}
+                ${cn.totalQ ? html`<span class="muted small">${cn.totalQ}题</span>` : ''}
                 ${count(cn.data.pending)}
               </div>
             </a>
@@ -484,7 +521,7 @@
           </div>`)}
 
           <!-- Level 3: Small Questions (Children of Chapter) -->
-          ${layout.qNodes.map(qn => html`<a class="mm-item mm-lv3 ${cur === qn.id ? 'is-current' : ''} ${focusCol === 4 ? 'is-stage-focus' : ''}"
+          ${layout.qNodes.map(qn => html`<a class="mm-item mm-lv3 ${cur === qn.id ? 'is-current' : ''}"
              href="${NB.refHash(qn.id, fw.id)}" data-mm-nav="1"
              style="left:${qn.x}px; top:${qn.y}px; width:${qn.w}px; height:${qn.h}px; border-left: 3px solid ${qn.color};">
             <span class="qdot tone-${L.qTone[qn.data.status] || 'muted'}" aria-hidden="true"></span>

@@ -481,19 +481,27 @@
   A.openMindmapModal = function () {
     const dlg = document.getElementById('mindmap');
     if (!dlg) return;
-    dlg.innerHTML = html`<div class="dlg-head"><h2 id="mindmap-title">论文框架全景思维导图（支持滚轮缩放 · 拖拽平移 · 导出 XMind）</h2>
-      <div class="actions"><button type="button" data-action="close-dialog" data-key="mindmap">关闭</button></div></div>
-      <div class="dlg-body">${V.mindmap(S.item, true)}</div>`.s;
+    dlg.innerHTML = html`<div class="dlg-head">
+      <h2 id="mindmap-title">论文框架全景思维导图</h2>
+      <span class="hint">滚轮缩放 · 按住左键拖拽平移 · 点击节点进入详情</span>
+      <div class="actions">
+        <button type="button" class="btn-small" data-action="mm-export-mm">导出 XMind (.mm)</button>
+        <button type="button" class="btn-small quiet" data-action="mm-export-md">导出 Markdown</button>
+        <button type="button" data-action="close-dialog" data-key="mindmap">关闭</button>
+      </div>
+    </div>
+    <div class="dlg-body dlg-mm-body">${V.mindmap(S.item, true)}</div>`.s;
     if (!dlg.open) dlg.showModal();
     setTimeout(() => A.fitMindmap(dlg.querySelector('[data-mm-viewport]')), 30);
   };
 
   A.applyMindmapTransform = function () {
     const zoom = S.mmZoom || 1;
-    const panX = S.mmPanX || 0;
-    const panY = S.mmPanY || 0;
+    const panX = Math.round(S.mmPanX || 0);
+    const panY = Math.round(S.mmPanY || 0);
+    const tf = zoom === 1 ? `translate(${panX}px, ${panY}px)` : `translate(${panX}px, ${panY}px) scale(${zoom})`;
     document.querySelectorAll('.mm-stage-inner').forEach(el => {
-      el.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+      el.style.transform = tf;
     });
     document.querySelectorAll('.mm-zoom-label').forEach(el => {
       el.textContent = Math.round(zoom * 100) + '%';
@@ -509,10 +517,11 @@
     const vh = viewport.clientHeight || 420;
     const tw = parseFloat(inner.style.width) || 960;
     const th = parseFloat(inner.style.height) || 400;
-    const z = Math.min(1.1, Math.max(0.4, Math.min((vw - 28) / tw, (vh - 28) / th)));
-    S.mmZoom = Math.round(z * 100) / 100;
-    S.mmPanX = Math.round(Math.max(8, (vw - tw * S.mmZoom) / 2));
-    S.mmPanY = Math.round(Math.max(8, (vh - th * S.mmZoom) / 2));
+    const rawZ = Math.min((vw - 24) / tw, (vh - 24) / th);
+    const z = rawZ >= 0.96 ? 1 : Math.max(0.45, Math.round(rawZ * 20) / 20);
+    S.mmZoom = z;
+    S.mmPanX = Math.round(Math.max(12, (vw - tw * z) / 2));
+    S.mmPanY = Math.round(Math.max(10, (vh - th * z) / 2));
     A.applyMindmapTransform();
   };
 
