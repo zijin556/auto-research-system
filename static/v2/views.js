@@ -201,6 +201,10 @@
     const y = window.scrollY;
     NB.patch(main, V.mainHtml(it));
     window.scrollTo(0, y);
+    if (S.mmZoom == null && NB.A && NB.A.fitMindmap) {
+      const vp = main.querySelector('[data-mm-viewport]');
+      if (vp) NB.A.fitMindmap(vp);
+    }
   };
 
   const PROJECT_FIELDS = [
@@ -252,7 +256,90 @@
     </section>`;
   };
 
-  // Interactive Mindmap / Framework Roadmap: clickable nodes for Project -> Framework -> Chapters (1..N) -> Small Questions.
+  const MM_COLORS = ['#4c8bf5', '#9b6bff', '#10b981', '#f59e0b', '#ec4899', '#06b6d4', '#6366f1', '#84cc16'];
+
+  V.buildMindmapTree = function (t, fw, cur, hasBoundary, fwAnchor) {
+    const fws = t.frameworks || [];
+    const chapters = (fw && fw.chapters) || [];
+    const collapseQ = !!S.mmCollapseQ;
+    const X0 = 36, W0 = 216, H0 = 78;
+    const X1 = 324, W1 = 224, H1 = 74;
+    const X2 = 620, W2 = 258, H2 = 58;
+    const X3 = 950, W3 = 276, H3 = 46;
+    const chGap = 14, qGap = 10, fwGap = 16;
+
+    const chNodes = [];
+    const qNodes = [];
+    const links = [];
+    let curY = 28;
+    let hasAnyQ = false;
+
+    chapters.forEach((c, idx) => {
+      const color = MM_COLORS[idx % MM_COLORS.length];
+      const qs = collapseQ ? [] : (c.questions || []);
+      if (!qs.length) {
+        const cy = curY + H2 / 2;
+        chNodes.push({ id: c.id, x: X2, y: curY, w: W2, h: H2, cy, color, data: c, totalQ: (c.questions || []).length });
+        curY += H2 + chGap;
+      } else {
+        hasAnyQ = true;
+        const topY = curY;
+        const qSpan = qs.length * H3 + (qs.length - 1) * qGap;
+        const spanH = Math.max(H2, qSpan);
+        const cy = topY + spanH / 2;
+        const qStart = topY + (spanH - qSpan) / 2;
+        const cNode = { id: c.id, x: X2, y: cy - H2 / 2, w: W2, h: H2, cy, color, data: c, totalQ: (c.questions || []).length };
+        chNodes.push(cNode);
+        qs.forEach((q, j) => {
+          const qy = qStart + j * (H3 + qGap);
+          const qcy = qy + H3 / 2;
+          qNodes.push({ id: q.id, x: X3, y: qy, w: W3, h: H3, cy: qcy, color, data: q, chId: c.id });
+          links.push({ x1: X2 + W2, y1: cy, x2: X3, y2: qcy, color, w: 1.8 });
+        });
+        curY = topY + spanH + chGap;
+      }
+    });
+
+    const chMidY = chNodes.length ? (chNodes[0].cy + chNodes[chNodes.length - 1].cy) / 2 : 130;
+    const activeIdx = Math.max(0, fws.findIndex(f => fw && f.id === fw.id));
+    const fwNodes = fws.map((f, idx) => {
+      const isSelected = !!(fw && f.id === fw.id);
+      const y = (chMidY - H1 / 2) + (idx - activeIdx) * (H1 + fwGap);
+      return { id: f.id, x: X1, y, w: W1, h: H1, cy: y + H1 / 2, isSelected, data: f };
+    });
+
+    const minY = Math.min(24, ...fwNodes.map(n => n.y), ...chNodes.map(n => n.y));
+    if (minY < 24) {
+      const shift = 24 - minY;
+      fwNodes.forEach(n => { n.y += shift; n.cy += shift; });
+      chNodes.forEach(n => { n.y += shift; n.cy += shift; });
+      qNodes.forEach(n => { n.y += shift; n.cy += shift; });
+      links.forEach(l => { l.y1 += shift; l.y2 += shift; });
+      curY += shift;
+    }
+
+    const selFwNode = fwNodes.find(n => n.isSelected) || null;
+    if (selFwNode) {
+      chNodes.forEach(cn => {
+        links.push({ x1: X1 + W1, y1: selFwNode.cy, x2: X2, y2: cn.cy, color: cn.color, w: 2.2 });
+      });
+    }
+
+    const rootCy = fwNodes.length ? (fwNodes[0].cy + fwNodes[fwNodes.length - 1].cy) / 2 : chMidY;
+    const rootNode = {
+      id: 'FW', x: X0, y: Math.max(24, rootCy - H0 / 2), w: W0, h: H0, cy: Math.max(24 + H0 / 2, rootCy),
+      title: (t.project && t.project.title) || '我的论文研究', hasBoundary, fwAnchor,
+    };
+    fwNodes.forEach(fn => {
+      links.push({ x1: X0 + W0, y1: rootNode.cy, x2: X1, y2: fn.cy, color: fn.isSelected ? '#4c8bf5' : '#6e7681', w: fn.isSelected ? 2.5 : 1.6, dashed: !fn.isSelected });
+    });
+
+    const maxBot = Math.max(curY + 16, rootNode.y + H0 + 28, ...fwNodes.map(n => n.y + H1 + 28), 300);
+    const totalW = hasAnyQ ? (X3 + W3 + 48) : chNodes.length ? (X2 + W2 + 64) : fwNodes.length ? (X1 + W1 + 64) : (X0 + W0 + 480);
+    return { rootNode, fwNodes, chNodes, qNodes, links, totalW, totalH: maxBot };
+  };
+
+  // Interactive Mindmap Canvas + 4-stage sequential flow bar.
   V.mindmap = function (it, inModal) {
     const t = S.tree;
     if (!t) return '';
@@ -266,101 +353,198 @@
     const fwAnchor = (t.framework_layer && t.framework_layer.anchor_status) || 'none';
     const hasBoundary = !!(t.project && t.project.has_boundary) || !!(it && it.project_card && Object.values(it.project_card.fields || {}).some(v => String(v || '').trim()));
     const cur = (S.route && S.route.ref) || 'FW';
+
+    const done1 = hasBoundary;
+    const done2 = !!fw;
+    const done3 = allQ.length > 0;
+    const done4 = chapters.length > 0 && confirmedCh === chapters.length && fwAnchor === 'confirmed';
+    const autoStage = !done1 ? 1 : !done2 ? 2 : !done3 ? 3 : !done4 ? 4 : 0;
+    const activeStage = S.mmFocusStage || autoStage;
+    const stClass = (no, done) => `${done ? 'is-done' : ''} ${activeStage === no ? 'is-current' : ''}`.trim();
+
     const anchorBadge = st => st === 'confirmed'
       ? html`<span class="tag tone-good">已锚定</span>`
       : st === 'draft' ? html`<span class="tag tone-warn">锚点草稿</span>` : html`<span class="tag tone-info">探索中</span>`;
 
+    const layout = V.buildMindmapTree(t, fw, cur, hasBoundary, fwAnchor);
+    const zoom = S.mmZoom || 1;
+    const panX = S.mmPanX || 0;
+    const panY = S.mmPanY || 0;
+    const focusCol = S.mmFocusStage || 0;
+
+    const bezier = l => {
+      const dx = Math.max(28, (l.x2 - l.x1) * 0.5);
+      return `M ${l.x1} ${l.y1} C ${l.x1 + dx} ${l.y1}, ${l.x2 - dx} ${l.y2}, ${l.x2} ${l.y2}`;
+    };
+
     return html`<section class="card mindmap ${inModal ? 'in-modal' : ''}" id="sec-mindmap" aria-labelledby="mm-h">
       <div class="card-head">
         <h2 id="mm-h">论文框架思维导图（从发散到聚焦路线图）</h2>
-        <span class="hint">点击任意节点可直接跳转到对应框架、章节或小问题</span>
-        ${!inModal && fws.length > 1 ? html`<div class="actions"><span class="muted small">共 ${fws.length} 套框架，可在顶栏切换</span></div>` : ''}
+        <span class="hint">滚轮缩放 · 拖拽平移画布 · 点击节点进入详情 · 点击 ①→④ 定位本页模块</span>
+        <div class="actions">
+          <button type="button" class="btn-small" data-action="mm-export-mm" title="导出标准 .mm 思维导图文件，可用 XMind / MindMaster / FreeMind 直接打开">导出 XMind (.mm)</button>
+          <button type="button" class="btn-small quiet" data-action="mm-export-md" title="导出 Markdown 思维导图大纲，可用 Markmap / Obsidian 打开">导出 Markdown</button>
+          ${!inModal ? html`<button type="button" class="btn-small quiet" data-action="open-mindmap">全屏画布</button>` : ''}
+        </div>
       </div>
-      <ol class="mm-stages" aria-label="从发散到聚焦四阶段进度">
-        <li class="${hasBoundary ? 'is-done' : 'is-current'}">
-          <a href="#/FW" data-action="mm-jump" data-target="sec-project">
+
+      <div class="mm-stepper" role="navigation" aria-label="从发散到聚焦四阶段顺序流程">
+        <button type="button" class="mm-step ${stClass(1, done1)}" data-action="mm-stage" data-stage="1" data-target="sec-project">
+          <div class="mm-st-top">
             <span class="mm-st-no">① 导边界与需求</span>
-            <span class="mm-st-desc">${hasBoundary ? '已配置边界与方向' : '点击填写边界/背景'}</span>
-          </a>
-        </li>
-        <li class="${fw ? 'is-done' : hasBoundary ? 'is-current' : ''}">
-          <a href="${fw ? '#/' + fw.id : '#/FW'}" data-action="mm-jump" data-target="sec-frameworks">
+            <span class="mm-st-badge">${done1 ? '✓ 已填' : '当前步骤'}</span>
+          </div>
+          <span class="mm-st-desc">${done1 ? '已配置研究方向与边界' : '填写方向、背景痛点与配置'}</span>
+        </button>
+        <span class="mm-step-arrow" aria-hidden="true">→</span>
+        <button type="button" class="mm-step ${stClass(2, done2)}" data-action="mm-stage" data-stage="2" data-target="sec-frameworks">
+          <div class="mm-st-top">
             <span class="mm-st-no">② 拟定/导入框架</span>
-            <span class="mm-st-desc">${fw ? '已分 ' + chapters.length + ' 章（动态章数）' : 'AI 拟定或导入自动分章'}</span>
-          </a>
-        </li>
-        <li class="${allQ.length ? 'is-done' : fw ? 'is-current' : ''}">
-          <a href="${chapters[0] ? NB.refHash(chapters[0].id, fw.id) : '#/FW'}" data-mm-nav="1">
+            <span class="mm-st-badge">${done2 ? `✓ ${fws.length}套/${chapters.length}章` : '待拟定'}</span>
+          </div>
+          <span class="mm-st-desc">${done2 ? `当前 ${fw.title}（共 ${chapters.length} 章）` : 'AI 拟定或导入讨论稿自动分章'}</span>
+        </button>
+        <span class="mm-step-arrow" aria-hidden="true">→</span>
+        <button type="button" class="mm-step ${stClass(3, done3)}" data-action="mm-stage" data-stage="3" data-target="sec-chapters-overview">
+          <div class="mm-st-top">
             <span class="mm-st-no">③ 深入讨论验证</span>
-            <span class="mm-st-desc">${allQ.length ? '已拆 ' + allQ.length + ' 个小问题 · 验证支持 ' + supportedQ : '各章探索、验证并拆小问题'}</span>
-          </a>
-        </li>
-        <li class="${fwAnchor === 'confirmed' && confirmedCh === chapters.length && chapters.length ? 'is-done' : allQ.length ? 'is-current' : ''}">
-          <a href="#/FW" data-action="mm-jump" data-target="sec-anchor">
+            <span class="mm-st-badge">${done3 ? `✓ ${allQ.length}题` : '探索拆题'}</span>
+          </div>
+          <span class="mm-st-desc">${done3 ? `已拆 ${allQ.length} 个小问题 · 验证支持 ${supportedQ}` : '查看各章探索进度并拆解小问题'}</span>
+        </button>
+        <span class="mm-step-arrow" aria-hidden="true">→</span>
+        <button type="button" class="mm-step ${stClass(4, done4)}" data-action="mm-stage" data-stage="4" data-target="sec-anchor">
+          <div class="mm-st-top">
             <span class="mm-st-no">④ 逐级锚定成文</span>
-            <span class="mm-st-desc">小问题锚定 ${confirmedQ}/${allQ.length} · 章锚定 ${confirmedCh}/${chapters.length} · 框架${fwAnchor === 'confirmed' ? '已锚定' : '待锚定'}</span>
-          </a>
-        </li>
-      </ol>
-      <div class="mm-canvas">
-        <div class="mm-root-col">
-          <a class="mm-node mm-root ${cur === 'FW' ? 'is-current' : ''}" href="#/FW" data-mm-nav="1">
-            <div class="mm-node-type">00 项目基座与总览</div>
-            <div class="mm-node-title">${(t.project && t.project.title) || '我的论文研究'}</div>
-            <div class="mm-node-meta">
+            <span class="mm-st-badge">${done4 ? '✓ 已全部锚定' : '三级聚焦'}</span>
+          </div>
+          <span class="mm-st-desc">小问题 ${confirmedQ}/${allQ.length} → 章 ${confirmedCh}/${chapters.length} → 框架${fwAnchor === 'confirmed' ? '已锚定' : '待锚定'}</span>
+        </button>
+      </div>
+
+      <div class="mm-viewport" data-mm-viewport="1" style="height: ${inModal ? 'calc(84vh - 155px)' : Math.min(560, Math.max(320, layout.totalH + 24)) + 'px'}">
+        <div class="mm-toolbar" role="toolbar" aria-label="思维导图画布控制">
+          <button type="button" data-action="mm-zoom" data-dir="-1" title="缩小画布">－</button>
+          <button type="button" class="mm-zoom-label" data-action="mm-zoom-reset" title="重置为 100%">${Math.round(zoom * 100)}%</button>
+          <button type="button" data-action="mm-zoom" data-dir="1" title="放大画布">＋</button>
+          <button type="button" data-action="mm-fit" title="自动缩放并居中适应画布">⊡ 适应画布</button>
+          ${allQ.length ? html`<button type="button" data-action="mm-toggle-q" title="展开或折叠第4级小问题节点">${S.mmCollapseQ ? '展开小问题 (' + allQ.length + ')' : '收起小问题'}</button>` : ''}
+        </div>
+
+        <div class="mm-stage-inner" style="width:${layout.totalW}px; height:${layout.totalH}px; transform: translate(${panX}px, ${panY}px) scale(${zoom});">
+          <svg class="mm-svg" width="${layout.totalW}" height="${layout.totalH}" viewBox="0 0 ${layout.totalW} ${layout.totalH}" aria-hidden="true">
+            ${layout.links.map(l => html`<path d="${bezier(l)}" stroke="${l.color}" stroke-width="${l.w}" fill="none" stroke-linecap="round" ${l.dashed ? raw('stroke-dasharray="5,4" opacity="0.65"') : raw('opacity="0.88"')} />
+              <circle cx="${l.x1}" cy="${l.y1}" r="3" fill="${l.color}" />
+              <circle cx="${l.x2}" cy="${l.y2}" r="3" fill="${l.color}" />`)}
+          </svg>
+
+          <!-- Level 0: Root (Project Overview & Boundary) -->
+          <a class="mm-item mm-lv0 ${cur === 'FW' ? 'is-current' : ''} ${focusCol === 1 ? 'is-stage-focus' : ''}"
+             href="#/FW" data-mm-nav="1"
+             style="left:${layout.rootNode.x}px; top:${layout.rootNode.y}px; width:${layout.rootNode.w}px; height:${layout.rootNode.h}px;">
+            <div class="mm-lv-badge">L0 · 论文总览与边界</div>
+            <div class="mm-item-title">${layout.rootNode.title}</div>
+            <div class="mm-item-meta">
               <span class="tag ${hasBoundary ? 'tone-good' : 'tone-warn'}">${hasBoundary ? '边界已填' : '边界待填'}</span>
               ${anchorBadge(fwAnchor)}
             </div>
           </a>
-          ${fw ? html`<div class="mm-vlink" aria-hidden="true"></div>
-            <a class="mm-node mm-fw ${cur === fw.id ? 'is-current' : ''}" href="#/${fw.id}" data-mm-nav="1">
-              <div class="mm-node-type">当前框架 (${fw.id})</div>
-              <div class="mm-node-title">${fw.title}</div>
-              <div class="mm-node-meta">
-                <span class="tag ${fw.status === 'active' ? 'tone-good' : ''}">${L.fwStatus[fw.status] || fw.status}</span>
-                <span class="muted small">共 ${chapters.length} 章 · ${allQ.length} 题</span>
+
+          <!-- Level 1: Frameworks (Children of Root) -->
+          ${layout.fwNodes.map(fn => html`<div class="mm-item mm-lv1 ${cur === fn.id ? 'is-current' : ''} ${fn.isSelected ? 'is-selected-fw' : 'is-collapsed-fw'} ${focusCol === 2 ? 'is-stage-focus' : ''}"
+             style="left:${fn.x}px; top:${fn.y}px; width:${fn.w}px; height:${fn.h}px;">
+            <a class="mm-item-main" href="#/${fn.id}" data-mm-nav="1">
+              <div class="mm-lv-badge">L1 · 论文框架 (${fn.id})</div>
+              <div class="mm-item-title">${fn.data.title}</div>
+              <div class="mm-item-meta">
+                <span class="tag ${fn.data.status === 'active' ? 'tone-good' : ''}">${L.fwStatus[fn.data.status] || fn.data.status}</span>
+                <span class="muted small">共 ${(fn.data.chapters || []).length} 章</span>
               </div>
-            </a>` : ''}
-        </div>
-        <div class="mm- connector-trunk" aria-hidden="true"></div>
-        <div class="mm-branches-col">
-          ${chapters.length ? chapters.map(c => html`<div class="mm-branch">
-            <div class="mm-ch-wrap">
-              <a class="mm-node mm-ch ${cur === c.id ? 'is-current' : ''}" href="${NB.refHash(c.id, fw.id)}" data-mm-nav="1">
-                <div class="mm-ch-head">
-                  <span class="mm-ch-no">第${c.no}章</span>
-                  <strong class="mm-ch-title">${c.title}</strong>
-                  ${V.roleTag(c)}
-                </div>
-                <div class="mm-node-meta">
-                  ${anchorBadge(c.anchor_status)}
-                  ${c.stage ? html`<span class="tag">创新 ${c.stage}</span>` : ''}
-                  ${c.ledger && (c.ledger['确定'] || c.ledger['待定']) ? html`<span class="muted small">台账 确${c.ledger['确定'] || 0}/待${c.ledger['待定'] || 0}</span>` : ''}
-                  ${count(c.pending)}
-                </div>
-              </a>
-              <button type="button" class="mm-add-q" data-action="new-question" data-ref="${c.id}" data-fw="${fw.id}" title="在本章下新建小问题">+ 拆小问题</button>
-            </div>
-            <div class="mm-leaves">
-              ${(c.questions || []).length ? c.questions.map(q => html`<a class="mm-node mm-q ${cur === q.id ? 'is-current' : ''}" href="${NB.refHash(q.id, fw.id)}" data-mm-nav="1">
-                <span class="qdot tone-${L.qTone[q.status] || 'muted'}" aria-hidden="true"></span>
-                <span class="mm-q-title">${q.title}</span>
-                <span class="tag ${q.anchor_status === 'confirmed' ? 'tone-good' : 'tone-muted'}">${q.anchor_status === 'confirmed' ? '已锚定' : '探索中'}</span>
-                <span class="tag tone-${L.qTone[q.status] || 'muted'}">${q.status_label || ''}</span>
-                ${count(q.pending)}
-              </a>`) : html`<a class="mm-node mm-q mm-q-empty" href="${NB.refHash(c.id, fw.id)}" data-mm-nav="1">进入第${c.no}章深入讨论验证 → 拆解并锚定小问题</a>`}
-            </div>
-          </div>`) : html`<div class="mm-empty-state">
-            <p><b>还没有建立论文框架与章节目录。</b></p>
-            <p class="muted small">请先在下方填写「1. 项目边界条件、配置与研究需求」，然后选择「AI 拟定候选框架」或「导入已有框架/讨论稿」，系统会根据第一轮讨论结果自动生成对应章数（不限 7 章）。</p>
+            </a>
+            ${!fn.isSelected ? html`<button type="button" class="mm-fw-switch" data-action="mm-switch-fw" data-fw="${fn.id}" title="在思维导图中展开此框架">▶ 展开</button>` : ''}
+          </div>`)}
+
+          <!-- Level 2: Chapters (Children of Selected Framework) -->
+          ${layout.chNodes.map(cn => html`<div class="mm-item mm-lv2 ${cur === cn.id ? 'is-current' : ''} ${focusCol === 3 ? 'is-stage-focus' : ''}"
+             style="left:${cn.x}px; top:${cn.y}px; width:${cn.w}px; height:${cn.h}px; border-left: 4px solid ${cn.color};">
+            <a class="mm-item-main" href="${NB.refHash(cn.id, fw.id)}" data-mm-nav="1">
+              <div class="mm-ch-row">
+                <span class="mm-ch-num" style="color:${cn.color}">第${cn.data.no}章</span>
+                <strong class="mm-ch-name">${cn.data.title}</strong>
+              </div>
+              <div class="mm-item-meta">
+                ${V.roleTag(cn.data)}
+                ${anchorBadge(cn.data.anchor_status)}
+                ${cn.data.stage ? html`<span class="tag">创新 ${cn.data.stage}</span>` : ''}
+                ${cn.totalQ ? html`<span class="muted small">${cn.totalQ} 题</span>` : ''}
+                ${count(cn.data.pending)}
+              </div>
+            </a>
+            <button type="button" class="mm-port-add" data-action="new-question" data-ref="${cn.id}" data-fw="${fw.id}" title="在第${cn.data.no}章下拆解/新建小问题">＋</button>
+          </div>`)}
+
+          <!-- Level 3: Small Questions (Children of Chapter) -->
+          ${layout.qNodes.map(qn => html`<a class="mm-item mm-lv3 ${cur === qn.id ? 'is-current' : ''} ${focusCol === 4 ? 'is-stage-focus' : ''}"
+             href="${NB.refHash(qn.id, fw.id)}" data-mm-nav="1"
+             style="left:${qn.x}px; top:${qn.y}px; width:${qn.w}px; height:${qn.h}px; border-left: 3px solid ${qn.color};">
+            <span class="qdot tone-${L.qTone[qn.data.status] || 'muted'}" aria-hidden="true"></span>
+            <span class="mm-q-name" title="${qn.data.title}">${qn.data.title}</span>
+            <span class="tag ${qn.data.anchor_status === 'confirmed' ? 'tone-good' : 'tone-muted'}">${qn.data.anchor_status === 'confirmed' ? '已锚定' : '探索中'}</span>
+            ${count(qn.data.pending)}
+          </a>`)}
+
+          ${!fws.length ? html`<div class="mm-empty-floating" style="left: 310px; top: 36px; width: 420px;">
+            <p><b>尚未生成 L1 论文框架与 L2 章节树</b></p>
+            <p class="muted small">请先填写下方「1. 项目边界条件」，然后让 AI 拟定框架或导入已有框架大纲，系统会自动生成多级思维导图。</p>
             <div class="form-actions">
-              <button type="button" class="primary" data-action="quick-propose">让 AI 按边界条件拟定框架</button>
-              <button type="button" data-action="quick-import-fw">导入已有框架 / 讨论记录</button>
-              <button type="button" class="quiet" data-action="new-framework">手动新建 / 粘贴大纲分章</button>
+              <button type="button" class="primary" data-action="quick-propose">AI 按边界拟定框架</button>
+              <button type="button" data-action="quick-import-fw">导入已有框架/讨论稿</button>
+              <button type="button" class="quiet" data-action="new-framework">手动新建框架</button>
             </div>
-          </div>`}
+          </div>` : ''}
         </div>
       </div>
+    </section>`;
+  };
+
+  V.chaptersOverviewCard = function (it) {
+    if (it.level !== 'framework_layer') return '';
+    const t = S.tree;
+    const fws = (t && t.frameworks) || [];
+    const fw = fws.find(f => f.id === S.fw) || fws.find(f => f.status === 'active') || fws[0] || null;
+    const chapters = (fw && fw.chapters) || [];
+    return html`<section class="card chapters-overview" id="sec-chapters-overview" aria-labelledby="ch-ov-h">
+      <div class="card-head">
+        <h2 id="ch-ov-h">3. 各章深入讨论与验证总览${fw ? `（当前框架：${fw.title} · 共 ${chapters.length} 章）` : ''}</h2>
+        <span class="hint">在锁定锚点前，可进入任意章节发散讨论、跑 S1–S6 最小验证实验并拆解小问题</span>
+      </div>
+      ${chapters.length ? html`<div class="table-wrap"><table class="grid ch-ov-table">
+        <thead><tr><th>章节</th><th>类型</th><th>锚定状态</th><th>探索 / 验证进度</th><th>已拆小问题（点击进入）</th><th>操作</th></tr></thead>
+        <tbody>
+          ${chapters.map(c => {
+            const qs = c.questions || [];
+            const sup = qs.filter(q => q.status === 'supported').length;
+            const conf = qs.filter(q => q.anchor_status === 'confirmed').length;
+            return html`<tr>
+              <td><a class="bold" href="${NB.refHash(c.id, fw.id)}">第${c.no}章 ${c.title}</a></td>
+              <td>${V.roleTag(c)}</td>
+              <td>${c.anchor_status === 'confirmed' ? html`<span class="tag tone-good">已锚定</span>` : c.anchor_status === 'draft' ? html`<span class="tag tone-warn">锚点草稿</span>` : html`<span class="tag tone-info">探索中</span>`}</td>
+              <td>
+                ${c.stage ? html`<span class="tag">创新 ${c.stage}</span> ` : ''}
+                <span class="muted small">台账 确${(c.ledger && c.ledger['确定']) || 0} / 待${(c.ledger && c.ledger['待定']) || 0}${sup ? ` · 验证支持 ${sup}` : ''}</span>
+              </td>
+              <td>
+                ${qs.length ? html`<div class="ch-ov-qs">${qs.map(q => html`<a class="ch-ov-q" href="${NB.refHash(q.id, fw.id)}"><span class="qdot tone-${L.qTone[q.status] || 'muted'}"></span>${q.title}${q.anchor_status === 'confirmed' ? html` <span class="tag tone-good">已锚定</span>` : ''}</a>`)}</div>`
+                  : html`<span class="muted small">尚未拆解小问题（${conf}/${qs.length}）</span>`}
+              </td>
+              <td class="nowrap">
+                <a class="btn btn-small primary" href="${NB.refHash(c.id, fw.id)}">进入本章讨论</a>
+                <button type="button" class="btn-small" data-action="new-question" data-ref="${c.id}" data-fw="${fw.id}">+ 拆小问题</button>
+              </td>
+            </tr>`;
+          })}
+        </tbody>
+      </table></div>` : html`<p class="muted">还没有建立论文框架。请先在上方「2. 论文框架与章节划分」中让 AI 拟定或导入框架。</p>`}
     </section>`;
   };
 
@@ -390,7 +574,7 @@
     const parts = [V.crumbs(it), V.titleBlock(it)];
     if ((it.upstream || []).length) parts.push(V.upstream(it));
     parts.push(V.learnBlock(it));
-    if (it.level === 'framework_layer') parts.push(V.onboardingCard(it), V.mindmap(it, false), V.projectCard(it), V.candidates(it), V.frameworkCards(it));
+    if (it.level === 'framework_layer') parts.push(V.onboardingCard(it), V.mindmap(it, false), V.projectCard(it), V.candidates(it), V.frameworkCards(it), V.chaptersOverviewCard(it));
     if (it.level === 'framework') parts.push(V.mindmap(it, false), V.frameworkFields(it));
     if (it.level === 'chapter') parts.push(V.stageBar(it), V.childList(it), V.proposedQuestions(it));
     parts.push(V.anchorCard(it));
@@ -462,7 +646,7 @@
     if (!a) return '';
     if (S.edit && S.edit.kind === 'anchor' && S.edit.ref === it.ref) return V.anchorEditor(it);
     const status = !a.exists ? 'none' : a.status;
-    const anchorTitle = it.level === 'question' ? '小问题锚定' : it.level === 'chapter' ? '研究内容（本章）锚定' : '论文总框架锚定';
+    const anchorTitle = it.level === 'question' ? '小问题锚定' : it.level === 'chapter' ? '研究内容（本章）锚定' : it.level === 'framework_layer' ? '4. 逐级锚定成文（论文总框架锚定）' : '论文总框架锚定';
     const badge = status === 'confirmed' ? html`<span class="tag tone-good">已锚定 第${a.version}版</span>`
       : status === 'none' ? html`<span class="tag tone-info">探索发散中（未锚定）</span>`
         : html`<span class="tag tone-warn">锚点草稿${a.version ? ' 第' + a.version + '版' : ''}</span>`;

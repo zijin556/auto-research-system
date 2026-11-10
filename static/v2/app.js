@@ -481,10 +481,88 @@
   A.openMindmapModal = function () {
     const dlg = document.getElementById('mindmap');
     if (!dlg) return;
-    dlg.innerHTML = html`<div class="dlg-head"><h2 id="mindmap-title">论文框架全景思维导图</h2>
+    dlg.innerHTML = html`<div class="dlg-head"><h2 id="mindmap-title">论文框架全景思维导图（支持滚轮缩放 · 拖拽平移 · 导出 XMind）</h2>
       <div class="actions"><button type="button" data-action="close-dialog" data-key="mindmap">关闭</button></div></div>
       <div class="dlg-body">${V.mindmap(S.item, true)}</div>`.s;
     if (!dlg.open) dlg.showModal();
+    setTimeout(() => A.fitMindmap(dlg.querySelector('[data-mm-viewport]')), 30);
+  };
+
+  A.applyMindmapTransform = function () {
+    const zoom = S.mmZoom || 1;
+    const panX = S.mmPanX || 0;
+    const panY = S.mmPanY || 0;
+    document.querySelectorAll('.mm-stage-inner').forEach(el => {
+      el.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+    });
+    document.querySelectorAll('.mm-zoom-label').forEach(el => {
+      el.textContent = Math.round(zoom * 100) + '%';
+    });
+  };
+
+  A.fitMindmap = function (vp) {
+    const viewport = vp || document.querySelector('#mindmap[open] [data-mm-viewport]') || document.querySelector('[data-mm-viewport]');
+    if (!viewport) return;
+    const inner = viewport.querySelector('.mm-stage-inner');
+    if (!inner) return;
+    const vw = viewport.clientWidth || 800;
+    const vh = viewport.clientHeight || 420;
+    const tw = parseFloat(inner.style.width) || 960;
+    const th = parseFloat(inner.style.height) || 400;
+    const z = Math.min(1.1, Math.max(0.4, Math.min((vw - 28) / tw, (vh - 28) / th)));
+    S.mmZoom = Math.round(z * 100) / 100;
+    S.mmPanX = Math.round(Math.max(8, (vw - tw * S.mmZoom) / 2));
+    S.mmPanY = Math.round(Math.max(8, (vh - th * S.mmZoom) / 2));
+    A.applyMindmapTransform();
+  };
+
+  A.exportMindmap = function (fmt) {
+    const t = S.tree;
+    if (!t) return;
+    const title = (t.project && t.project.title) || '我的论文研究';
+    const fws = t.frameworks || [];
+    const escXml = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    let content = '';
+    let ext = 'mm';
+    let mime = 'application/x-freemind;charset=utf-8';
+    if (fmt === 'md') {
+      ext = 'md';
+      mime = 'text/markdown;charset=utf-8';
+      const lines = [`# ${title}`];
+      fws.forEach(f => {
+        lines.push(`\n## 框架 ${f.id}：${f.title}（${NB.L.fwStatus[f.status] || f.status}）`);
+        (f.chapters || []).forEach(c => {
+          const st = c.anchor_status === 'confirmed' ? '已锚定' : '探索中';
+          lines.push(`### 第${c.no}章 ${c.title} [${c.role_label || ''} · ${st}]`);
+          (c.questions || []).forEach(q => {
+            const qst = q.anchor_status === 'confirmed' ? '已锚定' : '探索中';
+            lines.push(`- **${q.title}**（${qst} · ${q.status_label || ''}）`);
+          });
+        });
+      });
+      content = lines.join('\n') + '\n';
+    } else {
+      const fwXml = fws.map(f => {
+        const chXml = (f.chapters || []).map((c, idx) => {
+          const st = c.anchor_status === 'confirmed' ? '已锚定' : '探索中';
+          const qXml = (c.questions || []).map(q => {
+            const qst = q.anchor_status === 'confirmed' ? '已锚定' : '探索中';
+            return `<node TEXT="${escXml(`${q.title} [${qst}${q.status_label ? '·' + q.status_label : ''}]`)}" />`;
+          }).join('');
+          return `<node TEXT="${escXml(`第${c.no}章 ${c.title} [${c.role_label || ''}·${st}]`)}" POSITION="right">${qXml}</node>`;
+        }).join('');
+        return `<node TEXT="${escXml(`${f.id} ${f.title} (${NB.L.fwStatus[f.status] || f.status})`)}" POSITION="right" FOLDED="${f.id === S.fw ? 'false' : 'true'}">${chXml}</node>`;
+      }).join('');
+      content = `<?xml version="1.0" encoding="UTF-8"?>\n<map version="1.0.1">\n<!-- 可使用 XMind / MindMaster / FreeMind 直接打开此思维导图文件 -->\n<node TEXT="${escXml(title)}">${fwXml}</node>\n</map>\n`;
+    }
+    const blob = new Blob([content], { type: mime });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${title.replace(/[\\/:*?"<>|]/g, '_')}_思维导图.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    NB.toast(fmt === 'md' ? '已导出 Markdown 思维导图大纲（可用 Markmap / Obsidian 打开）' : '已导出 .mm 思维导图文件，可直接用 XMind / MindMaster / FreeMind 打开！');
   };
 
   A.afterCreate = function (r, text) {
@@ -716,13 +794,54 @@
     'save-doc': () => A.saveDoc(),
     'save-fields': () => A.saveFields(),
     'force-save': () => A.forceSave(),
-    'open-mindmap': () => {
-      if (S.route && (S.route.ref === 'FW' || /^F\d/.test(S.route.ref))) {
-        scrollToSection('sec-mindmap');
+    'open-mindmap': () => A.openMindmapModal(),
+    'mm-stage': el => {
+      const stage = Number(el.dataset.stage) || 0;
+      S.mmFocusStage = S.mmFocusStage === stage ? 0 : stage;
+      const target = el.dataset.target || '';
+      const dlg = document.getElementById('mindmap');
+      if (dlg && dlg.open) dlg.close();
+      if (S.route.ref !== 'FW') {
+        A.go('FW');
+        if (target) setTimeout(() => scrollToSection(target), 220);
       } else {
-        A.openMindmapModal();
+        V.main();
+        if (target) setTimeout(() => scrollToSection(target), 40);
       }
     },
+    'mm-zoom': el => {
+      const dir = Number(el.dataset.dir) || 1;
+      const cur = S.mmZoom || 1;
+      S.mmZoom = Math.round(Math.min(2.2, Math.max(0.35, cur + dir * 0.15)) * 100) / 100;
+      A.applyMindmapTransform();
+    },
+    'mm-zoom-reset': () => {
+      S.mmZoom = 1;
+      S.mmPanX = 0;
+      S.mmPanY = 0;
+      A.applyMindmapTransform();
+    },
+    'mm-fit': el => A.fitMindmap(el.closest('[data-mm-viewport]')),
+    'mm-toggle-q': () => {
+      S.mmCollapseQ = !S.mmCollapseQ;
+      V.main();
+      const dlg = document.getElementById('mindmap');
+      if (dlg && dlg.open) A.openMindmapModal();
+    },
+    'mm-switch-fw': el => {
+      const fwId = el.dataset.fw;
+      if (!fwId) return;
+      S.fw = fwId;
+      NB.store.set('fw', fwId);
+      V.header();
+      V.tree();
+      V.main();
+      const dlg = document.getElementById('mindmap');
+      if (dlg && dlg.open) A.openMindmapModal();
+      NB.toast('已在思维导图中展开框架 ' + fwId);
+    },
+    'mm-export-mm': () => A.exportMindmap('mm'),
+    'mm-export-md': () => A.exportMindmap('md'),
     'mm-jump': el => {
       M.close('mindmap');
       const target = el.dataset.target || '';
@@ -890,6 +1009,50 @@
     }
     if (ev.key === 'Escape' && document.body.classList.contains('tree-open') && !document.querySelector('dialog[open]')) toggleTree(false);
   });
+
+  // Interactive Mindmap pan & wheel zoom
+  let mmDrag = null;
+  document.addEventListener('mousedown', ev => {
+    const vp = ev.target.closest('[data-mm-viewport]');
+    if (!vp) return;
+    if (ev.button !== 0 && ev.button !== 1) return;
+    if (ev.button === 0 && ev.target.closest('a, button, input, select, textarea')) return;
+    ev.preventDefault();
+    mmDrag = { vp, startX: ev.clientX, startY: ev.clientY, panX: S.mmPanX || 0, panY: S.mmPanY || 0 };
+    vp.classList.add('is-panning');
+  });
+
+  window.addEventListener('mousemove', ev => {
+    if (!mmDrag) return;
+    S.mmPanX = Math.round(mmDrag.panX + (ev.clientX - mmDrag.startX));
+    S.mmPanY = Math.round(mmDrag.panY + (ev.clientY - mmDrag.startY));
+    A.applyMindmapTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!mmDrag) return;
+    mmDrag.vp.classList.remove('is-panning');
+    mmDrag = null;
+  });
+
+  document.addEventListener('wheel', ev => {
+    const vp = ev.target.closest('[data-mm-viewport]');
+    if (!vp) return;
+    ev.preventDefault();
+    const rect = vp.getBoundingClientRect();
+    const mx = ev.clientX - rect.left;
+    const my = ev.clientY - rect.top;
+    const oldZoom = S.mmZoom || 1;
+    const factor = ev.deltaY < 0 ? 1.12 : 0.89;
+    const newZoom = Math.round(Math.min(2.2, Math.max(0.35, oldZoom * factor)) * 100) / 100;
+    if (newZoom === oldZoom) return;
+    const oldPanX = S.mmPanX || 0;
+    const oldPanY = S.mmPanY || 0;
+    S.mmPanX = Math.round(mx - ((mx - oldPanX) / oldZoom) * newZoom);
+    S.mmPanY = Math.round(my - ((my - oldPanY) / oldZoom) * newZoom);
+    S.mmZoom = newZoom;
+    A.applyMindmapTransform();
+  }, { passive: false });
 
   window.addEventListener('beforeunload', ev => {
     if (S.edit && S.edit.dirty) { ev.preventDefault(); ev.returnValue = ''; }
