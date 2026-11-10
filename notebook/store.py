@@ -459,9 +459,14 @@ class Store:
         path = self._safe(raw)
         if any(part.startswith(".") for part in path.relative_to(self.root).parts):
             raise PermissionError("不公开隐藏文件，即使通过链接访问")
+        app_docs = {"工作流说明.md", "快速上手示例.md", "使用说明.md", "AI一键配置指南.md"}
+        if not path.is_file() and relative in app_docs:
+            fallback = Path(__file__).resolve().parent.parent / relative
+            if fallback.is_file():
+                return fallback
         if not path.is_file():
             raise FileNotFoundError("文件不存在")
-        allowed = {PROJECT_NAME, "总览.md", FRAMEWORK_ROOT + "/框架总览.md", "03_提示词/提示词.md", "工作流说明.md"}
+        allowed = {PROJECT_NAME, "总览.md", FRAMEWORK_ROOT + "/框架总览.md", "03_提示词/提示词.md"} | app_docs
         if relative in allowed:
             return path
         first = raw.parts[0]

@@ -683,6 +683,26 @@
     'adopt-use-ai': () => { const f = document.querySelector('dialog[open] textarea[name="text"]'); if (f && M.adoptSuggestion) f.value = M.adoptSuggestion.text; },
     'test-provider': el => M.testProvider(el.dataset.key),
     'open-folder': el => NB.post('open_folder', { path: el.dataset.path || '' }).then(r => r && NB.toast('已在资源管理器中打开文件夹')).catch(e => NB.toast(e.message, 'error')),
+    'open-guide': () => M.openFile('快速上手示例.md'),
+    'fill-starter-focus': () => {
+      if (!S.item) return;
+      const d = P.draft(S.item);
+      const a = S.item.anchor || {};
+      if (a.status === 'confirmed') {
+        d.recipe = 'propose_frameworks';
+        d.focus = '请围绕已确认的全篇锚点，提出 2 到 3 套逻辑递进方式不同的 7 章博士论文候选框架（第1章绪论、第2章理论基础、第3-5章三个核心研究问题、第6章系统集成或综合实验验证、第7章总结与展望），明确标出每章的承重问题与潜在风险。';
+      } else {
+        d.recipe = 'draft_anchor';
+        d.focus = '我的博士论文研究方向是：【填写你的方向，例如：高速动态结构光三维形貌测量与非理想误差补偿】。\n核心痛点是：【填写现有方法在什么场景下失效，例如：在高速投影与高反光干扰下，传统相移法需要帧数多、易产生运动伪影与非线性相位失真】。\n核心思路是：【填写技术路线，例如：结合时空先验建模、三步相移谐波抑制与物理引导的轻量级解调算法，在不增加投影帧数的前提下实现高精度相位恢复】。\n量化目标与验证方式：【填写指标，例如：3帧条纹输入下动态相位 RMSE 降低 50% 以上，先用 Python 仿真验证数学误差上界，再在实测数据上验证】。\n暂不纳入本论文范围：【填写边界，例如：不做硬件光机镜头设计，不做多相机大视场拼接】。';
+      }
+      P.render();
+      const box = document.querySelector('form[data-form="start"] textarea[name="focus"]');
+      if (box) {
+        box.rows = 7;
+        box.focus();
+      }
+      NB.toast('已填入示例模板，请把【】里的内容改成你的课题后点右侧“开始”');
+    },
   };
 
   document.addEventListener('click', ev => {

@@ -77,6 +77,13 @@
     document.title = (S.item ? S.item.title + ' · ' : '') + (project.title || '科研文件管理系统');
     document.getElementById('example-badge').hidden = !project.is_example;
     document.getElementById('mock-badge').hidden = !S.mock;
+    const mockBtn = document.getElementById('mock-toggle');
+    if (mockBtn) {
+      mockBtn.textContent = S.mock ? '返回正式库' : '演示数据';
+      mockBtn.href = (S.mock ? '/' : '/?mock=1') + (location.hash || '#/FW');
+      mockBtn.title = S.mock ? '退出演示数据，返回你自己的研究目录' : '查看内置的完整博士论文演示数据';
+      mockBtn.classList.toggle('primary', !!S.mock);
+    }
     const picker = document.getElementById('fw-picker');
     const fws = (t && t.frameworks) || [];
     picker.innerHTML = fws.length
@@ -196,10 +203,39 @@
     window.scrollTo(0, y);
   };
 
+  V.onboardingCard = function (it) {
+    if (it.level !== 'framework_layer' || (it.frameworks || []).length) return '';
+    const a = it.anchor || {};
+    const step = !a.exists ? 1 : a.status !== 'confirmed' ? 2 : 3;
+    return html`<section class="card onboarding" id="sec-onboarding" aria-labelledby="onboard-h">
+      <div class="card-head">
+        <h2 id="onboard-h">第一次使用？三步开始你的博士论文研究</h2>
+        <span class="tag tone-info">当前进度：第 ${step} / 3 步</span>
+      </div>
+      <ol class="onboard-steps">
+        <li class="${step === 1 ? 'is-current' : 'is-done'}">
+          <b>第 1 步：起草并确认全篇锚点</b> — 点下方「填入示例提示词模板」，在右侧「本轮重点」里把括号内容改成你的博士课题方向，然后点右侧蓝色的 <b>「开始」</b>。
+        </li>
+        <li class="${step === 2 ? 'is-current' : step > 2 ? 'is-done' : ''}">
+          <b>第 2 步：确认锚点</b> — AI 起草完锚点后，检查下方的「锚点」卡片（可点「编辑锚点」微调），满意后点 <b>「确认锚点」</b>。
+        </li>
+        <li class="${step === 3 ? 'is-current' : ''}">
+          <b>第 3 步：生成候选框架并建立 7 章目录</b> — 锚点确认后，右侧讨论方式会自动切换为「提出候选框架」，点 <b>「开始」</b>，从生成的候选方案中选一套点 <b>「建立为框架」</b> 即可生成完整 7 章目录。
+        </li>
+      </ol>
+      <div class="form-actions">
+        <button type="button" class="primary" data-action="fill-starter-focus">填入示例提示词模板</button>
+        <button type="button" data-action="open-guide">查看完整图文上手示例</button>
+        ${!S.mock ? html`<a class="btn quiet" href="/?mock=1#/FW">先看一眼完整论文演示效果</a>` : ''}
+      </div>
+    </section>`;
+  };
+
   V.mainHtml = function (it) {
     const parts = [V.crumbs(it), V.titleBlock(it)];
     if ((it.upstream || []).length) parts.push(V.upstream(it));
     parts.push(V.learnBlock(it));
+    if (it.level === 'framework_layer') parts.push(V.onboardingCard(it));
     if (it.level === 'chapter') parts.push(V.stageBar(it));
     parts.push(V.anchorCard(it));
     // Chapters list their small questions before the (long) chapter draft.
