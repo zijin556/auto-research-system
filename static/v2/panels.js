@@ -5,7 +5,7 @@
   const { S, html, raw, L } = NB;
   const P = NB.P = {};
   P.MULTI = new Set(['advance', 'outline', 'refine']);   // recipes that may run 1–5 rounds
-  const NEEDS_ANCHOR = new Set(['advance', 'outline', 'innov', 'propose', 'refine']);
+  const NEEDS_ANCHOR = new Set(['advance']);
   const JUMP = { questions: 'sec-questions', candidates: 'sec-candidates', ideas: 'sec-ideas', refs: 'sec-refs', stage: 'sec-stage', learn: 'sec-learn' };
   const KIND = { request: '锚点变更', assumption: '待批假设', decision: '需要你决定', learn: '学习模式', questions: '小问题',
     candidates: '候选框架', ideas: '想法', refs: '文献', stage: '阶段', revisions: '未写入的修改', anchor_draft: '锚点草稿' };
@@ -34,6 +34,9 @@
     const d = P.draft(it);
     const list = it.recipes || [];
     if (list.some(r => r.key === d.recipe)) return d.recipe;
+    if (it.level === 'framework_layer' && !(it.frameworks || []).length && list.some(r => r.key === 'propose')) return 'propose';
+    if (it.level === 'chapter' && !(it.anchor && it.anchor.status === 'confirmed') && list.some(r => r.key === 'innov')) return 'innov';
+    if (it.level === 'chapter' && !(it.anchor && it.anchor.status === 'confirmed') && list.some(r => r.key === 'outline')) return 'outline';
     return list.some(r => r.key === it.default_recipe) ? it.default_recipe : (list[0] && list[0].key) || '';
   };
 
@@ -68,6 +71,7 @@
 
   const RECIPE_ROLES = {
     open: ['author'],
+    import_fw: ['author'],
     advance: ['author', 'reviewer', 'engineer', 'drift'],
     outline: ['author', 'reviewer', 'drift'],
     refine: ['author', 'reviewer', 'drift'],
@@ -101,21 +105,29 @@
     const recipe = P.recipeOf(it);
     const def = P.roundsDefault();
     const rounds = d.rounds || def || 2;
-    const needsAnchor = NEEDS_ANCHOR.has(recipe) && !(it.anchor && it.anchor.exists && it.anchor.status === 'confirmed');
+    const reconfirm = it.anchor && it.anchor.ever_confirmed && it.anchor.status !== 'confirmed' && recipe !== 'open' && recipe !== 'import_fw';
+    const needsAnchor = reconfirm || (NEEDS_ANCHOR.has(recipe) && !(it.anchor && it.anchor.exists && it.anchor.status === 'confirmed'));
+    const isImport = recipe === 'import_fw';
+    const focusLabel = isImport ? '粘贴已讨论好的框架大纲或聊天记录（AI 将自动解析分章）' : '本轮重点 / 补充说明（可不填）';
+    const focusPlaceholder = isImport
+      ? '在此粘贴你已有的论文大纲、章节安排或与导师/AI 的讨论记录…'
+      : it.level === 'framework_layer'
+        ? '例如：倾向于分成 5 章或 6 章，重点聚焦动态非理想解调…'
+        : '例如：先把 2.2 节的推导补完整，或者重点讨论方案二的可行性…';
     return html`<section class="panel next" aria-labelledby="next-h">
       <h2 id="next-h">下一轮</h2>
       <form data-form="start">
-        <label class="field"><span>讨论方式</span><select name="recipe" data-change="recipe">${recipes.map(r => html`<option value="${r.key}" ${r.key === recipe ? raw('selected') : ''}>${r.label}${r.key === it.default_recipe ? '（推荐）' : ''}</option>`)}</select></label>
+        <label class="field"><span>讨论方式</span><select name="recipe" data-change="recipe">${recipes.map(r => html`<option value="${r.key}" ${r.key === recipe ? raw('selected') : ''}>${r.label}</option>`)}</select></label>
         ${recipe === 'advance' ? html`<fieldset class="field radios"><legend>模式</legend>
           <label><input type="radio" name="mode" value="auto" data-change="mode" ${d.mode !== 'learn' ? raw('checked') : ''}> 自动</label>
           <label><input type="radio" name="mode" value="learn" data-change="mode" ${d.mode === 'learn' ? raw('checked') : ''}> 学习（每步停下等你）</label></fieldset>` : ''}
         ${P.MULTI.has(recipe) ? html`<label class="field inline"><span>连跑</span><select name="rounds" data-change="rounds">${[1, 2, 3, 4, 5].map(n => html`<option value="${n}" ${n === rounds ? raw('selected') : ''}>${n} 轮${n === (def || 2) && !d.rounds ? '（默认）' : ''}</option>`)}</select></label>` : ''}
-        <label class="field"><span>本轮重点（可不填）</span><textarea name="focus" rows="3" data-keep="focus:${it.ref}" placeholder="例如：先把 2.2 节的推导补完整">${d.focus || ''}</textarea></label>
+        <label class="field"><span>${focusLabel}</span><textarea name="focus" rows="${isImport ? 6 : 3}" data-keep="focus:${it.ref}" placeholder="${focusPlaceholder}">${d.focus || ''}</textarea></label>
         ${P.roleSummary(recipe)}
-        ${needsAnchor ? html`<p class="hint warn">${it.anchor && it.anchor.ever_confirmed
+        ${needsAnchor ? html`<p class="hint warn">${reconfirm
           ? '锚点有改动，检查后点“确认锚点”。'
-          : '锚点还没确认。先选“起草锚点和骨架”，改好后点“确认锚点”。'}</p>` : ''}
-        <button type="submit" class="primary wide">开始</button>
+          : '推进正式推导前，请先运行“收敛并起草/更新锚点”，确认本小问题的判据后点“确认锚点”。'}</p>` : ''}
+        <button type="submit" class="primary wide">${isImport ? '解析并导入框架' : '开始'}</button>
       </form>
     </section>`;
   };

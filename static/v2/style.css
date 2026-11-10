@@ -578,3 +578,248 @@ dialog::backdrop { background: rgba(20, 20, 18, .45); }
 .assume-row.is-new { outline: 2px dashed var(--warn, #b7791f); outline-offset: 2px; }
 .stack-form { display: grid; gap: 6px; margin-top: 6px; }
 .stack-form textarea { width: 100%; }
+
+/* ---- project boundary card & interactive mindmap ---- */
+.project { border-left: 3px solid var(--accent); }
+.mindmap { background: var(--surface); border: 1px solid var(--line); }
+.mindmap.in-modal { border: 0; padding: 0; box-shadow: none; }
+
+/* 4-stage convergence stepper */
+.mm-stages {
+  list-style: none;
+  margin: 4px 0 14px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.mm-stages li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-2);
+  transition: border-color .15s, background .15s, transform .12s;
+}
+.mm-stages li.is-done {
+  border-color: var(--good);
+  background: var(--good-bg);
+}
+.mm-stages li.is-current {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.mm-stages li a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  color: var(--text);
+  text-decoration: none;
+}
+.mm-stages li:hover { transform: translateY(-1px); border-color: var(--accent); }
+.mm-st-no { font-weight: 700; font-size: 13px; color: var(--text); }
+.mm-stages li.is-done .mm-st-no { color: var(--good); }
+.mm-stages li.is-current .mm-st-no { color: var(--accent); }
+.mm-st-desc { font-size: 12px; color: var(--muted); line-height: 1.35; }
+
+/* Mindmap tree canvas */
+.mm-canvas {
+  display: grid;
+  grid-template-columns: 205px 24px minmax(0, 1fr);
+  align-items: stretch;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  overflow-x: auto;
+}
+.mm-root-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0;
+}
+.mm-vlink {
+  width: 2px;
+  height: 16px;
+  background: var(--line-strong);
+  margin: 0 auto;
+}
+.mm-connector-trunk {
+  position: relative;
+}
+.mm-connector-trunk::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 12px;
+  height: 2px;
+  background: var(--line-strong);
+}
+.mm-connector-trunk::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 22px;
+  bottom: 22px;
+  width: 2px;
+  background: var(--line-strong);
+  border-radius: 2px;
+}
+.mm-branches-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 440px;
+}
+.mm-branch {
+  position: relative;
+  display: grid;
+  grid-template-columns: 235px minmax(200px, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding-left: 12px;
+}
+.mm-branch::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 24px;
+  width: 24px;
+  height: 2px;
+  background: var(--line-strong);
+}
+.mm-ch-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.mm-ch-wrap::after {
+  content: "";
+  position: absolute;
+  right: -18px;
+  top: 24px;
+  width: 18px;
+  height: 2px;
+  background: var(--line-strong);
+}
+.mm-leaves {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-left: 2px solid var(--line-strong);
+  padding-left: 10px;
+}
+
+/* Mindmap clickable nodes */
+.mm-node {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 11px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color .14s, box-shadow .14s, transform .12s;
+}
+.mm-node:hover {
+  border-color: var(--accent);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .1);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.mm-node.is-current {
+  border-color: var(--accent);
+  background: var(--accent-weak);
+  box-shadow: 0 0 0 1.5px var(--accent);
+}
+.mm-node-type {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .02em;
+}
+.mm-node-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.mm-node-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+  margin-top: 2px;
+}
+.mm-ch-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: baseline;
+}
+.mm-ch-no {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.mm-ch-title {
+  font-size: 13.5px;
+  line-height: 1.35;
+}
+.mm-add-q {
+  align-self: flex-start;
+  font-size: 11.5px;
+  padding: 2px 8px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px dashed var(--line-strong);
+  border-radius: 5px;
+}
+.mm-add-q:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.mm-node.mm-q {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+.mm-q-title {
+  font-weight: 600;
+  flex: 1 1 120px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.mm-node.mm-q-empty {
+  border-style: dashed;
+  color: var(--muted);
+  font-size: 12.5px;
+  background: transparent;
+}
+.mm-empty-state {
+  padding: 18px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.mm-empty-state p { margin: 0 0 6px; }
+
+@media (max-width: 820px) {
+  .mm-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mm-canvas { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .mm-connector-trunk { display: none; }
+  .mm-branches-col { min-width: 0; }
+  .mm-branch { grid-template-columns: minmax(0, 1fr); gap: 6px; padding-left: 0; }
+  .mm-branch::before, .mm-ch-wrap::after { display: none; }
+}

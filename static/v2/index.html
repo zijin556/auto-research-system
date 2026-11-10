@@ -30,6 +30,7 @@
     <div id="git-chip" class="chips" aria-label="版本管理"></div>
     <div class="top-actions">
       <button type="button" class="side-jump" data-action="scroll" data-key="side">讨论与待办</button>
+      <button type="button" data-action="open-mindmap" title="打开交互式论文框架思维导图">思维导图</button>
       <button type="button" data-action="open-guide">上手示例</button>
       <a id="mock-toggle" class="btn" href="/?mock=1#/FW" title="切换到内置的完整博士论文演示数据">演示数据</a>
       <button type="button" data-action="open-settings">设置</button>
@@ -41,6 +42,7 @@
     <aside id="side" class="side" aria-label="讨论与待办"></aside>
   </div>
   <div class="backdrop" data-action="close-tree" hidden></div>
+  <dialog id="mindmap" class="dlg dlg-wide" aria-labelledby="mindmap-title"></dialog>
   <dialog id="viewer" class="dlg dlg-wide" aria-labelledby="viewer-title"></dialog>
   <dialog id="settings" class="dlg dlg-wide" aria-labelledby="settings-title"></dialog>
   <dialog id="history" class="dlg dlg-wide" aria-labelledby="history-title"></dialog>

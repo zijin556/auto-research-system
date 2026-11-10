@@ -309,13 +309,41 @@
     return fresh.length;
   };
 
+  A.saveProject = async function (form) {
+    const e = S.edit;
+    if (!e || e.kind !== 'project' || e.saving || !form) return;
+    const fields = {};
+    form.querySelectorAll('textarea[name^="proj:"]').forEach(t => { fields[t.name.slice(5)] = t.value; });
+    const title = (form.elements.title && form.elements.title.value.trim()) || '我的论文研究';
+    e.saving = true;
+    try {
+      const r = await NB.post('v2_save_project', { fw: fwOf(), revision: e.revision, title, fields });
+      if (r) {
+        S.edit = null;
+        if (r.tree) S.tree = r.tree;
+        if (r.item) A.applyItem(r.item);
+        V.header();
+        V.tree();
+        A.gitSoon();
+        NB.toast('项目边界与背景配置已保存');
+      }
+    } catch (err) {
+      e.error = err.message;
+      e.conflict = err.status === 409 || err.type === 'ConflictError';
+      V.main();
+    } finally {
+      if (S.edit === e) e.saving = false;
+    }
+  };
+
   A.forceSave = function () {
     const e = S.edit;
     const it = S.item;
     if (!e || !it) return;
-    e.revision = e.kind === 'anchor' ? it.anchor.revision : it.doc.revision;
+    e.revision = e.kind === 'anchor' ? it.anchor.revision : e.kind === 'project' ? (it.project_card && it.project_card.revision) || '' : it.doc.revision;
     if (e.kind === 'doc') A.saveDoc();
     else if (e.kind === 'fields') A.saveFields();
+    else if (e.kind === 'project') A.saveProject(document.querySelector('form[data-form="project"]'));
     else A.saveAnchor(document.querySelector('form[data-form="anchor"]'));
   };
 
@@ -416,12 +444,47 @@
 
   A.newFramework = async function () {
     const r = await M.ask({
-      title: '新建框架', ok: '建立',
-      intro: '会建立 7 章骨架：绪论、理论基础、三个研究问题、随框架而定的一章、总结与展望。',
-      fields: [{ name: 'title', label: '框架名称', required: true, placeholder: '例如：模型驱动的三维重建' }],
-      submit: v => NB.post('v2_create_framework', { title: v.title.trim() }),
+      title: '新建框架 / 粘贴大纲直接分章', ok: '建立并自动分章',
+      intro: '章数不限：若下方“章节大纲”留空，将建立默认章节；若粘贴带有“## 第1章 章节名 | 角色”的大纲，系统会自动按你写的实际章数创建目录与小问题。',
+      fields: [
+        { name: 'title', label: '框架名称', required: true, placeholder: '例如：高速动态结构光非理想误差补偿研究' },
+        { name: 'mainline', label: '一句话主线（可不填）', placeholder: '例如：围绕非理想照明与动态伪影，构建建模-解调-标定闭环体系' },
+        { name: 'outline', label: '章节大纲（可不填，支持任意章数自动分章）', type: 'textarea', rows: 8,
+          placeholder: '示例（可写 5 章、6 章、7 章等任意章数）：\n## 第1章 绪论 | intro\n## 第2章 非理想条纹相位传递机理 | theory\n### 二次谐波误差上界推导\n## 第3章 静态非理想相位解调算法 | research\n## 第4章 动态运动伪影联合补偿 | research\n## 第5章 总结与展望 | conclusion' },
+      ],
+      submit: v => NB.post('v2_create_framework', { title: v.title.trim(), mainline: (v.mainline || '').trim(), outline: (v.outline || '').trim() }),
     });
-    if (r && r.id) A.afterCreate(r, '已建立框架');
+    if (r && r.id) A.afterCreate(r, '已建立框架并自动分章');
+  };
+
+  A.importFrameworkModal = async function () {
+    const v = await M.ask({
+      title: '导入已有框架 / 讨论记录（AI 自动解析填充）', ok: '交给 AI 解析并填充',
+      intro: '把你之前与导师或 AI 讨论好的框架草稿、大纲或聊天记录粘贴在下方。AI 会自动提取研究主线、按实际章数分章（不固定 7 章），并生成初始锚点草稿。',
+      fields: [
+        { name: 'focus', label: '已有框架大纲或讨论内容', type: 'textarea', rows: 10, required: true,
+          placeholder: '直接粘贴你已有的论文大纲、各章设想、研究内容或讨论记录…' },
+      ],
+    });
+    if (!v || !(v.focus || '').trim()) return;
+    if (S.route.ref !== 'FW') A.go('FW');
+    const r = await A.act('v2_start', { ref: 'FW', fw: '', recipe: 'import_fw', mode: 'auto', focus: v.focus.trim(), request_id: NB.uid() }, { apply: false });
+    if (r && r.id) {
+      S.ended = null;
+      A.follow(r);
+      P.render();
+      V.tree();
+      NB.toast('已启动 AI 解析已有框架，完成后点击“建立为框架”即可自动分章');
+    }
+  };
+
+  A.openMindmapModal = function () {
+    const dlg = document.getElementById('mindmap');
+    if (!dlg) return;
+    dlg.innerHTML = html`<div class="dlg-head"><h2 id="mindmap-title">论文框架全景思维导图</h2>
+      <div class="actions"><button type="button" data-action="close-dialog" data-key="mindmap">关闭</button></div></div>
+      <div class="dlg-body">${V.mindmap(S.item, true)}</div>`.s;
+    if (!dlg.open) dlg.showModal();
   };
 
   A.afterCreate = function (r, text) {
@@ -598,12 +661,24 @@
     setTimeout(() => el.classList.remove('flash'), 1600);
   }
 
-  async function startEdit(kind) {
+  async function startEdit(kind, templateFill) {
     const it = S.item;
     if (!it) return;
     if (S.edit && S.edit.dirty && !(await M.confirm('放弃修改', '另一个编辑框里的修改还没保存，确定放弃吗？', '放弃修改', true))) return;
-    const revision = kind === 'anchor' ? it.anchor.revision : it.doc.revision;
-    S.edit = { kind, ref: it.ref, revision, text: kind === 'doc' ? it.doc.text || '' : '', error: '', conflict: false, dirty: false };
+    if (kind === 'project') {
+      const p = it.project_card || { title: (S.tree && S.tree.project && S.tree.project.title) || '我的论文研究', revision: '', fields: {} };
+      const fields = Object.assign({}, p.fields || {});
+      if (templateFill) {
+        if (!(fields.brief || '').trim()) fields.brief = '研究方向：【例如：高速动态结构光三维形貌测量与非理想误差补偿】\n核心需求与痛点：【例如：在微秒级高速投影与高反光表面干扰下，传统相移法需要帧数多、易产生运动伪影与非线性谐波失真，亟需在 3 帧以内实现高精度抗干扰相位恢复】';
+        if (!(fields.configuration || '').trim()) fields.configuration = '实验平台与硬件配置：【例如：DMD 投影仪 + 高速工业相机，帧率 1000 fps】\n算力与环境：【例如：单卡工作站，Python / NumPy / PyTorch】\n不做什么（硬边界）：【例如：不改动硬件光机镜头设计，不做多相机大视场标定拼接】';
+        if (!(fields.background || '').trim()) fields.background = '现有方法不足：【例如：传统 N 步相移需要静止场景；现有深度学习单帧方法缺乏严格物理误差界，在跨材质场景泛化性差】';
+        if (!(fields.data_sources || '').trim()) fields.data_sources = '已有数据与代码基础：【例如：已有理想/非理想仿真条纹生成器，以及陶瓷标准球、金属台阶实测条纹数据集】';
+      }
+      S.edit = { kind: 'project', ref: 'FW', revision: p.revision || '', title: p.title || '', fields, error: '', conflict: false, dirty: !!templateFill };
+    } else {
+      const revision = kind === 'anchor' ? it.anchor.revision : it.doc.revision;
+      S.edit = { kind, ref: it.ref, revision, text: kind === 'doc' ? it.doc.text || '' : '', error: '', conflict: false, dirty: false };
+    }
     V.main();
     const box = document.querySelector('#main [data-keep]');
     const field = box && box.querySelector('textarea, input');
@@ -632,6 +707,8 @@
     'new-framework': () => A.newFramework(),
     'new-question': el => A.newQuestion(el.dataset.ref, el.dataset.fw || ''),
     'edit-chapter': () => A.editChapter(),
+    'edit-project': () => startEdit('project', false),
+    'fill-project-template': () => startEdit('project', true),
     'edit-doc': () => startEdit('doc'),
     'edit-fields': () => startEdit('fields'),
     'edit-anchor': () => startEdit('anchor'),
@@ -639,6 +716,43 @@
     'save-doc': () => A.saveDoc(),
     'save-fields': () => A.saveFields(),
     'force-save': () => A.forceSave(),
+    'open-mindmap': () => {
+      if (S.route && (S.route.ref === 'FW' || /^F\d/.test(S.route.ref))) {
+        scrollToSection('sec-mindmap');
+      } else {
+        A.openMindmapModal();
+      }
+    },
+    'mm-jump': el => {
+      M.close('mindmap');
+      const target = el.dataset.target || '';
+      if (S.route.ref !== 'FW') {
+        A.go('FW');
+        if (target) setTimeout(() => scrollToSection(target), 200);
+      } else if (target) {
+        scrollToSection(target);
+      }
+    },
+    'quick-propose': () => {
+      if (S.route.ref !== 'FW') A.go('FW');
+      if (!S.item) return;
+      const d = P.draft(S.item);
+      d.recipe = 'propose';
+      P.render();
+      const box = document.querySelector('form[data-form="start"] textarea[name="focus"]');
+      if (box) box.focus();
+      NB.toast('已在右侧选好“AI 拟定候选框架”，补充偏好（或留空）后点右侧“开始”即可');
+    },
+    'quick-import-fw': () => A.importFrameworkModal(),
+    'quick-open-anchor': () => {
+      if (!S.item) return;
+      const d = P.draft(S.item);
+      d.recipe = 'open';
+      P.render();
+      const btn = document.querySelector('form[data-form="start"] button[type="submit"]');
+      if (btn) btn.focus();
+      NB.toast('已在右侧选好“收敛并起草/更新锚点”，点击右侧“开始”即可让 AI 收敛生成锚点');
+    },
     'add-assumption': el => {
       const rows = el.closest('fieldset').querySelector('.assume-rows');
       rows.insertAdjacentHTML('beforeend', V.assumptionRow({}).s);
@@ -706,6 +820,11 @@
   };
 
   document.addEventListener('click', ev => {
+    const mmNav = ev.target.closest('a[data-mm-nav]');
+    if (mmNav) {
+      const dlg = document.getElementById('mindmap');
+      if (dlg && dlg.open) dlg.close();
+    }
     const link = ev.target.closest('a[data-file]');
     if (link) {
       if (ev.button !== 0 || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
@@ -729,6 +848,7 @@
     const kind = form.dataset.form;
     if (kind === 'anchor') A.saveAnchor(form);
     else if (kind === 'fields') A.saveFields();
+    else if (kind === 'project') A.saveProject(form);
     else if (kind === 'start') A.start(form);
     else if (kind === 'decide') A.decide(form, ev.submitter);
     else if (kind === 'answer') A.answer(form, ev.submitter);
@@ -764,6 +884,7 @@
       ev.preventDefault();
       if (S.edit.kind === 'doc') A.saveDoc();
       else if (S.edit.kind === 'fields') A.saveFields();
+      else if (S.edit.kind === 'project') A.saveProject(document.querySelector('form[data-form="project"]'));
       else A.saveAnchor(document.querySelector('form[data-form="anchor"]'));
       return;
     }

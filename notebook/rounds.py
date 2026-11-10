@@ -30,9 +30,9 @@ from .store import CHAPTER_ROLES, CONTENT_ROOT, FRAMEWORK_ROOT, ConflictError, n
 FAMILY_NAME = {"openai": "GPT", "google": "Gemini", "anthropic": "Claude", "human": "你", "system": "系统", "unknown": "模型"}
 ROLE_LABELS = {"author": "作者", "reviewer": "审查", "engineer": "工程", "writer": "写作", "drift": "漂移检查", "referee": "审稿"}
 RECIPE_LABELS = {
-    "open": "起草锚点和骨架", "advance": "推进一轮", "referee": "请审稿人独立审一遍", "explain": "解释这一步",
-    "outline": "章节提纲与拆题", "innov": "创新流程（当前阶段）", "write": "撰写本章", "assemble": "组装本章草稿",
-    "propose": "提出候选框架", "refine": "修改这个框架",
+    "open": "收敛并起草/更新锚点", "advance": "深入推导与代码验证", "referee": "请审稿人独立盲审", "explain": "解释这一步",
+    "outline": "深入讨论本章并拆解小问题", "innov": "创新探索与验证（当前阶段）", "write": "撰写本章正文", "assemble": "汇总小问题组装本章草稿",
+    "propose": "AI 拟定候选框架（按边界与方向）", "import_fw": "导入已有框架/讨论稿（AI 自动解析）", "refine": "深入讨论与调整本框架",
 }
 STAGES = [("S1", "量化缺口"), ("S2", "发散想法"), ("S3", "可行性筛选"), ("S4", "查新"), ("S5", "设计杀测"), ("S6", "方法化")]
 STAGE_TEMPLATES = {"S1": ("innov_s1", "author"), "S2": ("innov_s2", "writer"), "S3": ("innov_s3", "author"),
@@ -425,7 +425,7 @@ class RoundManager:
         rounds = data.get("rounds") or settings["limits"].get("rounds_default", 2)
         if not isinstance(rounds, int) or not 1 <= rounds <= 5:
             raise ValueError("轮数应在 1 到 5 之间")
-        if recipe in {"open", "referee", "propose", "write", "assemble", "innov"}:
+        if recipe in {"open", "referee", "propose", "import_fw", "write", "assemble", "innov"}:
             rounds = 1
         mode = data.get("mode", "auto")
         if mode not in {"auto", "learn"}:
@@ -433,8 +433,11 @@ class RoundManager:
         if mode == "learn" and recipe != "advance":
             mode = "auto"
         focus = data.get("focus", "")
-        if not isinstance(focus, str) or len(focus) > 4000:
-            raise ValueError("本轮重点应为 4000 字以内的文字")
+        max_focus = 24000 if recipe == "import_fw" else 4000
+        if not isinstance(focus, str) or len(focus) > max_focus:
+            raise ValueError(f"本轮重点应为 {max_focus} 字以内的文字")
+        if recipe == "import_fw" and not focus.strip():
+            raise ValueError("请先在“本轮重点”里粘贴你已有的框架大纲或讨论记录，再开始导入")
         request_id = data.get("request_id", "")
         with self.lock:
             if request_id and request_id in self.by_request:
@@ -443,12 +446,14 @@ class RoundManager:
             if active:
                 raise ConflictError(f"已有一次讨论正在进行（{active['ref']}），请等它结束或取消。")
             anchor, _ = item.anchor()
-            if recipe in {"advance", "outline", "innov", "propose", "refine"} and anchor.status != "confirmed":
+            if recipe == "advance" and anchor.status != "confirmed":
                 if ever_confirmed(anchor):
                     raise ValueError("锚点有改动，请检查后点“确认锚点”，再继续讨论。")
-                raise ValueError("锚点还没确认。请先“起草锚点和骨架”，改好后点“确认锚点”。")
+                raise ValueError("锚点还没确认。请先“收敛并起草/更新锚点”，改好后点“确认锚点”。")
+            if recipe in {"outline", "innov", "propose", "refine"} and anchor.status != "confirmed" and ever_confirmed(anchor):
+                raise ValueError("锚点有改动，请检查后点“确认锚点”，再继续讨论。")
             open_decisions = [d for d in item.state().get("decisions", []) if d.get("status") == "待处理"]
-            if recipe in {"advance", "outline", "innov", "propose", "refine"} and (L.anchor_blocking(anchor) or open_decisions):
+            if recipe in {"advance", "outline", "innov", "propose", "import_fw", "refine"} and (L.anchor_blocking(anchor) or open_decisions):
                 raise ValueError("还有锚点变更申请或需要你决定的事项，请先在“待你决定”里处理，再继续讨论。")
             if recipe == "refine" and item.level != "framework":
                 raise ValueError("请在具体的框架页面上修改框架")
@@ -517,16 +522,16 @@ class RoundManager:
             return ["open", "advance", "referee"]
         if item.level == "chapter":
             role = item.chapter_role()
-            keys = ["open", "outline"]
+            keys = ["outline"]
             if role == "research":
-                keys.append("innov")
+                keys = ["innov", "outline"]
             if role in {"intro", "conclusion"}:
                 keys.append("write")
-            keys += ["assemble", "referee"]
+            keys += ["open", "assemble", "referee"]
             return keys
         if item.level == "framework":
             return ["refine"]
-        return ["open", "propose"]
+        return ["propose", "import_fw", "open"]
 
     def default_recipe(self, item):
         anchor, _ = item.anchor()
@@ -647,10 +652,12 @@ class RoundManager:
         return result
 
     def _needed_roles(self, recipe, item):
+        anchor, _ = item.anchor()
+        has_anchor = anchor.status == "confirmed"
         if recipe == "advance":
             return ["author", "reviewer", "engineer", "drift"]
         if recipe in {"outline", "refine"}:
-            return ["author", "reviewer", "drift"]
+            return ["author", "reviewer", "drift"] if has_anchor else ["author", "reviewer"]
         if recipe == "referee":
             return ["author", "referee"]
         if recipe == "propose":
@@ -1517,6 +1524,8 @@ class RoundManager:
 
     def _recipe_outline(self, c):
         item = c["item"]
+        if item.doc_path is not None and len(item.doc_text().strip().splitlines()) <= 1:
+            item.write(item.doc_path, item.doc_text().rstrip() + "\n\n" + L.skeleton("chapter", item.chapter_role()))
         result = self._call(c, "outline", "章节提纲", "author", "ch_outline", self._context(c))
         r1 = L.parse_reply(result.text)
         attack = self._call(c, "attack", "审查找问题", "reviewer", "ch_attack", self._context(c, draft_blocks=strip_prose(result.text), notes=False))
@@ -1531,7 +1540,8 @@ class RoundManager:
         questions = r3.questions or r1.questions
         self._propose_questions(c, questions)
         c["round"]["summary"] = r3.summary or r1.summary
-        self._drift(c, c["round"]["summary"])
+        if "drift" in c["session"].roles:
+            self._drift(c, c["round"]["summary"])
         return {}
 
     def _propose_questions(self, c, questions):
@@ -1676,6 +1686,34 @@ class RoundManager:
         except BaseException as exc:  # noqa: BLE001 - re-raised on the session thread
             sink[key] = exc
 
+    def _recipe_import_fw(self, c):
+        item, s = c["item"], c["session"]
+        result = self._call(c, "import_fw", "解析已有框架", "author", "fw_import", self._context(c))
+        reply = L.parse_reply(result.text)
+        draft = extract_block(result.text, "锚点草稿")
+        if draft:
+            anchor, _ = item.anchor()
+            if not ever_confirmed(anchor):
+                meta = json.dumps({"schema": 1, "level": item.anchor_level, "version": 1, "status": "draft"}, ensure_ascii=False)
+                body = draft if "<!-- anchor" in draft else f"<!-- anchor {meta} -->\n\n{draft}"
+                proposed = L.parse_anchor("# 锚点\n\n" + body, item.anchor_level)
+                proposed.version, proposed.status = anchor.version, "draft"
+                for a in proposed.assumptions:
+                    a.status, a.source = "待批" if a.status != "已拒绝" else a.status, a.source or f"{family_label(s.roles['author'].get('family'))}·{c['label']}"
+                item.save_anchor(proposed)
+        self._apply_ops(c, reply, "draft", "author")
+        candidates = [{"index": i, "title": candidate_title(md), "markdown": md} for i, md in enumerate(reply.candidates)]
+        c["round"]["candidates"] = candidates
+        c["round"]["summary"] = reply.summary
+        if not candidates:
+            c["round"]["notes"].append("没有从粘贴内容中解析出“候选框架”块，请查看本轮原文")
+            return {"stop": "未能解析出标准章节结构，请查看本轮回复原文。"}
+        state = item.state()
+        state["candidates"] = {"round": c["round"]["id"], "items": candidates}
+        item.save_state(state)
+        c["round"]["pending"].append({"kind": "candidates", "text": f"已从导入内容解析出 {len(candidates)} 个框架方案，点击“建立为框架”即可自动分章"})
+        return {"stop": "已有框架已解析完成，请在候选框架中点击“建立为框架”自动生成各章目录。"}
+
     def _recipe_refine(self, c):
         item = c["item"]
         result = self._call(c, "refine", "修改框架", "author", "fw_refine", self._context(c))
@@ -1690,7 +1728,8 @@ class RoundManager:
         self._apply_ops(c, r3, "reply", "author")
         self._apply_revisions(c, r3, self._temp_map(c))
         c["round"]["summary"] = r3.summary or r1.summary
-        self._drift(c, c["round"]["summary"])
+        if "drift" in c["session"].roles:
+            self._drift(c, c["round"]["summary"])
         return {}
 
     def _adopted_count(self, fw):

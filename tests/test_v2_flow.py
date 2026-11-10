@@ -370,6 +370,41 @@ class V2FlowTests(unittest.TestCase):
         self.assertEqual([c["role"] for c in parsed["chapters"]], ["intro", "theory", "research"])
         self.assertEqual(parsed["chapters"][1]["questions"][0], {"title": "Q1", "question": "问题文本"})
 
+    def test_diverge_to_converge_workflow(self):
+        item = self.v2.item("FW")
+        self.assertFalse(self.v2.tree()["project"]["has_boundary"])
+        saved = self.v2.act_save_project({
+            "title": "跨尺度光学三维测量博士论文",
+            "revision": item["project_card"]["revision"],
+            "fields": {
+                "background": "光学三维测量中的相位恢复",
+                "brief": "通过多频编码与物理先验实现高精度测量",
+                "configuration": "单目条纹投影系统",
+                "rules": "不涉及硬件制造",
+            },
+        })
+        self.assertEqual(saved["item"]["project_card"]["title"], "跨尺度光学三维测量博士论文")
+        self.assertTrue(saved["tree"]["project"]["has_boundary"])
+        # Can run propose directly in exploration mode without confirming anchor first
+        snap = wait(self.v2.rounds, self.v2.act_start({"ref": "FW", "recipe": "propose"})["id"])
+        self.assertEqual(snap["status"], "stopped", snap)
+        self.assertEqual(len(self.v2.item("FW")["candidates"]), 2)
+        # Can create a dynamic N-chapter framework (e.g. 5 chapters) from an outline
+        outline = "\n".join([
+            "## 第1章 绪论 | intro",
+            "## 第2章 理论建模 | theory",
+            "### 相位解包裹可辨识性",
+            "研究多频条纹下的唯一解条件",
+            "## 第3章 方法一 | research",
+            "## 第4章 方法二 | research",
+            "## 第5章 总结与展望 | conclusion",
+        ])
+        made = self.v2.act_create_framework({"title": "五章动态框架", "outline": outline})
+        fw = next(f for f in made["tree"]["frameworks"] if f["id"] == made["id"])
+        self.assertEqual(len(fw["chapters"]), 5)
+        self.assertEqual([c["role"] for c in fw["chapters"]], ["intro", "theory", "research", "research", "conclusion"])
+        self.assertEqual(fw["chapters"][1]["questions"][0]["title"], "相位解包裹可辨识性")
+
     def test_judge_summary_rejects_inconsistent_passed(self):
         path = Path(self.temp.name) / "summary.json"
         path.write_text(json.dumps({"selfcheck_passed": True, "criteria": [{"name": "误差", "observed": 0.5, "threshold": 0.1, "comparator": "<", "passed": True}]}), encoding="utf-8")

@@ -203,30 +203,185 @@
     window.scrollTo(0, y);
   };
 
-  V.onboardingCard = function (it) {
-    if (it.level !== 'framework_layer' || (it.frameworks || []).length) return '';
-    const a = it.anchor || {};
-    const step = !a.exists ? 1 : a.status !== 'confirmed' ? 2 : 3;
-    return html`<section class="card onboarding" id="sec-onboarding" aria-labelledby="onboard-h">
+  const PROJECT_FIELDS = [
+    ['brief', '研究方向、背景与核心需求（想研究什么、解决什么痛点）', 4],
+    ['configuration', '硬边界条件与系统配置（实验设备参数、算力、时间限制、不做什么）', 4],
+    ['background', '现有方法缺口与研究背景补充', 3],
+    ['data_sources', '已有数据、代码基础与存放位置', 2],
+    ['symbols', '核心符号与术语约定（可随讨论逐步补充）', 2],
+    ['rules', '对 AI 的统一要求（可选）', 2],
+  ];
+
+  V.projectCard = function (it) {
+    if (it.level !== 'framework_layer') return '';
+    const p = it.project_card || { title: (S.tree && S.tree.project && S.tree.project.title) || '我的论文研究', path: '00_项目卡.md', revision: '', fields: {} };
+    const f = p.fields || {};
+    const editing = S.edit && S.edit.kind === 'project';
+    const filled = PROJECT_FIELDS.filter(([k]) => (f[k] || '').trim());
+    if (editing) {
+      const d = S.edit.fields || f;
+      return html`<section class="card project editing" id="sec-project" aria-labelledby="proj-h">
+        <div class="card-head">
+          <h2 id="proj-h">编辑项目边界、配置与研究需求</h2>
+          <span class="hint">保存后，所有 AI 在拟定框架和讨论各章时都会严格遵守这里的边界条件</span>
+        </div>
+        ${editError(p.path)}
+        <form data-form="project" data-keep="project:FW">
+          <label class="field"><span>论文 / 课题暂定名称</span><input name="title" value="${S.edit.title != null ? S.edit.title : (p.title || '')}" placeholder="例如：高速动态结构光三维形貌测量与非理想误差补偿"></label>
+          ${PROJECT_FIELDS.map(([k, label, rows]) => html`<label class="field"><span>${label}</span><textarea name="proj:${k}" rows="${rows}">${d[k] || ''}</textarea></label>`)}
+          <div class="form-actions">
+            <button type="submit" class="primary">保存边界与配置</button>
+            <button type="button" data-action="fill-project-template">填入示例模板</button>
+            <button type="button" data-action="cancel-edit">取消</button>
+          </div>
+        </form>
+      </section>`;
+    }
+    return html`<section class="card project" id="sec-project" aria-labelledby="proj-h">
       <div class="card-head">
-        <h2 id="onboard-h">第一次使用？三步开始你的博士论文研究</h2>
-        <span class="tag tone-info">当前进度：第 ${step} / 3 步</span>
+        <h2 id="proj-h">1. 项目边界条件、配置与研究需求</h2>
+        ${filled.length ? html`<span class="tag tone-good">已填 ${filled.length} 项</span>` : html`<span class="tag tone-warn">建议先填写</span>`}
+        <div class="actions">
+          <button type="button" class="${filled.length ? '' : 'primary'}" data-action="edit-project">编辑边界与配置</button>
+          ${!filled.length ? html`<button type="button" data-action="fill-project-template">填入示例模板</button>` : ''}
+          ${p.path ? html`<button type="button" class="quiet" data-action="history" data-path="${p.path}" data-revision="${p.revision || ''}">历史版本</button>` : ''}
+        </div>
       </div>
-      <ol class="onboard-steps">
-        <li class="${step === 1 ? 'is-current' : 'is-done'}">
-          <b>第 1 步：起草并确认全篇锚点</b> — 点下方「填入示例提示词模板」，在右侧「本轮重点」里把括号内容改成你的博士课题方向，然后点右侧蓝色的 <b>「开始」</b>。
+      ${filled.length ? html`<dl class="slots">${filled.map(([k, label]) => html`<div class="slot"><dt>${label.split('（')[0]}</dt><dd>${NB.md(f[k], '')}</dd></div>`)}</dl>`
+        : html`<p class="muted">还没有填写边界条件与研究方向。建议先点 <b>「填入示例模板」</b> 写入你的实验设备/数据配置、想研究的方向、背景需求与限制条件，再交给 AI 拟定或导入论文框架。</p>`}
+    </section>`;
+  };
+
+  // Interactive Mindmap / Framework Roadmap: clickable nodes for Project -> Framework -> Chapters (1..N) -> Small Questions.
+  V.mindmap = function (it, inModal) {
+    const t = S.tree;
+    if (!t) return '';
+    const fws = t.frameworks || [];
+    const fw = fws.find(f => f.id === (it && it.fw ? it.fw : S.fw)) || fws.find(f => f.status === 'active') || fws[0] || null;
+    const chapters = (fw && fw.chapters) || [];
+    const allQ = chapters.reduce((acc, c) => acc.concat(c.questions || []), []);
+    const confirmedQ = allQ.filter(q => q.anchor_status === 'confirmed').length;
+    const supportedQ = allQ.filter(q => q.status === 'supported').length;
+    const confirmedCh = chapters.filter(c => c.anchor_status === 'confirmed').length;
+    const fwAnchor = (t.framework_layer && t.framework_layer.anchor_status) || 'none';
+    const hasBoundary = !!(t.project && t.project.has_boundary) || !!(it && it.project_card && Object.values(it.project_card.fields || {}).some(v => String(v || '').trim()));
+    const cur = (S.route && S.route.ref) || 'FW';
+    const anchorBadge = st => st === 'confirmed'
+      ? html`<span class="tag tone-good">已锚定</span>`
+      : st === 'draft' ? html`<span class="tag tone-warn">锚点草稿</span>` : html`<span class="tag tone-info">探索中</span>`;
+
+    return html`<section class="card mindmap ${inModal ? 'in-modal' : ''}" id="sec-mindmap" aria-labelledby="mm-h">
+      <div class="card-head">
+        <h2 id="mm-h">论文框架思维导图（从发散到聚焦路线图）</h2>
+        <span class="hint">点击任意节点可直接跳转到对应框架、章节或小问题</span>
+        ${!inModal && fws.length > 1 ? html`<div class="actions"><span class="muted small">共 ${fws.length} 套框架，可在顶栏切换</span></div>` : ''}
+      </div>
+      <ol class="mm-stages" aria-label="从发散到聚焦四阶段进度">
+        <li class="${hasBoundary ? 'is-done' : 'is-current'}">
+          <a href="#/FW" data-action="mm-jump" data-target="sec-project">
+            <span class="mm-st-no">① 导边界与需求</span>
+            <span class="mm-st-desc">${hasBoundary ? '已配置边界与方向' : '点击填写边界/背景'}</span>
+          </a>
         </li>
-        <li class="${step === 2 ? 'is-current' : step > 2 ? 'is-done' : ''}">
-          <b>第 2 步：确认锚点</b> — AI 起草完锚点后，检查下方的「锚点」卡片（可点「编辑锚点」微调），满意后点 <b>「确认锚点」</b>。
+        <li class="${fw ? 'is-done' : hasBoundary ? 'is-current' : ''}">
+          <a href="${fw ? '#/' + fw.id : '#/FW'}" data-action="mm-jump" data-target="sec-frameworks">
+            <span class="mm-st-no">② 拟定/导入框架</span>
+            <span class="mm-st-desc">${fw ? '已分 ' + chapters.length + ' 章（动态章数）' : 'AI 拟定或导入自动分章'}</span>
+          </a>
         </li>
-        <li class="${step === 3 ? 'is-current' : ''}">
-          <b>第 3 步：生成候选框架并建立 7 章目录</b> — 锚点确认后，右侧讨论方式会自动切换为「提出候选框架」，点 <b>「开始」</b>，从生成的候选方案中选一套点 <b>「建立为框架」</b> 即可生成完整 7 章目录。
+        <li class="${allQ.length ? 'is-done' : fw ? 'is-current' : ''}">
+          <a href="${chapters[0] ? NB.refHash(chapters[0].id, fw.id) : '#/FW'}" data-mm-nav="1">
+            <span class="mm-st-no">③ 深入讨论验证</span>
+            <span class="mm-st-desc">${allQ.length ? '已拆 ' + allQ.length + ' 个小问题 · 验证支持 ' + supportedQ : '各章探索、验证并拆小问题'}</span>
+          </a>
+        </li>
+        <li class="${fwAnchor === 'confirmed' && confirmedCh === chapters.length && chapters.length ? 'is-done' : allQ.length ? 'is-current' : ''}">
+          <a href="#/FW" data-action="mm-jump" data-target="sec-anchor">
+            <span class="mm-st-no">④ 逐级锚定成文</span>
+            <span class="mm-st-desc">小问题锚定 ${confirmedQ}/${allQ.length} · 章锚定 ${confirmedCh}/${chapters.length} · 框架${fwAnchor === 'confirmed' ? '已锚定' : '待锚定'}</span>
+          </a>
         </li>
       </ol>
+      <div class="mm-canvas">
+        <div class="mm-root-col">
+          <a class="mm-node mm-root ${cur === 'FW' ? 'is-current' : ''}" href="#/FW" data-mm-nav="1">
+            <div class="mm-node-type">00 项目基座与总览</div>
+            <div class="mm-node-title">${(t.project && t.project.title) || '我的论文研究'}</div>
+            <div class="mm-node-meta">
+              <span class="tag ${hasBoundary ? 'tone-good' : 'tone-warn'}">${hasBoundary ? '边界已填' : '边界待填'}</span>
+              ${anchorBadge(fwAnchor)}
+            </div>
+          </a>
+          ${fw ? html`<div class="mm-vlink" aria-hidden="true"></div>
+            <a class="mm-node mm-fw ${cur === fw.id ? 'is-current' : ''}" href="#/${fw.id}" data-mm-nav="1">
+              <div class="mm-node-type">当前框架 (${fw.id})</div>
+              <div class="mm-node-title">${fw.title}</div>
+              <div class="mm-node-meta">
+                <span class="tag ${fw.status === 'active' ? 'tone-good' : ''}">${L.fwStatus[fw.status] || fw.status}</span>
+                <span class="muted small">共 ${chapters.length} 章 · ${allQ.length} 题</span>
+              </div>
+            </a>` : ''}
+        </div>
+        <div class="mm- connector-trunk" aria-hidden="true"></div>
+        <div class="mm-branches-col">
+          ${chapters.length ? chapters.map(c => html`<div class="mm-branch">
+            <div class="mm-ch-wrap">
+              <a class="mm-node mm-ch ${cur === c.id ? 'is-current' : ''}" href="${NB.refHash(c.id, fw.id)}" data-mm-nav="1">
+                <div class="mm-ch-head">
+                  <span class="mm-ch-no">第${c.no}章</span>
+                  <strong class="mm-ch-title">${c.title}</strong>
+                  ${V.roleTag(c)}
+                </div>
+                <div class="mm-node-meta">
+                  ${anchorBadge(c.anchor_status)}
+                  ${c.stage ? html`<span class="tag">创新 ${c.stage}</span>` : ''}
+                  ${c.ledger && (c.ledger['确定'] || c.ledger['待定']) ? html`<span class="muted small">台账 确${c.ledger['确定'] || 0}/待${c.ledger['待定'] || 0}</span>` : ''}
+                  ${count(c.pending)}
+                </div>
+              </a>
+              <button type="button" class="mm-add-q" data-action="new-question" data-ref="${c.id}" data-fw="${fw.id}" title="在本章下新建小问题">+ 拆小问题</button>
+            </div>
+            <div class="mm-leaves">
+              ${(c.questions || []).length ? c.questions.map(q => html`<a class="mm-node mm-q ${cur === q.id ? 'is-current' : ''}" href="${NB.refHash(q.id, fw.id)}" data-mm-nav="1">
+                <span class="qdot tone-${L.qTone[q.status] || 'muted'}" aria-hidden="true"></span>
+                <span class="mm-q-title">${q.title}</span>
+                <span class="tag ${q.anchor_status === 'confirmed' ? 'tone-good' : 'tone-muted'}">${q.anchor_status === 'confirmed' ? '已锚定' : '探索中'}</span>
+                <span class="tag tone-${L.qTone[q.status] || 'muted'}">${q.status_label || ''}</span>
+                ${count(q.pending)}
+              </a>`) : html`<a class="mm-node mm-q mm-q-empty" href="${NB.refHash(c.id, fw.id)}" data-mm-nav="1">进入第${c.no}章深入讨论验证 → 拆解并锚定小问题</a>`}
+            </div>
+          </div>`) : html`<div class="mm-empty-state">
+            <p><b>还没有建立论文框架与章节目录。</b></p>
+            <p class="muted small">请先在下方填写「1. 项目边界条件、配置与研究需求」，然后选择「AI 拟定候选框架」或「导入已有框架/讨论稿」，系统会根据第一轮讨论结果自动生成对应章数（不限 7 章）。</p>
+            <div class="form-actions">
+              <button type="button" class="primary" data-action="quick-propose">让 AI 按边界条件拟定框架</button>
+              <button type="button" data-action="quick-import-fw">导入已有框架 / 讨论记录</button>
+              <button type="button" class="quiet" data-action="new-framework">手动新建 / 粘贴大纲分章</button>
+            </div>
+          </div>`}
+        </div>
+      </div>
+    </section>`;
+  };
+
+  V.onboardingCard = function (it) {
+    if (it.level !== 'framework_layer' || (it.frameworks || []).length) return '';
+    return html`<section class="card onboarding" id="sec-onboarding" aria-labelledby="onboard-h">
+      <div class="card-head">
+        <h2 id="onboard-h">从发散到聚焦：四步开启你的论文研究</h2>
+        <span class="tag tone-info">全新工作流</span>
+      </div>
+      <ol class="onboard-steps">
+        <li><b>第 1 步（立边界）</b>：在下方「项目边界条件、配置与研究需求」里填入你的实验配置、方向、背景与需求（可点「填入示例模板」）。</li>
+        <li><b>第 2 步（定框架与自动分章）</b>：在右侧点 <b>「AI 拟定候选框架」</b>，或点 <b>「导入已有框架/讨论稿」</b> 由 AI 自动填充；选定后自动按讨论结果分好章节（不限 7 章）。</li>
+        <li><b>第 3 步（深入讨论验证）</b>：点击思维导图进入各章，对发散的研究内容进行深入讨论、文献查新、跑最小验证实验，拆解出具体的「小问题」。</li>
+        <li><b>第 4 步（逐级锚定成文）</b>：验证跑通后，依次完成 <b>小问题锚定 → 研究内容（章节）锚定 → 论文框架锚定</b>，汇总生成整章论文草稿。</li>
+      </ol>
       <div class="form-actions">
-        <button type="button" class="primary" data-action="fill-starter-focus">填入示例提示词模板</button>
-        <button type="button" data-action="open-guide">查看完整图文上手示例</button>
-        ${!S.mock ? html`<a class="btn quiet" href="/?mock=1#/FW">先看一眼完整论文演示效果</a>` : ''}
+        <button type="button" class="primary" data-action="fill-project-template">1. 填入边界条件模板</button>
+        <button type="button" data-action="quick-propose">2A. 让 AI 拟定框架</button>
+        <button type="button" data-action="quick-import-fw">2B. 导入已有框架/讨论稿</button>
+        <button type="button" class="quiet" data-action="open-guide">查看完整实操教程</button>
       </div>
     </section>`;
   };
@@ -235,14 +390,11 @@
     const parts = [V.crumbs(it), V.titleBlock(it)];
     if ((it.upstream || []).length) parts.push(V.upstream(it));
     parts.push(V.learnBlock(it));
-    if (it.level === 'framework_layer') parts.push(V.onboardingCard(it));
-    if (it.level === 'chapter') parts.push(V.stageBar(it));
+    if (it.level === 'framework_layer') parts.push(V.onboardingCard(it), V.mindmap(it, false), V.projectCard(it), V.candidates(it), V.frameworkCards(it));
+    if (it.level === 'framework') parts.push(V.mindmap(it, false), V.frameworkFields(it));
+    if (it.level === 'chapter') parts.push(V.stageBar(it), V.childList(it), V.proposedQuestions(it));
     parts.push(V.anchorCard(it));
-    // Chapters list their small questions before the (long) chapter draft.
-    if (it.level === 'chapter') parts.push(V.childList(it), V.proposedQuestions(it));
-    if (it.level === 'framework_layer') parts.push(V.frameworkCards(it), V.candidates(it));
-    else if (it.level === 'framework') parts.push(V.frameworkFields(it));
-    else parts.push(V.docBlock(it));
+    if (it.level === 'chapter' || it.level === 'question') parts.push(V.docBlock(it));
     if (it.level === 'question') parts.push(V.adoptBlock(it));
     parts.push(V.ledger(it));
     if (it.materials) parts.push(V.materials(it));
@@ -310,20 +462,28 @@
     if (!a) return '';
     if (S.edit && S.edit.kind === 'anchor' && S.edit.ref === it.ref) return V.anchorEditor(it);
     const status = !a.exists ? 'none' : a.status;
-    const badge = status === 'confirmed' ? html`<span class="tag tone-good">已确认 第${a.version}版</span>`
-      : status === 'none' ? html`<span class="tag tone-muted">未起草</span>`
-        : html`<span class="tag tone-warn">草稿${a.version ? ' 第' + a.version + '版' : ''}</span>`;
+    const anchorTitle = it.level === 'question' ? '小问题锚定' : it.level === 'chapter' ? '研究内容（本章）锚定' : '论文总框架锚定';
+    const badge = status === 'confirmed' ? html`<span class="tag tone-good">已锚定 第${a.version}版</span>`
+      : status === 'none' ? html`<span class="tag tone-info">探索发散中（未锚定）</span>`
+        : html`<span class="tag tone-warn">锚点草稿${a.version ? ' 第' + a.version + '版' : ''}</span>`;
     const base = NB.dirname(a.path);
     const slots = a.slots || [];
+    const guide = it.level === 'question'
+      ? '尚未锚定本小问题。可点“AI 收敛起草锚点”或“手动编辑锚点”界定问题与判据，再点“确认锚定”进入多轮推导与代码验证。'
+      : it.level === 'chapter'
+        ? '当前处于【研究内容探索阶段】：你可以先在右侧自由讨论本章内容、跑创新验证或拆解小问题；等本章思路聚焦且小问题确定后，点“AI 收敛起草锚点”并确认锚定。'
+        : '当前处于【框架探索阶段】：你可以先拟定或导入框架、深入讨论各章研究内容；等各章研究内容与小问题聚焦后，再收敛并确认全篇锚定。';
     return html`<section class="card anchor ${status === 'confirmed' ? '' : 'is-draft'}" id="sec-anchor" aria-labelledby="anchor-h">
-      <div class="card-head"><h2 id="anchor-h">锚点</h2>${badge}
-        ${status === 'confirmed' && a.confirmed_at ? html`<span class="hint">${NB.fmtTime(a.confirmed_at)} 确认</span>` : ''}
+      <div class="card-head"><h2 id="anchor-h">${anchorTitle}</h2>${badge}
+        ${status === 'confirmed' && a.confirmed_at ? html`<span class="hint">${NB.fmtTime(a.confirmed_at)} 锚定</span>` : ''}
         ${it.level === 'framework' ? html`<span class="hint">与“论文框架”共用</span>` : ''}
-        <div class="actions"><button type="button" data-action="edit-anchor">编辑锚点</button>
+        <div class="actions">
+          ${it.level !== 'framework' ? html`<button type="button" data-action="quick-open-anchor">AI 收敛起草锚点</button>` : ''}
+          <button type="button" data-action="edit-anchor">手动编辑锚点</button>
           ${a.exists ? html`<button type="button" class="quiet" data-action="history" data-path="${a.path}" data-revision="${a.revision}">历史版本</button>` : ''}
-          ${a.exists && status !== 'confirmed' ? html`<button type="button" class="primary" data-action="confirm-anchor">确认锚点</button>` : ''}</div></div>
-      ${a.exists && status !== 'confirmed' && a.ever_confirmed ? html`<p class="hint warn">锚点有改动，检查后点“确认锚点”。确认前不能继续讨论。</p>` : ''}
-      ${!a.exists ? html`<p class="muted">还没有锚点。可以在右侧选“起草锚点和骨架”让 AI 起草，或点“编辑锚点”自己写。</p>` : ''}
+          ${a.exists && status !== 'confirmed' ? html`<button type="button" class="primary" data-action="confirm-anchor">确认锚定</button>` : ''}</div></div>
+      ${a.exists && status !== 'confirmed' && a.ever_confirmed ? html`<p class="hint warn">锚点有改动，检查后点“确认锚定”。确认前不能继续讨论。</p>` : ''}
+      ${!a.exists ? html`<p class="muted">${guide}</p>` : ''}
       ${a.exists && slots.length ? html`<dl class="slots">${slots.map(s => html`<div class="slot"><dt>${s.label}</dt><dd>${(s.text || '').trim() ? NB.md(s.text, base) : html`<span class="muted">未填写</span>`}</dd></div>`)}</dl>` : ''}
       ${V.assumptionTable(a)}
       ${V.requestList(a)}
@@ -426,13 +586,19 @@
   V.frameworkCards = function (it) {
     const list = it.frameworks || [];
     return html`<section class="sec" id="sec-frameworks" aria-labelledby="fws-h">
-      <div class="sec-head"><h2 id="fws-h">全部框架（${list.length}）</h2><div class="actions"><button type="button" data-action="new-framework">+ 新建框架</button></div></div>
+      <div class="sec-head"><h2 id="fws-h">2. 论文框架与章节划分（${list.length}）</h2>
+        <div class="actions">
+          <button type="button" data-action="quick-propose">AI 拟定候选框架</button>
+          <button type="button" data-action="quick-import-fw">导入已有框架（AI解析）</button>
+          <button type="button" data-action="new-framework">+ 手动新建 / 粘贴大纲分章</button>
+        </div>
+      </div>
       ${list.length ? html`<div class="fw-cards">${list.map(f => html`<article class="card fw-card ${f.status === 'active' ? 'is-active' : ''}">
-          <div class="card-head"><h3><a href="#/${f.id}">${f.title}</a></h3>${f.status === 'active' ? html`<span class="tag tone-good">主推</span>` : html`<span class="tag">${L.fwStatus[f.status] || f.status}</span>`}</div>
+          <div class="card-head"><h3><a href="#/${f.id}">${f.title}</a></h3>${f.status === 'active' ? html`<span class="tag tone-good">主推（共 ${(f.chapters || []).length} 章）</span>` : html`<span class="tag">${L.fwStatus[f.status] || f.status}（共 ${(f.chapters || []).length} 章）</span>`}</div>
           ${(f.mainline || '').trim() ? NB.md(f.mainline, NB.dirname(f.path)) : html`<p class="muted">还没有写论文主线。</p>`}
-          ${(f.chapters || []).length ? html`<ul class="plain chapter-list compact">${f.chapters.map(c => html`<li>第${c.no}章 ${c.title}${V.roleTag(c)}</li>`)}</ul>` : ''}
-          <div class="form-actions"><a class="btn" href="#/${f.id}">打开</a>${f.status !== 'active' ? html`<button type="button" data-action="set-active" data-ref="${f.id}">设为主推</button>` : ''}</div>
-        </article>`)}</div>` : html`<p class="muted">还没有框架。可以在右侧选“提出候选框架”，或点“+ 新建框架”。</p>`}
+          ${(f.chapters || []).length ? html`<ul class="plain chapter-list compact">${f.chapters.map(c => html`<li><a href="${NB.refHash(c.id, f.id)}">第${c.no}章 ${c.title}</a>${V.roleTag(c)}</li>`)}</ul>` : ''}
+          <div class="form-actions"><a class="btn" href="#/${f.id}">进入框架讨论</a>${f.status !== 'active' ? html`<button type="button" data-action="set-active" data-ref="${f.id}">设为主推</button>` : ''}</div>
+        </article>`)}</div>` : html`<p class="muted">还没有建立框架。你可以点上方 <b>「AI 拟定候选框架」</b>（由 AI 根据边界条件讨论生成），或点 <b>「导入已有框架（AI解析）」</b> 把已有大纲粘贴进来自动分章。</p>`}
     </section>`;
   };
 

@@ -188,14 +188,16 @@ class V2:
                 placed.add(cid)
                 chapter = self._chapter_node(content, by_content.get(cid, []), no)
                 chapters.append(chapter)
-            frameworks.append({"id": f["id"], "title": f["title"], "status": f["status"], "chapters": chapters})
+            frameworks.append({"id": f["id"], "title": f["title"], "status": f["status"], "mainline": f.get("mainline", ""), "chapters": chapters})
         unplaced = [self._chapter_node(c, by_content.get(c["id"], []), None) for c in state["contents"] if c["id"] not in placed]
         for node in [ch for f in frameworks for ch in f["chapters"]] + unplaced:
             total += node["pending"] + sum(q["pending"] for q in node["questions"])
         fw_item = R.Item(self.store, "FW")
         fw_pending = len(self.pending(fw_item))
         total += fw_pending
-        return {"project": {"title": state["project"]["title"], "is_example": Path(self.store.root).name == "示例研究"},
+        proj = state["project"]
+        has_boundary = any((proj.get(k) or "").strip() for k in ("brief", "background", "configuration", "data_sources", "symbols", "rules"))
+        return {"project": {"title": proj["title"], "is_example": Path(self.store.root).name == "示例研究", "has_boundary": has_boundary},
                 "framework_layer": {"anchor_status": self._anchor_status(fw_item), "pending": fw_pending},
                 "frameworks": frameworks, "unplaced": unplaced, "session": self.rounds.active_session(),
                 "pending_total": total, "git": self.git_status()}
@@ -221,10 +223,13 @@ class V2:
             nodes.append({"id": q["id"], "title": q["title"], "status": q["status"], "status_label": q["status_label"], **node})
         try:
             anchor_status, pending, error = self._anchor_status(item), len(self.pending(item)), ""
+            ch_ledger = L.counts(item.ledger()[0])
+            stage = item.state().get("stage", "S1") if role == "research" else ""
         except (ValueError, OSError) as exc:
             anchor_status, pending, error = "none", 0, f"{exc}（请另存为 UTF-8）"
+            ch_ledger, stage = {"待定": 0, "确定": 0, "否定": 0}, ""
         return {"id": content["id"], "no": no, "title": content["title"], "role": role, "role_label": CHAPTER_ROLES.get(role, ""),
-                "anchor_status": anchor_status, "pending": pending, "questions": nodes, "error": error}
+                "anchor_status": anchor_status, "ledger": ch_ledger, "stage": stage, "pending": pending, "questions": nodes, "error": error}
 
     # pending ---------------------------------------------------------------------
     def pending(self, item):
@@ -318,6 +323,11 @@ class V2:
             out["frameworks"] = [self.framework_view(record)]
             out["status"] = record["status"]
         else:
+            proj = self.store._project()
+            out["project_card"] = {
+                "title": proj["title"], "path": proj["path"], "revision": proj["revision"],
+                "fields": {k: proj.get(k, "") for k in ("brief", "background", "progress", "configuration", "symbols", "data_sources", "rules")},
+            }
             out["frameworks"] = [self.framework_view(f) for f in self.store._frameworks()]
             out["candidates"] = state.get("candidates", {}).get("items", [])
         return out
@@ -639,17 +649,35 @@ class V2:
         self.commit(f"{ref} 采纳：{STATUS_LABELS.get(decision, decision)}")
         return self.item(ref, data.get("fw", ""))
 
+    def act_save_project(self, data):
+        proj = self.store._project()
+        fields = data.get("fields") or {}
+        payload = {"revision": data.get("revision") or proj["revision"], "title": str(data.get("title") or proj["title"]).strip() or proj["title"]}
+        for k in ("brief", "background", "progress", "configuration", "symbols", "data_sources", "rules"):
+            payload[k] = fields.get(k, proj.get(k, ""))
+        self.store.perform("save_project", payload)
+        self.commit("手动：更新项目边界与背景配置")
+        return {"tree": self.tree(), "item": self.item("FW", data.get("fw", ""))}
+
     def act_create_framework(self, data):
-        title = str(data.get("title", "")).strip() or "新的论文框架"
+        outline = str(data.get("outline", "")).strip()
+        parsed = parse_candidate(outline) if outline else {"title": "", "mainline": "", "risks": "", "chapters": []}
+        title = str(data.get("title") or parsed["title"] or "").strip() or "新的论文框架"
+        mainline = str(data.get("mainline") or parsed["mainline"] or "").strip()
+        risks = str(data.get("risks") or parsed["risks"] or "").strip()
+        chapters_spec = parsed["chapters"] or [{"title": t, "role": r, "questions": [], "objective": ""} for t, r in R.DEFAULT_CHAPTERS]
         with self.store.lock:
             content_ids = []
-            for chapter_title, role in R.DEFAULT_CHAPTERS:
-                detail = self.store.perform("save_content", {"title": chapter_title, "objective": "", "role": role})
+            for chapter in chapters_spec:
+                detail = self.store.perform("save_content", {"title": chapter["title"][:120], "objective": chapter.get("objective", ""), "role": chapter["role"]})
                 content_ids.append(detail["id"])
-                self._seed_chapter(detail["id"], role)
+                self._seed_chapter(detail["id"], chapter["role"])
+                for q in chapter.get("questions", []):
+                    created = self.store.perform("create_question", {"content_id": detail["id"], "title": q["title"][:150], "question": q.get("question", ""), "criterion": "", "why": "", "outline": ""})
+                    self._seed_question(created["id"], q.get("question", "") or q["title"], "")
             active = any(f["status"] == "active" for f in self.store._frameworks())
-            framework = self.store.perform("save_framework", {"title": title, "status": "candidate" if active else "active", "content_ids": content_ids,
-                                                              "mainline": str(data.get("mainline", "")), "chapters": "", "risks": ""})
+            framework = self.store.perform("save_framework", {"title": title[:150], "status": "candidate" if active else "active", "content_ids": content_ids,
+                                                              "mainline": mainline, "chapters": outline[:200_000], "risks": risks})
         self.commit(f"新建框架 {framework['id']}：{title}")
         return {"tree": self.tree(), "id": framework["id"]}
 
