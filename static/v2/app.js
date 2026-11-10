@@ -879,7 +879,19 @@
       P.render();
       const btn = document.querySelector('form[data-form="start"] button[type="submit"]');
       if (btn) btn.focus();
-      NB.toast('已在右侧选好“收敛并起草/更新锚点”，点击右侧“开始”即可让 AI 收敛生成锚点');
+      NB.toast('已在右侧选好“① 收敛并起草/更新锚点”，点击右侧“开始”即可');
+    },
+    'quick-recipe': el => {
+      if (!S.item) return;
+      const key = el.dataset.recipe || '';
+      if (!key) return;
+      const d = P.draft(S.item);
+      d.recipe = key;
+      P.render();
+      const btn = document.querySelector('form[data-form="start"] button[type="submit"]');
+      if (btn) btn.focus();
+      const rec = (S.item.recipes || []).find(r => r.key === key);
+      NB.toast('已在右侧选好「' + ((rec && rec.label) || key) + '」，补充说明（或留空）后点击右侧「开始」即可');
     },
     'add-assumption': el => {
       const rows = el.closest('fieldset').querySelector('.assume-rows');

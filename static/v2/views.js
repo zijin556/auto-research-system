@@ -607,18 +607,267 @@
     </section>`;
   };
 
+  V.stepWrap = function (no, title, subtitle, badgeHtml, actionsHtml, bodyHtml) {
+    return html`<section class="linear-step-section" id="step-${no}" aria-labelledby="step-h-${no}">
+      <div class="linear-step-head">
+        <div class="linear-step-title">
+          <span class="step-num-pill">第 ${no} 步</span>
+          <div class="step-head-titles">
+            <h2 id="step-h-${no}">${title}</h2>
+            ${subtitle ? html`<p class="step-sub">${subtitle}</p>` : ''}
+          </div>
+        </div>
+        <div class="linear-step-right">
+          ${badgeHtml || ''}
+          ${actionsHtml ? html`<div class="step-head-actions">${actionsHtml}</div>` : ''}
+        </div>
+      </div>
+      <div class="linear-step-body">${bodyHtml}</div>
+    </section>`;
+  };
+
+  V.stepConnector = label => html`<div class="linear-step-connector" aria-hidden="true"><span>↓ ${label}</span></div>`;
+
+  V.linearFlowBar = function (it) {
+    if (it.level !== 'question' && it.level !== 'chapter') return '';
+    const a = it.anchor || {};
+    const anchorConfirmed = !!(a.exists && a.status === 'confirmed');
+    const lg = (it.ledger && it.ledger.counts) || {};
+    const cDet = lg['确定'] || 0;
+    const cPend = lg['待定'] || 0;
+    const cRej = lg['否定'] || 0;
+    const sess = NB.sessionFor(it.ref);
+    const isPaused = !!(sess && sess.status === 'paused' && sess.learn);
+
+    if (it.level === 'question') {
+      const m = it.materials || {};
+      const runs = m.runs || [];
+      const vers = m.verifications || [];
+      const staged = it.staged_conclusions || [];
+      const hasDoc = !!(it.doc && (it.doc.text || '').trim());
+      const curStep = !anchorConfirmed ? 1 : isPaused ? 2 : (it.judgment || it.can_adopt || staged.length) && cDet > 0 && runs.length > 0 && !isPaused ? 4 : (runs.length || vers.length || hasDoc) && cDet > 0 ? 3 : 2;
+      const steps = [
+        { no: 1, title: '① 提出问题', sub: '界定问题、判据与假设', badge: anchorConfirmed ? '已锚定' : (a.exists ? '草稿待确认' : '待界定'), tone: anchorConfirmed ? 'good' : 'warn' },
+        { no: 2, title: '② 分析问题', sub: '多 AI 交锋与推导台账', badge: isPaused ? '学习待决' : `确${cDet} · 待${cPend} · 否${cRej}`, tone: isPaused ? 'warn' : (cDet > 0 ? 'good' : 'info') },
+        { no: 3, title: '③ 解决问题', sub: '实验运行、复推与小论文', badge: `运行 ${runs.length} · 复推 ${vers.length}`, tone: runs.length > 0 ? 'good' : 'info' },
+        { no: 4, title: '④ 整理结论', sub: '提炼结论与适用边界并采纳', badge: it.judgment ? '已采纳' : (staged.length ? '候选待采纳' : '待收敛'), tone: it.judgment ? 'good' : (staged.length ? 'warn' : 'muted') },
+      ];
+      return html`<nav class="linear-flow-bar" aria-label="小问题线性研究流程">
+        <div class="lfb-head">
+          <span class="lfb-label">小问题线性研究主线（从上到下依次推进，点击直达对应模块）</span>
+          <span class="muted small">提出问题 → 分析问题 → 解决问题 → 整理结论</span>
+        </div>
+        <div class="lfb-track">
+          ${steps.map((s, idx) => html`
+            ${idx > 0 ? html`<span class="lfb-arrow" aria-hidden="true">→</span>` : ''}
+            <button type="button" class="lfb-step ${curStep === s.no ? 'is-current' : ''} ${s.tone === 'good' ? 'is-done' : ''}" data-action="scroll" data-key="step-${s.no}">
+              <div class="lfb-top"><b>${s.title}</b><span class="tag tone-${s.tone}">${s.badge}</span></div>
+              <div class="lfb-sub">${s.sub}</div>
+            </button>`)}
+        </div>
+      </nav>`;
+    }
+
+    const kids = it.children || [];
+    const pq = it.proposed_questions || [];
+    const st = it.stage;
+    const hasDraft = !!(it.doc && (it.doc.text || '').trim());
+    const curStep = !anchorConfirmed ? 1 : (pq.length || !kids.length) ? 2 : kids.some(k => k.status !== 'supported') ? 3 : 4;
+    const steps = [
+      { no: 1, title: '① 提出本章问题', sub: '明确本章定位与评测协议', badge: anchorConfirmed ? '已锚定' : '探索中', tone: anchorConfirmed ? 'good' : 'info' },
+      { no: 2, title: '② 分析问题与缺口', sub: 'S1–S6 创新验证与本章台账', badge: st ? `阶段 ${st.current}` : `台账 确${cDet}/待${cPend}`, tone: cDet > 0 ? 'good' : 'info' },
+      { no: 3, title: '③ 拆解并解决小问题', sub: '拆解子问题并逐个验证攻关', badge: `已立项 ${kids.length} 题${pq.length ? ` · 待建 ${pq.length}` : ''}`, tone: kids.length > 0 ? 'good' : 'warn' },
+      { no: 4, title: '④ 整理本章结论成文', sub: '汇总小问题结论组装本章草稿', badge: hasDraft ? '草稿已建' : '待组装', tone: hasDraft ? 'good' : 'muted' },
+    ];
+    return html`<nav class="linear-flow-bar" aria-label="章节线性研究流程">
+      <div class="lfb-head">
+        <span class="lfb-label">本章线性研究主线（从上到下依次推进，点击直达对应模块）</span>
+        <span class="muted small">提出本章问题 → 分析缺口与探索 → 拆解并解决小问题 → 整理本章草稿</span>
+      </div>
+      <div class="lfb-track">
+        ${steps.map((s, idx) => html`
+          ${idx > 0 ? html`<span class="lfb-arrow" aria-hidden="true">→</span>` : ''}
+          <button type="button" class="lfb-step ${curStep === s.no ? 'is-current' : ''} ${s.tone === 'good' ? 'is-done' : ''}" data-action="scroll" data-key="step-${s.no}">
+            <div class="lfb-top"><b>${s.title}</b><span class="tag tone-${s.tone}">${s.badge}</span></div>
+            <div class="lfb-sub">${s.sub}</div>
+          </button>`)}
+      </div>
+    </nav>`;
+  };
+
+  V.discussionTimeline = function (it) {
+    const rounds = it.rounds || [];
+    const old = (it.materials && it.materials.legacy_discussions) || [];
+    if (!rounds.length && !old.length && !(it.latest_brief || '').trim()) return '';
+    const roundTone = s => (s === 'done' ? 'tone-good' : s === 'failed' ? 'tone-bad' : s === 'running' || s === 'paused' ? 'tone-info' : 'tone-muted');
+    const roleTag = name => {
+      const m = String(name || '').match(/^(\d+)_([^_]+)_([^.]+)\.md$/);
+      if (!m) return name;
+      return `${m[1]} ${m[2]} (${m[3]})`;
+    };
+    const key = 'brief-inline:' + it.ref;
+    const openBrief = S.open.has(key);
+    const briefRound = rounds.find(x => x.brief_path);
+    return html`<section class="sec disc-timeline" id="sec-discussions" aria-labelledby="disc-h">
+      <div class="sec-head">
+        <h2 id="disc-h">多轮讨论与分析脉络（共 ${rounds.length + old.length} 轮记录）</h2>
+        <span class="hint">记录从起草锚点、多模型交锋推导到实验验证的完整讨论过程，点击任意文件可查看对话全文</span>
+      </div>
+      ${(it.latest_brief || '').trim() ? html`<div class="card-soft brief-inline-card">
+        <div class="card-head">
+          <h3>最近一轮讨论简报${briefRound ? `（${briefRound.title}）` : ''}</h3>
+          <div class="actions">
+            <button type="button" class="btn-small quiet" data-action="toggle" data-key="${key}" aria-expanded="${openBrief}">${openBrief ? '收起简报全文' : '展开简报全文'}</button>
+            ${briefRound && briefRound.brief_path ? V.fileLink(briefRound.brief_path, '在独立窗口打开', 'btn btn-small quiet') : ''}
+          </div>
+        </div>
+        <div class="${openBrief ? '' : 'clip clip-short'}">${NB.md(it.latest_brief, briefRound ? NB.dirname(briefRound.brief_path) : '')}</div>
+      </div>` : ''}
+      <div class="table-wrap"><table class="grid disc-table">
+        <thead><tr><th>轮次 / 编号</th><th>讨论任务</th><th>状态</th><th>本轮核心进展 / 结论摘要</th><th>交锋过程与讨论原稿（点击查看）</th></tr></thead>
+        <tbody>
+          ${rounds.map(r => {
+            const stepFiles = (r.files || []).filter(f => f.path !== r.brief_path && f.name !== 'round.json');
+            return html`<tr>
+              <td class="mono nowrap">第 ${r.no || '—'} 轮</td>
+              <td class="nowrap"><b>${(r.title || '').replace(/^第\d+轮\s*·\s*/, '') || r.title}</b><div class="muted small">${NB.fmtTime(r.started_at)}</div></td>
+              <td class="nowrap"><span class="tag ${roundTone(r.status)}">${L.round[r.status] || r.status || '—'}</span></td>
+              <td class="small">${r.stop_reason || (r.status === 'running' ? '当前正在推进本轮分析与交锋（学习模式暂停待决或运行中）' : '已完成本轮多模型交锋与记录')}</td>
+              <td>
+                <div class="disc-files">
+                  ${r.brief_path ? V.fileLink(r.brief_path, '📄 轮次简报', 'btn btn-small primary') : ''}
+                  ${stepFiles.map(f => V.fileLink(f.path, roleTag(f.name), 'file-chip'))}
+                </div>
+              </td>
+            </tr>`;
+          })}
+          ${old.map(d => html`<tr>
+            <td class="mono nowrap">${d.id}</td>
+            <td class="nowrap"><b>早期讨论沉淀</b></td>
+            <td class="nowrap"><span class="tag tone-muted">历史收录</span></td>
+            <td class="small">${d.summary || d.title || '早期关于问题条件命题与反例的探索讨论记录'}</td>
+            <td><div class="disc-files">${V.fileLink(d.path, '📄 ' + (d.title || d.id), 'file-chip')}</div></td>
+          </tr>`)}
+        </tbody>
+      </table></div>
+    </section>`;
+  };
+
   V.mainHtml = function (it) {
     const parts = [V.crumbs(it), V.titleBlock(it)];
-    if ((it.upstream || []).length) parts.push(V.upstream(it));
-    parts.push(V.learnBlock(it));
-    if (it.level === 'framework_layer') parts.push(V.onboardingCard(it), V.mindmap(it, false), V.projectCard(it), V.candidates(it), V.frameworkCards(it), V.chaptersOverviewCard(it));
-    if (it.level === 'framework') parts.push(V.mindmap(it, false), V.frameworkFields(it));
-    if (it.level === 'chapter') parts.push(V.stageBar(it), V.childList(it), V.proposedQuestions(it));
-    parts.push(V.anchorCard(it));
-    if (it.level === 'chapter' || it.level === 'question') parts.push(V.docBlock(it));
-    if (it.level === 'question') parts.push(V.adoptBlock(it));
-    parts.push(V.ledger(it));
-    if (it.materials) parts.push(V.materials(it));
+    if (it.level === 'framework_layer') {
+      if ((it.upstream || []).length) parts.push(V.upstream(it));
+      parts.push(
+        V.learnBlock(it),
+        V.onboardingCard(it),
+        V.mindmap(it, false),
+        V.projectCard(it),
+        V.candidates(it),
+        V.frameworkCards(it),
+        V.chaptersOverviewCard(it),
+        V.anchorCard(it),
+        V.ledger(it)
+      );
+      return html`${parts}`;
+    }
+    if (it.level === 'framework') {
+      if ((it.upstream || []).length) parts.push(V.upstream(it));
+      parts.push(V.learnBlock(it), V.mindmap(it, false), V.frameworkFields(it), V.anchorCard(it), V.ledger(it));
+      return html`${parts}`;
+    }
+    if (it.level === 'question') {
+      const a = it.anchor || {};
+      const aStatus = !a.exists ? 'none' : a.status;
+      const lg = (it.ledger && it.ledger.counts) || {};
+      const m = it.materials || {};
+      const runs = m.runs || [];
+      const vers = m.verifications || [];
+      parts.push(
+        V.linearFlowBar(it),
+        V.stepWrap(
+          1,
+          '提出问题：界定问题、量化判据与前提假设',
+          '先明确本小问题到底回答什么、达到什么量化指标算解决、依赖哪些前提假设（锚定问题边界）',
+          aStatus === 'confirmed' ? html`<span class="tag tone-good">已锚定 第${a.version}版</span>` : html`<span class="tag tone-warn">待确认锚点</span>`,
+          html`<button type="button" class="btn-small" data-action="quick-open-anchor">① AI 起草/收敛锚点</button><button type="button" class="btn-small quiet" data-action="edit-anchor">手动编辑</button>`,
+          html`${(it.upstream || []).length ? V.upstream(it) : ''}${V.anchorCard(it)}`
+        ),
+        V.stepConnector('问题与判据明确后，进入第 2 步：多模型剖析问题与推导论断'),
+        V.stepWrap(
+          2,
+          '分析问题：理论剖析、多 AI 交锋与论证台账',
+          '围绕第 1 步的问题开展多模型交锋（作者推导 ↔ 审查挑刺 ↔ 漂移检查），将所有推导步、论断与待验证项记入台账',
+          html`<span class="tag tone-good">确定 ${lg['确定'] || 0}</span> <span class="tag tone-warn">待定 ${lg['待定'] || 0}</span> <span class="tag tone-muted">否定 ${lg['否定'] || 0}</span>`,
+          html`<button type="button" class="btn-small primary" data-action="quick-recipe" data-recipe="advance">② 推进一轮分析与验证</button>`,
+          html`${V.learnBlock(it)}${V.discussionTimeline(it)}${V.ledger(it)}`
+        ),
+        V.stepConnector('理清理论推导与待验证项后，进入第 3 步：代码实验验证与小论文成文'),
+        V.stepWrap(
+          3,
+          '解决问题：实验验证运行、独立复推与小论文正文',
+          '编写并运行沙箱验证代码核对判据、请跨家族模型独立复推关键命题，并形成五节结构的完整小论文推导正文',
+          html`<span class="tag tone-info">验证运行 ${runs.length} 次</span> <span class="tag tone-info">独立复推 ${vers.length} 份</span>`,
+          html`<button type="button" class="btn-small" data-action="quick-recipe" data-recipe="referee">③ 请审稿人独立复推/审稿</button><button type="button" class="btn-small quiet" data-action="edit-doc">编辑正文</button>`,
+          html`${V.materials(it)}${V.docBlock(it)}`
+        ),
+        V.stepConnector('推导与实验验证闭环后，进入第 4 步：整理最终结论并采纳归档'),
+        V.stepWrap(
+          4,
+          '整理结论：提炼结论、明确适用范围并采纳归档',
+          '核对采纳条件，确认本小问题的最终结论与适用边界，采纳后自动同步回所属章节',
+          it.judgment ? html`<span class="tag tone-good">已正式采纳</span>` : it.can_adopt ? html`<span class="tag tone-good">满足采纳条件</span>` : html`<span class="tag tone-warn">待满足采纳条件</span>`,
+          html`<button type="button" class="btn-small primary" data-action="adopt" ${it.can_adopt ? '' : raw('disabled')}>④ 采纳结论并汇入本章…</button>`,
+          V.adoptBlock(it)
+        )
+      );
+      return html`${parts}`;
+    }
+    if (it.level === 'chapter') {
+      const a = it.anchor || {};
+      const aStatus = !a.exists ? 'none' : a.status;
+      const lg = (it.ledger && it.ledger.counts) || {};
+      const kids = it.children || [];
+      const fw = it.fw || S.fw;
+      parts.push(
+        V.linearFlowBar(it),
+        V.stepWrap(
+          1,
+          '提出本章问题：明确章节定位、核心问题与评测协议',
+          '界定本章在整篇论文中的承重问题、统一评测协议（数据集、指标、基线）与边界范围',
+          aStatus === 'confirmed' ? html`<span class="tag tone-good">本章已锚定</span>` : html`<span class="tag tone-info">探索发散中</span>`,
+          html`<button type="button" class="btn-small" data-action="quick-open-anchor">① AI 收敛本章锚点</button><button type="button" class="btn-small quiet" data-action="edit-anchor">手动编辑</button>`,
+          html`${(it.upstream || []).length ? V.upstream(it) : ''}${V.anchorCard(it)}`
+        ),
+        V.stepConnector('明确本章研究方向后，进入第 2 步：分析现有缺口与开展创新验证'),
+        V.stepWrap(
+          2,
+          '分析问题与缺口：S1–S6 创新验证漏斗与本章论证台账',
+          '量化现有方法缺口、发散并筛选创新想法、核对文献查新，在台账中沉淀本章核心论断',
+          html`<span class="tag tone-good">确定 ${lg['确定'] || 0}</span> <span class="tag tone-warn">待定 ${lg['待定'] || 0}</span>`,
+          html`${(it.recipes || []).some(r => r.key === 'innov') ? html`<button type="button" class="btn-small primary" data-action="quick-recipe" data-recipe="innov">② 运行当前创新阶段</button>` : ''}<button type="button" class="btn-small" data-action="quick-recipe" data-recipe="outline">AI 提纲与拆题</button>`,
+          html`${V.learnBlock(it)}${V.stageBar(it)}${V.discussionTimeline(it)}${V.ledger(it)}`
+        ),
+        V.stepConnector('完成本章分析与拆题后，进入第 3 步：逐个攻克本章小问题'),
+        V.stepWrap(
+          3,
+          '拆解并解决问题：本章小问题立项与逐题攻关进度',
+          '将本章拆解为可独立推导与代码验证的小问题，点击任意小问题进入「提出→分析→解决→结论」四步闭环',
+          html`<span class="tag tone-info">共 ${kids.length} 个小问题</span>`,
+          html`<button type="button" class="btn-small primary" data-action="new-question" data-ref="${it.ref}" data-fw="${fw}">+ 手动新建小问题</button><button type="button" class="btn-small" data-action="quick-recipe" data-recipe="outline">AI 自动拆解小问题</button>`,
+          html`${V.proposedQuestions(it)}${V.childList(it)}`
+        ),
+        V.stepConnector('各小问题结论采纳后，进入第 4 步：汇总整理本章论文草稿'),
+        V.stepWrap(
+          4,
+          '整理本章结论与成文：组装并审校本章论文草稿',
+          '将本章已采纳的小问题推导、实验结果与结论汇总组装为结构完整的章节论文正文',
+          (it.doc && (it.doc.text || '').trim()) ? html`<span class="tag tone-good">草稿已建立</span>` : html`<span class="tag tone-muted">待组装</span>`,
+          html`<button type="button" class="btn-small primary" data-action="quick-recipe" data-recipe="assemble">④ AI 组装本章草稿</button><button type="button" class="btn-small quiet" data-action="edit-doc">编辑本章草稿</button>`,
+          V.docBlock(it)
+        )
+      );
+      return html`${parts}`;
+    }
     return html`${parts}`;
   };
 
@@ -861,10 +1110,48 @@
   V.childList = function (it) {
     const kids = it.children || [];
     const fw = it.fw || S.fw;
+    const treeCh = (() => {
+      for (const f of (S.tree && S.tree.frameworks) || []) {
+        const c = (f.chapters || []).find(x => x.id === it.ref);
+        if (c) return c;
+      }
+      return ((S.tree && S.tree.unplaced) || []).find(x => x.id === it.ref) || null;
+    })();
+    const treeQs = (treeCh && treeCh.questions) || [];
     return html`<section class="sec" id="sec-children" aria-labelledby="kids-h">
-      <div class="sec-head"><h2 id="kids-h">小问题</h2><div class="actions"><button type="button" data-action="new-question" data-ref="${it.ref}" data-fw="${fw}">+ 新建小问题</button></div></div>
-      ${kids.length ? html`<ul class="plain kid-list">${kids.map(k => html`<li><span class="qdot tone-${L.qTone[k.status] || 'muted'}" aria-hidden="true"></span><a href="${NB.refHash(k.ref, fw)}">${k.title}</a> <span class="tag tone-${L.qTone[k.status] || 'muted'}">${k.status_label || ''}</span></li>`)}</ul>`
-        : html`<p class="muted">还没有小问题。</p>`}
+      <div class="sec-head">
+        <h2 id="kids-h">本章已立项小问题攻关表（共 ${kids.length} 题）</h2>
+        <div class="actions"><button type="button" data-action="new-question" data-ref="${it.ref}" data-fw="${fw}">+ 新建小问题</button></div>
+      </div>
+      ${kids.length ? html`<div class="table-wrap"><table class="grid kid-table">
+        <thead><tr><th>小问题编号与标题</th><th>① 问题锚定</th><th>②–③ 台账与验证进度</th><th>④ 当前结论状态</th><th>操作</th></tr></thead>
+        <tbody>
+          ${kids.map(k => {
+            const tq = treeQs.find(q => q.id === k.ref) || {};
+            const lg = tq.ledger || {};
+            const aSt = tq.anchor_status || 'none';
+            return html`<tr>
+              <td>
+                <div class="kid-main">
+                  <span class="qdot tone-${L.qTone[k.status] || 'muted'}" aria-hidden="true"></span>
+                  <span class="mono small muted">${k.ref}</span>
+                  <a class="bold" href="${NB.refHash(k.ref, fw)}">${k.title}</a>
+                </div>
+              </td>
+              <td class="nowrap">${aSt === 'confirmed' ? html`<span class="tag tone-good">已锚定</span>` : aSt === 'draft' ? html`<span class="tag tone-warn">草稿待确认</span>` : html`<span class="tag tone-info">未锚定</span>`}</td>
+              <td class="nowrap small">
+                <span class="tag tone-good">确定 ${lg['确定'] || 0}</span>
+                <span class="tag tone-warn">待定 ${lg['待定'] || 0}</span>
+                ${lg['否定'] ? html` <span class="tag tone-muted">否定 ${lg['否定']}</span>` : ''}
+                ${tq.pending ? html` <span class="tag tone-warn">待处理 ${tq.pending}</span>` : ''}
+              </td>
+              <td class="nowrap"><span class="tag tone-${L.qTone[k.status] || 'muted'}">${k.status_label || '探索中'}</span></td>
+              <td class="nowrap"><a class="btn btn-small primary" href="${NB.refHash(k.ref, fw)}">进入四步研究 →</a></td>
+            </tr>`;
+          })}
+        </tbody>
+      </table></div>`
+        : html`<p class="muted">本章还没有拆解小问题。可点击上方「AI 自动拆解小问题」或「+ 手动新建小问题」。</p>`}
     </section>`;
   };
 
@@ -974,15 +1261,91 @@
     const runs = m.runs || [];
     const vers = m.verifications || [];
     const old = m.legacy_discussions || [];
-    if (!codes.length && !runs.length && !vers.length && !old.length) return '';
+    if (!codes.length && !runs.length && !vers.length && !old.length) {
+      return html`<section class="sec mat-dashboard" id="sec-materials" aria-labelledby="mat-h">
+        <div class="sec-head"><h2 id="mat-h">实验验证、代码实现与独立复推材料</h2><span class="hint">尚无代码运行或复推记录，运行「推进一轮」或「审稿人独立复推」后将自动归档在此</span></div>
+      </section>`;
+    }
     const verdictTone = v => (v === '一致' ? 'tone-good' : v === '不一致' ? 'tone-bad' : 'tone-muted');
-    return html`<section class="sec" id="sec-materials" aria-labelledby="mat-h"><div class="sec-head"><h2 id="mat-h">材料</h2></div>
-      ${codes.length ? html`<h3 class="sub">代码</h3><ul class="plain mat">${codes.map(c => html`<li>${V.fileLink(c.path, c.name, 'mono')}${c.purpose ? html` <span class="muted small">${c.purpose}</span>` : ''}</li>`)}</ul>` : ''}
-      ${runs.length ? html`<h3 class="sub">验证运行</h3><ul class="plain mat">${runs.map(r => html`<li>
-          <div><span class="mono">${r.id}</span> ${V.fileLink(r.path, r.title || r.id)} <span class="tag tone-${L.outcomeTone[r.outcome] || 'muted'}">${r.outcome_label || r.outcome}</span>${r.plan_id ? html` <span class="muted small">计划 ${r.plan_id}</span>` : ''}</div>
-          ${(r.files || []).length ? html`<div class="files">${r.files.map(f => V.fileLink(f.path, f.name, 'file-chip'))}</div>` : ''}</li>`)}</ul>` : ''}
-      ${vers.length ? html`<h3 class="sub">独立复推</h3><ul class="plain mat">${vers.map(v => html`<li>${V.fileLink(v.path, v.id, 'mono')} <span class="muted small">针对 ${v.entry || '—'}</span> <span class="tag ${verdictTone(v.verdict)}">${v.verdict || '未给出'}</span></li>`)}</ul>` : ''}
-      ${old.length ? html`<h3 class="sub">早期讨论</h3><ul class="plain mat">${old.map(d => html`<li><span class="mono">${d.id}</span> ${V.fileLink(d.path, d.title || d.id)}</li>`)}</ul>` : ''}
+    const passCount = runs.filter(r => r.outcome === 'pass').length;
+    const failCount = runs.filter(r => r.outcome === 'fail').length;
+    return html`<section class="sec mat-dashboard" id="sec-materials" aria-labelledby="mat-h">
+      <div class="sec-head">
+        <h2 id="mat-h">实验验证、代码实现与独立复推材料</h2>
+        <div class="counts">
+          <span class="tag tone-info">代码脚本 ${codes.length}</span>
+          <span class="tag tone-good">验证通过 ${passCount}</span>
+          ${failCount ? html`<span class="tag tone-bad">反例/未过 ${failCount}</span>` : ''}
+          <span class="tag tone-info">独立复推 ${vers.length}</span>
+          ${old.length ? html`<span class="tag tone-muted">早期讨论 ${old.length}</span>` : ''}
+        </div>
+      </div>
+
+      ${runs.length ? html`<div class="mat-group">
+        <h3 class="sub">1. 沙箱验证运行结果（共 ${runs.length} 次）</h3>
+        <div class="table-wrap"><table class="grid mat-table">
+          <thead><tr><th>运行编号</th><th>验证实验名称</th><th>对应计划</th><th>判据核对结果</th><th>运行记录与产出数据（点击查看）</th></tr></thead>
+          <tbody>
+            ${runs.map(r => html`<tr>
+              <td class="mono nowrap"><span class="tag">${r.id}</span></td>
+              <td><b>${V.fileLink(r.path, r.title || r.id)}</b>${r.summary ? html`<div class="muted small">${r.summary}</div>` : ''}</td>
+              <td class="mono small nowrap">${r.plan_id ? '计划 ' + r.plan_id : '—'}</td>
+              <td class="nowrap"><span class="tag tone-${L.outcomeTone[r.outcome] || 'muted'}">${r.outcome_label || r.outcome}</span></td>
+              <td>
+                <div class="files">
+                  ${V.fileLink(r.path, '📋 运行记录.md', 'file-chip is-primary-chip')}
+                  ${(r.files || []).map(f => V.fileLink(f.path, f.name, 'file-chip'))}
+                </div>
+              </td>
+            </tr>`)}
+          </tbody>
+        </table></div>
+      </div>` : ''}
+
+      ${(codes.length || vers.length) ? html`<div class="mat-two-col">
+        ${codes.length ? html`<div class="mat-group">
+          <h3 class="sub">2. 实验与数值仿真代码（${codes.length}）</h3>
+          <div class="table-wrap"><table class="grid mat-table">
+            <thead><tr><th>代码文件</th><th>功能说明与核对目标</th><th>操作</th></tr></thead>
+            <tbody>
+              ${codes.map(c => html`<tr>
+                <td class="mono nowrap">${V.fileLink(c.path, c.name, 'bold')}</td>
+                <td class="small">${c.purpose || '数值仿真与双路径核对脚本'}</td>
+                <td class="nowrap">${V.fileLink(c.path, '查看源码', 'btn btn-small quiet')}</td>
+              </tr>`)}
+            </tbody>
+          </table></div>
+        </div>` : ''}
+
+        ${vers.length ? html`<div class="mat-group">
+          <h3 class="sub">${codes.length ? '3.' : '2.'} 跨模型独立复推核验（${vers.length}）</h3>
+          <div class="table-wrap"><table class="grid mat-table">
+            <thead><tr><th>复推编号</th><th>核验目标</th><th>复推结论</th><th>操作</th></tr></thead>
+            <tbody>
+              ${vers.map(v => html`<tr>
+                <td class="mono nowrap"><span class="tag">${v.id}</span></td>
+                <td class="small">针对台账 <span class="mono bold">${v.entry || '—'}</span>${v.summary ? html`<div class="muted small">${v.summary}</div>` : ''}</td>
+                <td class="nowrap"><span class="tag ${verdictTone(v.verdict)}">${v.verdict || '未给出'}</span></td>
+                <td class="nowrap">${V.fileLink(v.path, '查看复推手稿', 'btn btn-small quiet')}</td>
+              </tr>`)}
+            </tbody>
+          </table></div>
+        </div>` : ''}
+      </div>` : ''}
+
+      ${old.length ? html`<div class="mat-group">
+        <h3 class="sub">早期讨论与历史沉淀（${old.length}）</h3>
+        <div class="table-wrap"><table class="grid mat-table">
+          <thead><tr><th>编号</th><th>讨论主题与核心内容</th><th>操作</th></tr></thead>
+          <tbody>
+            ${old.map(d => html`<tr>
+              <td class="mono nowrap"><span class="tag tone-muted">${d.id}</span></td>
+              <td class="small"><b>${V.fileLink(d.path, d.title || d.id)}</b>${d.summary ? html`<span class="muted"> · ${d.summary}</span>` : ''}</td>
+              <td class="nowrap">${V.fileLink(d.path, '查看讨论记录', 'btn btn-small quiet')}</td>
+            </tr>`)}
+          </tbody>
+        </table></div>
+      </div>` : ''}
     </section>`;
   };
 
@@ -990,14 +1353,58 @@
   V.adoptBlock = function (it) {
     const staged = it.staged_conclusions || [];
     const j = it.judgment;
-    if (!staged.length && !j) return '';
     const last = staged[staged.length - 1];
     const label = d => L.decision[d] || ({ review: '需复查', not_required: '不需要验证' })[d] || d;
-    return html`<section class="sec" id="sec-adopt" aria-labelledby="adopt-h"><div class="sec-head"><h2 id="adopt-h">结论</h2></div>
-      ${j ? html`<div class="notice notice-good"><b>已采纳：${label(j.decision)}</b>${j.text ? html` · ${NB.mdInline(j.text)}` : ''}${j.scope ? html`<div class="muted small">适用范围：${j.scope}</div>` : ''}</div>` : ''}
-      ${last ? html`<div class="card-soft"><h3 class="sub">AI 建议的结论（第 5 节，等你采纳）</h3>${NB.md(last.body, NB.dirname(it.doc && it.doc.path))}
-        <div class="form-actions"><button type="button" class="primary" data-action="adopt" ${it.can_adopt ? '' : raw('disabled')}>采纳…</button>
-          <button type="button" class="quiet" data-action="dismiss" data-kind="conclusion">忽略这条建议</button></div></div>` : ''}
+    const a = it.anchor || {};
+    const okAnchor = a.status === 'confirmed';
+    const pendAss = (a.assumptions || []).filter(x => x.status === '待批').length;
+    const pendReq = (a.requests || []).filter(r => r.status === '待处理').length;
+    const okAssReq = pendAss === 0 && pendReq === 0;
+    const okDoc = !!(it.doc && (it.doc.text || '').trim());
+    const okUp = !(it.upstream || []).length;
+    const okDec = !((it.pending || []).some(p => p.kind === 'decision'));
+
+    return html`<section class="sec adopt-sec" id="sec-adopt" aria-labelledby="adopt-h">
+      <div class="adopt-checklist" role="group" aria-label="采纳条件核对清单">
+        <div class="ac-item ${okAnchor ? 'is-ok' : 'is-pending'}">
+          <span class="ac-ico">${okAnchor ? '✓' : '1'}</span>
+          <div><b>问题锚点已确认</b><div class="muted small">${okAnchor ? '已完成第 1 步问题界定' : '需先在第 1 步确认问题锚点'}</div></div>
+        </div>
+        <div class="ac-item ${okAssReq ? 'is-ok' : 'is-pending'}">
+          <span class="ac-ico">${okAssReq ? '✓' : '!'}</span>
+          <div><b>待批假设与变更申请已清零</b><div class="muted small">${okAssReq ? '无未决假设或变更申请' : `还有 ${pendAss} 条待批假设、${pendReq} 条变更申请（见右侧待你决定）`}</div></div>
+        </div>
+        <div class="ac-item ${okDoc ? 'is-ok' : 'is-pending'}">
+          <span class="ac-ico">${okDoc ? '✓' : '3'}</span>
+          <div><b>推导正文与验证已齐备</b><div class="muted small">${okDoc ? '第 3 步小论文正文已生成' : '需先完成第 3 步正文推导'}</div></div>
+        </div>
+        <div class="ac-item ${okUp && okDec ? 'is-ok' : 'is-pending'}">
+          <span class="ac-ico">${okUp && okDec ? '✓' : '!'}</span>
+          <div><b>上游依赖与待决问题正常</b><div class="muted small">${!okUp ? '上游结论有变动，需先复查' : !okDec ? '需先回答右侧待决定问题' : '无阻塞项'}</div></div>
+        </div>
+      </div>
+
+      ${j ? html`<div class="notice notice-good adopt-verdict-box">
+        <div class="adopt-verdict-head">
+          <span class="tag tone-good">已正式采纳结论</span>
+          <b>判定：${label(j.decision)}</b>
+        </div>
+        ${j.text ? html`<div class="adopt-verdict-body">${NB.md(j.text, NB.dirname(it.doc && it.doc.path))}</div>` : ''}
+        ${j.scope ? html`<div class="adopt-verdict-scope"><b>适用范围与边界：</b>${j.scope}</div>` : ''}
+      </div>` : ''}
+
+      ${last ? html`<div class="card-soft adopt-staged-card">
+        <div class="card-head">
+          <h3 class="sub">AI 提炼的候选结论与适用范围（对应小论文第 5 节，等你核对采纳）</h3>
+          <span class="tag tone-info">来自 ${last.round || '最近一轮讨论'}</span>
+        </div>
+        <div class="adopt-staged-body">${NB.md(last.body, NB.dirname(it.doc && it.doc.path))}</div>
+        <div class="form-actions">
+          <button type="button" class="primary" data-action="adopt" ${it.can_adopt ? '' : raw('disabled')}>④ 采纳此结论并写入第 5 节…</button>
+          <button type="button" class="quiet" data-action="dismiss" data-kind="conclusion">忽略这条建议</button>
+          ${!it.can_adopt ? html`<span class="hint warn">暂不可采纳：${V.adoptReason(it)}</span>` : ''}
+        </div>
+      </div>` : (!j ? html`<div class="card-soft"><p class="muted">尚未生成候选结论。完成上方第 2 步「分析问题」与第 3 步「解决问题」的多轮讨论后，AI 会在此自动提炼本小问题的最终结论与适用边界供你一键采纳。</p></div>` : '')}
     </section>`;
   };
 }());

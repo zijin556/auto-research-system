@@ -963,7 +963,315 @@ dialog::backdrop { background: rgba(20, 20, 18, .45); }
 .bold { font-weight: 600; }
 .nowrap { white-space: nowrap; }
 
+/* ---- Top-to-Bottom 4-Step Linear Workflow Spine (Question & Chapter Pages) ---- */
+.linear-flow-bar {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+.lfb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.lfb-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+.lfb-track {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: stretch;
+  gap: 6px;
+}
+.lfb-step {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  text-align: left;
+  padding: 9px 11px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.1s ease;
+}
+.lfb-step:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.lfb-step.is-done {
+  border-color: rgba(46, 160, 67, 0.45);
+}
+.lfb-step.is-current {
+  border-color: var(--accent);
+  border-width: 2px;
+  padding: 8px 10px;
+  background: var(--info-soft);
+}
+.lfb-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.lfb-top b {
+  font-size: 13.5px;
+  color: var(--text);
+}
+.lfb-sub {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+.lfb-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 0 2px;
+}
+
+/* Numbered Step Containers (Step 1 -> Step 2 -> Step 3 -> Step 4) */
+.linear-step-section {
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  overflow: hidden;
+}
+.linear-step-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.linear-step-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+.step-num-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.step-head-titles h2 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+}
+.step-sub {
+  margin: 3px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.linear-step-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.step-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.linear-step-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.linear-step-body > .card,
+.linear-step-body > .sec {
+  margin: 0;
+}
+.linear-step-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  position: relative;
+}
+.linear-step-connector span {
+  padding: 2px 12px;
+  border-radius: 999px;
+  border: 1px dashed var(--line-strong);
+  background: var(--bg);
+}
+
+/* Discussion Timeline & Structured Materials Dashboard */
+.disc-timeline .brief-inline-card {
+  margin-bottom: 12px;
+}
+.disc-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.mat-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.mat-group h3.sub {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.mat-two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 14px;
+}
+.mat-table td, .mat-table th, .disc-table td, .disc-table th, .kid-table td, .kid-table th {
+  vertical-align: middle;
+}
+.file-chip.is-primary-chip {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+.kid-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Step 4: Conclusion Readiness Checklist & Verdict Box */
+.adopt-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ac-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.ac-item.is-ok {
+  border-color: rgba(46, 160, 67, 0.45);
+}
+.ac-item.is-pending {
+  border-color: rgba(210, 153, 34, 0.55);
+}
+.ac-ico {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex: none;
+  margin-top: 1px;
+}
+.ac-item.is-ok .ac-ico {
+  background: var(--good-soft);
+  color: var(--good);
+}
+.ac-item.is-pending .ac-ico {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+.adopt-verdict-box {
+  margin-bottom: 12px;
+}
+.adopt-verdict-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.adopt-verdict-scope {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--line);
+  font-size: 13px;
+}
+
+/* Right Panel Linear Step Pills */
+.next-linear-pills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.nlp-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  text-align: left;
+  cursor: pointer;
+}
+.nlp-btn:hover {
+  border-color: var(--accent);
+}
+.nlp-btn.is-on {
+  border-color: var(--accent);
+  background: var(--info-soft);
+}
+.nlp-step {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.nlp-label {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 600;
+}
+.next-adopt-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
 @media (max-width: 960px) {
-  .mm-stepper { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .mm-step-arrow, .mm-stat-sep { display: none; }
+  .mm-stepper, .lfb-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mm-step-arrow, .mm-stat-sep, .lfb-arrow { display: none; }
 }

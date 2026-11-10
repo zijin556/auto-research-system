@@ -98,6 +98,35 @@
     </div>`;
   };
 
+  P.linearStepHint = function (it, recipe) {
+    const map = {
+      question: [
+        { step: '① 提出问题', key: 'open', label: '起草/收敛锚点' },
+        { step: '②/③ 分析与解决', key: 'advance', label: '推进推导与验证' },
+        { step: '③ 独立复推核验', key: 'referee', label: '审稿人独立复推' },
+      ],
+      chapter: [
+        { step: '① 提出本章问题', key: 'open', label: '收敛本章锚点' },
+        { step: '② 分析缺口创新', key: 'innov', label: '跑创新阶段' },
+        { step: '③ 拆解小问题', key: 'outline', label: '提纲与拆题' },
+        { step: '④ 汇总本章草稿', key: 'assemble', label: '组装本章草稿' },
+      ],
+      framework_layer: [
+        { step: '②A AI 拟定框架', key: 'propose', label: 'AI 拟定框架' },
+        { step: '②B 导入已有框架', key: 'import_fw', label: '导入大纲分章' },
+        { step: '④ 收敛总锚点', key: 'open', label: '起草总框架锚点' },
+      ],
+    }[it.level] || [];
+    const avail = map.filter(m => (it.recipes || []).some(r => r.key === m.key));
+    if (!avail.length) return '';
+    return html`<div class="next-linear-pills" role="group" aria-label="按线性步骤选择讨论任务">
+      ${avail.map(m => html`<button type="button" class="nlp-btn ${recipe === m.key ? 'is-on' : ''}" data-action="quick-recipe" data-recipe="${m.key}">
+        <span class="nlp-step">${m.step}</span>
+        <span class="nlp-label">${m.label}</span>
+      </button>`)}
+    </div>`;
+  };
+
   P.nextBox = function (it) {
     const recipes = it.recipes || [];
     if (!recipes.length) return '';
@@ -115,9 +144,10 @@
         ? '例如：倾向于分成 5 章或 6 章，重点聚焦动态非理想解调…'
         : '例如：先把 2.2 节的推导补完整，或者重点讨论方案二的可行性…';
     return html`<section class="panel next" aria-labelledby="next-h">
-      <h2 id="next-h">下一轮</h2>
+      <div class="panel-head"><h2 id="next-h">下一轮 AI 协作操作</h2><span class="muted small">按线性步骤执行</span></div>
+      ${P.linearStepHint(it, recipe)}
       <form data-form="start">
-        <label class="field"><span>讨论方式</span><select name="recipe" data-change="recipe">${recipes.map(r => html`<option value="${r.key}" ${r.key === recipe ? raw('selected') : ''}>${r.label}</option>`)}</select></label>
+        <label class="field"><span>当前执行动作</span><select name="recipe" data-change="recipe">${recipes.map(r => html`<option value="${r.key}" ${r.key === recipe ? raw('selected') : ''}>${r.label}</option>`)}</select></label>
         ${recipe === 'advance' ? html`<fieldset class="field radios"><legend>模式</legend>
           <label><input type="radio" name="mode" value="auto" data-change="mode" ${d.mode !== 'learn' ? raw('checked') : ''}> 自动</label>
           <label><input type="radio" name="mode" value="learn" data-change="mode" ${d.mode === 'learn' ? raw('checked') : ''}> 学习（每步停下等你）</label></fieldset>` : ''}
@@ -126,9 +156,13 @@
         ${P.roleSummary(recipe)}
         ${needsAnchor ? html`<p class="hint warn">${reconfirm
           ? '锚点有改动，检查后点“确认锚点”。'
-          : '推进正式推导前，请先运行“收敛并起草/更新锚点”，确认本小问题的判据后点“确认锚点”。'}</p>` : ''}
-        <button type="submit" class="primary wide">${isImport ? '解析并导入框架' : '开始'}</button>
+          : '推进正式推导前，请先选上方“① 提出问题（起草/收敛锚点）”，确认本小问题的判据后点“确认锚定”。'}</p>` : ''}
+        <button type="submit" class="primary wide">${isImport ? '解析并导入框架' : '开始执行本步讨论'}</button>
       </form>
+      ${it.level === 'question' ? html`<div class="next-adopt-bar">
+        <span class="muted small">第 4 步：结论整理就绪后</span>
+        <button type="button" class="btn-small ${it.can_adopt ? 'primary' : 'quiet'}" data-action="scroll" data-key="step-4">④ 查看/采纳结论 ↓</button>
+      </div>` : ''}
     </section>`;
   };
 
@@ -229,6 +263,10 @@
   };
 
   const roundTone = s => (s === 'done' ? 'tone-good' : s === 'failed' ? 'tone-bad' : s === 'running' || s === 'paused' ? 'tone-info' : 'tone-muted');
+  const fmtRoundFile = name => {
+    const m = String(name || '').match(/^(\d+)_([^_]+)_([^.]+)\.md$/);
+    return m ? `${m[1]} ${m[2]} (${m[3]})` : name;
+  };
   P.rounds = function (it) {
     const list = it.rounds || [];
     if (!list.length) return '';
@@ -237,14 +275,15 @@
       <ul class="plain round-list">${list.map(r => {
         const key = 'round:' + r.id;
         const open = S.open.has(key);
+        const stepFiles = (r.files || []).filter(f => f.path !== r.brief_path && f.name !== 'round.json');
         return html`<li class="round">
           <button type="button" class="round-btn" data-action="toggle" data-key="${key}" aria-expanded="${open}">
             <span class="rt">${r.title}</span>${r.ref && r.ref !== it.ref ? html`<span class="tag">${r.ref}</span>` : ''}
             <span class="tag ${roundTone(r.status)}">${L.round[r.status] || r.status || '—'}</span><span class="muted small">${NB.fmtTime(r.started_at)}</span></button>
           ${open ? html`${r.stop_reason ? html`<p class="small muted">${r.stop_reason}</p>` : ''}
-            <div class="round-files">${r.brief_path ? NB.V.fileLink(r.brief_path, '简报', 'btn btn-small primary') : html`<span class="muted small">这一轮没有简报。</span>`}
+            <div class="round-files">${r.brief_path ? NB.V.fileLink(r.brief_path, '📄 简报', 'btn btn-small primary') : html`<span class="muted small">这一轮没有简报。</span>`}
             ${r.dir ? html`<button type="button" class="btn-small quiet" data-action="open-folder" data-path="${r.dir}">打开文件夹</button>` : ''}
-            ${(r.files || []).filter(f => f.path !== r.brief_path).map(f => NB.V.fileLink(f.path, f.name, 'file-chip'))}</div>` : ''}
+            ${stepFiles.map(f => NB.V.fileLink(f.path, fmtRoundFile(f.name), 'file-chip'))}</div>` : ''}
         </li>`;
       })}</ul>
     </section>`;
